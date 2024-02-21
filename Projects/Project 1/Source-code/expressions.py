@@ -34,19 +34,17 @@ def V_exponential(phi: float, V0: float) -> float:
     return V0 * np.exp(-kappa * xi * phi)
 
 
-def ode_system(X: np.ndarray, N: float, V: Callable) -> np.ndarray:
+def ode_system(X: np.ndarray, N: str, V: str) -> np.ndarray:
     """System of the three coupled ODE's from expression 19-22 of the project.
 
     arguments:
         X: array of values of [x1, x2, x3, lmbda]
         N: time variable (expression 15)
-        V: the potential function
+        V: the potential function: ["power", "exponential"]
 
     returns:
         array of the ode's [dx1/dN, dx2/dN, dx3/dN, dlmbda/dN]
     """
-
-    Gamma = 5  ########################### ???? Todo
 
     x1, x2, x3, lmbda = X
 
@@ -54,6 +52,21 @@ def ode_system(X: np.ndarray, N: float, V: Callable) -> np.ndarray:
     dx1 = -3 * x1 * np.sqrt(6) / 2 * lmbda * x2**2 * 1 / 2 * x1 * temp
     dx2 = -np.sqrt(6) / 2 * lmbda * x1 * x2 + 1 / 2 * x2 * temp
     dx3 = -2 * x3 + 1 / 2 * x3 * temp
-    dlmbda = -np.sqrt(6) * lmbda**2 * (Gamma - 1) * x1
+    dlmbda = dlambda(V)
 
     return [dx1, dx2, dx3, dlmbda]
+
+def dlambda(V: str) -> float:
+    """Describes equation 22 of the project, which depends on the potential.
+
+    arguments:
+        V: the potential function: ["power", "exponential"]
+    
+    returns:
+        the right hand side of dlambda/dN (eq 22)
+    """
+
+    if V.lower() == "power":
+        return ...
+    elif V.lower() == "exponential":
+        return ...
