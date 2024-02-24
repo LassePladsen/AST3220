@@ -35,6 +35,24 @@ def V_exponential(phi: float, V0: float) -> float:
     return V0 * np.exp(-kappa * xi * phi)
 
 
+def potential(V: str) -> Callable:
+    """Returns the correct potential function
+
+    arguments:
+        V: the potential function in ["power", "exponential"]
+
+    returns:
+        the potential function
+    """
+
+    if V.lower() == "power":
+        return V_power_law
+    elif V.lower() == "exponential":
+        return V_exponential
+    else:
+        raise ValueError("V-string value not recognized")
+
+
 def gamma(V: str) -> float:
     """Describes Gamma(phi), equation 18 of the project, which depends on
     the potential
@@ -64,7 +82,7 @@ def dlambda(X: np.ndarray, V: str) -> float:
         the right hand side of dlambda/dN (eq. 22)
     """
 
-    x1, x2, x3, lmbda = X
+    x1, _, _, lmbda = X
 
     return -np.sqrt(6) * lmbda**2 * (gamma(V) - 1) * x1
 
@@ -82,13 +100,9 @@ def ode_system(N: np.ndarray, X: np.ndarray, V: str) -> list[float]:
     """
 
     x1, x2, x3, lmbda = X
-    # print(x1)
-    # print(x1,x2,x3,lmbda)
 
-    temp = 3 + 3 + x1**2 - 3 * x2**2 + x3**2
-    # print(temp)
+    temp = 3 + 3 * x1**2 - 3 * x2**2 + x3**2
     dx1 = -3 * x1 + np.sqrt(6) / 2 * lmbda * x2**2 + 1 / 2 * x1 * temp
-    # print(dx1)
     dx2 = -np.sqrt(6) / 2 * lmbda * x1 * x2 + 1 / 2 * x2 * temp
     dx3 = -2 * x3 + 1 / 2 * x3 * temp
     dlmbda = dlambda(X, V)
