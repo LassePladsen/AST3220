@@ -7,7 +7,7 @@ from scipy.integrate import solve_ivp
 from expressions import xi, ode_system
 
 
-def solve_ode_system(V: str) -> list[np.ndarray, np.ndarray]:
+def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
     """Solves the ode system of the equations of motion for x1, x2, x3, and lambda
 
     arguments:
@@ -97,7 +97,7 @@ def plot_density_parameters(V: str, filename=None, figsize=(9, 5)) -> None:
     plt.savefig(filename)
 
 
-def plot_eos_parameter(V: str) -> None:
+def plot_eos_parameter(V: str, filename=None, figsize=(9, 5)) -> None:
     """Plots the quintessence field equation of state parameter w_phi as
     a function of the redshift
 
@@ -107,7 +107,7 @@ def plot_eos_parameter(V: str) -> None:
     returns:
         None
     """
-    ...
+    ... # TODO
 
 
 if __name__ == "__main__":
