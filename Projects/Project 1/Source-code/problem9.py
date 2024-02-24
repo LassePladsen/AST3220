@@ -7,7 +7,7 @@ from scipy.integrate import solve_ivp
 from expressions import xi, ode_system
 
 
-def solve_ode_system(V: str) -> [np.ndarray, np.ndarray]:
+def solve_ode_system(V: str) -> list[np.ndarray, np.ndarray]:
     """Solves the ode system of the equations of motion for x1, x2, x3, and lambda
 
     arguments:
