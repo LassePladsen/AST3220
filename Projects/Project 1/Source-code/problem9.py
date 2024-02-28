@@ -34,25 +34,31 @@ def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
     else:
         raise ValueError("V-string value not recognized")
 
+    no_points = int(1e6)
+    tol = 1e-8
     sol = solve_ivp(
         ode_system,
         [N_i, N_f],
         [x1_i, x2_i, x3_i, lmbda_i],
         args=(V,),
-        rtol=1e-8,
-        atol=1e-8,
+        rtol=tol,
+        atol=tol,
+        t_eval=np.linspace(N_i, N_f, no_points),
+        # method="DOP853",
     )
 
     return sol.t, sol.y
 
 
-def plot_density_parameters(V: str, filename=None, figsize=(9, 5)) -> None:
+def plot_density_parameters(V: str, filename=None, figsize=(9, 5), prnt=True) -> None:
     """Plots the characteristic density parameters (Omega_i) for matter, radiation,
     and the quintessence field as functions of the redshift, in the same figure
 
     argfuments:
         V: the potential function in ["power", "exponential"]
-
+        filename: the filename to save the plot figure
+        figsize: the plot figure size
+        prnt: boolean whether to todays values or not
     returns:
         None
     """
@@ -68,8 +74,7 @@ def plot_density_parameters(V: str, filename=None, figsize=(9, 5)) -> None:
         )
 
     N, y = solve_ode_system(V)
-    z = np.exp(-N) - 1  # redshift
-    # z = N
+    z = np.exp(-N) - 1  # convert time x-axis to the redshift z
 
     x1, x2, x3, _ = y
 
@@ -78,36 +83,80 @@ def plot_density_parameters(V: str, filename=None, figsize=(9, 5)) -> None:
     Omega_r = x3**2
     Omega_phi = x1**2 + x2**2
 
-    # Plot seperately in the same figure
-    fig, ax = plt.subplots(1, 3, figsize=figsize)
-    ax[0].plot(z, Omega_m)
-    ax[1].plot(z, Omega_r)
-    ax[2].plot(z, Omega_phi)
+    # Plot in the same figure
+    plt.figure(figsize=figsize)
+    plt.grid()
+    plt.xscale("log")
+    plt.plot(z, Omega_m, label=r"Matter $\Omega_m$")
+    plt.plot(z, Omega_r, label=r"Radiation $\Omega_r$")
+    plt.plot(z, Omega_phi, label=r"Quintessence field $\Omega_{\phi}$")
+    plt.legend()
 
-    # Titles
-    ax[0].set_title(r"Matter $\Omega_m$")
-    ax[1].set_title(r"Radiation $\Omega_r$")
-    ax[2].set_title(r"Quintessence field $\Omega_{\phi}$")
-
-    # Shared labels and figure title
-    fig.supxlabel("z")
-    fig.supylabel(r"$\Omega$")
-    fig.suptitle(f"Density parameters of {V}-potential")
+    # Labels and figure title
+    plt.xlabel("z")
+    plt.ylabel(r"$\Omega$")
+    plt.title(f"Density parameters of {V}-potential")
 
     plt.savefig(filename)
 
+    if prnt:
+        print(
+            f"Today's values of the density parameters ({V}-potential):"
+            f"\nOmega_m0 = {Omega_m[-1]}"
+            f"\nOmega_r0 = {Omega_r[-1]}"
+            f"\nOmega_phi0 = {Omega_phi[-1]}\n"
+        )
 
-def plot_eos_parameter(V: str, filename=None, figsize=(9, 5)) -> None:
+
+def plot_eos_parameter(V: str, filename=None, figsize=(9, 5), prnt=True) -> None:
     """Plots the quintessence field equation of state parameter w_phi as
     a function of the redshift
 
     arguments:
         V: the potential function in ["power", "exponential"]
+        filename: the filename to save the plot figure
+        figsize: the plot figure size
+        prnt: boolean whether to todays values or not
 
     returns:
         None
     """
-    ... # TODO
+    if not filename:
+        filename = os.path.abspath(
+            os.path.join(
+                os.path.dirname(__file__),
+                "..",
+                "Figures",
+                f"9_eos_parameter_{V}.png",
+            )
+        )
+
+    N, y = solve_ode_system(V)
+    z = np.exp(-N) - 1  # convert time x-axis to the redshift z
+
+    x1, x2, x3, _ = y
+
+    # The eos parameter
+    omega_phi = (x1**2 - x2**2) / (x1**2 + x2**2)
+
+    # Plot in the same figure
+    plt.figure(figsize=figsize)
+    plt.grid()
+    plt.xscale("log")
+    plt.plot(z, omega_phi)
+
+    # Labels and figure title
+    plt.xlabel("z")
+    plt.ylabel(r"$\Omega$")
+    plt.title(f"EoS parameter $\omega_\phi$ of {V}-potential")
+
+    plt.savefig(filename)
+
+    if prnt:
+        print(
+            f"Today's value of the EoS parameter ({V}-potential):"
+            f"\nomega_phi0 = {omega_phi[-1]}\n"
+        )
 
 
 if __name__ == "__main__":

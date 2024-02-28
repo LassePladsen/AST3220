@@ -64,7 +64,7 @@ def gamma(V: str) -> float:
         the value of Gamma (eq. 18)
     """
     if V.lower() == "power":
-        return 1 / alpha
+        return (alpha + 1) / alpha
     elif V.lower() == "exponential":
         return 1
     else:
@@ -101,10 +101,10 @@ def ode_system(N: np.ndarray, X: np.ndarray, V: str) -> list[float]:
 
     x1, x2, x3, lmbda = X
 
-    temp = 3 + 3 * x1**2 - 3 * x2**2 + x3**2
-    dx1 = -3 * x1 + np.sqrt(6) / 2 * lmbda * x2**2 + 1 / 2 * x1 * temp
-    dx2 = -np.sqrt(6) / 2 * lmbda * x1 * x2 + 1 / 2 * x2 * temp
-    dx3 = -2 * x3 + 1 / 2 * x3 * temp
+    hubble_expression = -0.5 * (3 + 3 * x1**2 - 3 * x2**2 + x3**2)
+    dx1 = -3 * x1 + np.sqrt(6) / 2 * lmbda * x2**2 - x1 * hubble_expression
+    dx2 = -np.sqrt(6) / 2 * lmbda * x1 * x2 - x2 * hubble_expression
+    dx3 = -2 * x3 - x3 * hubble_expression
     dlmbda = dlambda(X, V)
 
     return [dx1, dx2, dx3, dlmbda]
