@@ -195,6 +195,7 @@ def plot_eos_parameter(V: str, filename=None, figsize=(9, 5), prnt=True) -> None
 
 if __name__ == "__main__":
     # Create figures for both potentials
+    figsize = (7, 5)
     for V in ["power", "exponential"]:
-        plot_density_parameters(V)
-        plot_eos_parameter(V)
+        plot_density_parameters(V, figsize=figsize)
+        plot_eos_parameter(V, figsize=figsize)
