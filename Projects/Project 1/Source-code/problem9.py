@@ -6,6 +6,9 @@ from scipy.integrate import solve_ivp
 
 from expressions import xi, ode_system
 
+# Differential equation parameters
+N_i = np.log(1 / (1 + 2e7))  # characteristic initial time
+N_f = 0  # characteristic stop time
 
 def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
     """Solves the ode system of the equations of motion for x1, x2, x3, and lambda
@@ -17,10 +20,7 @@ def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
         the time array and the solution array
     """
 
-    ## Initial conditions and variables
-    N_i = np.log(1 / (1 + 2e7))  # characteristic initial time
-    N_f = 0  # characteristic stop time
-
+    # Parameters
     if V.lower() == "power":
         x1_i = 5e-5
         x2_i = 1e-8
@@ -50,10 +50,10 @@ def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
     return sol.t, sol.y
 
 
-def solve_density_parameters(
+def density_parameters(
     V: str,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Solves the characteristic density parameters (Omega_i) for matter, radiation,
+    """Returns the characteristic density parameters (Omega_i) for matter, radiation,
     and the quintessence field as functions of the redshift
 
     arguments:
@@ -99,7 +99,7 @@ def plot_density_parameters(V: str, filename=None, figsize=(9, 5), prnt=True) ->
             )
         )
 
-    z, Omega_m, Omega_r, Omega_phi = solve_density_parameters(V)
+    z, Omega_m, Omega_r, Omega_phi = density_parameters(V)
 
     # Plot in the same figure
     plt.figure(figsize=figsize)
@@ -126,8 +126,8 @@ def plot_density_parameters(V: str, filename=None, figsize=(9, 5), prnt=True) ->
         )
 
 
-def solve_eos_parameter(V: str) -> tuple[np.ndarray, np.ndarray]:
-    """Solves the quintessence field equation of state parameter w_phi as
+def eos_parameter(V: str) -> tuple[np.ndarray, np.ndarray]:
+    """Returns the quintessence field equation of state parameter omega_phi as
     a function of the redshift
 
     arguments:
@@ -171,7 +171,7 @@ def plot_eos_parameter(V: str, filename=None, figsize=(9, 5), prnt=True) -> None
             )
         )
 
-    z, omega_phi = solve_eos_parameter(V)
+    z, omega_phi = eos_parameter(V)
 
     # Plot in the same figure
     plt.figure(figsize=figsize)

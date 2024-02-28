@@ -108,3 +108,15 @@ def ode_system(N: np.ndarray, X: np.ndarray, V: str) -> list[float]:
     dlmbda = dlambda(X, V)
 
     return [dx1, dx2, dx3, dlmbda]
+
+
+def eos_integral_N(omega_phi: float) -> float:
+    """Represents the integral in the projects equation 7, integrated over N
+
+    arguments:
+        omega_phi: the eos parameter
+
+    returns:
+        the integral value at given input
+    """
+    return 3 * (1 + omega_phi)
