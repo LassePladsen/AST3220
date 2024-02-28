@@ -50,6 +50,32 @@ def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
     return sol.t, sol.y
 
 
+def solve_density_parameters(
+    V: str,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Solves the characteristic density parameters (Omega_i) for matter, radiation,
+    and the quintessence field as functions of the redshift
+
+    arguments:
+        V: the potential function in ["power", "exponential"]
+
+    returns:
+        the redshift array and the density parameters arrays
+    """
+
+    N, y = solve_ode_system(V)
+    z = np.exp(-N) - 1  # convert time x-axis to the redshift z
+
+    x1, x2, x3, _ = y
+
+    # Density parameters
+    Omega_m = 1 - x1**2 - x2**2 - x3**2
+    Omega_r = x3**2
+    Omega_phi = x1**2 + x2**2
+
+    return z, Omega_m, Omega_r, Omega_phi
+
+
 def plot_density_parameters(V: str, filename=None, figsize=(9, 5), prnt=True) -> None:
     """Plots the characteristic density parameters (Omega_i) for matter, radiation,
     and the quintessence field as functions of the redshift, in the same figure
@@ -73,15 +99,7 @@ def plot_density_parameters(V: str, filename=None, figsize=(9, 5), prnt=True) ->
             )
         )
 
-    N, y = solve_ode_system(V)
-    z = np.exp(-N) - 1  # convert time x-axis to the redshift z
-
-    x1, x2, x3, _ = y
-
-    # Density parameters
-    Omega_m = 1 - x1**2 - x2**2 - x3**2
-    Omega_r = x3**2
-    Omega_phi = x1**2 + x2**2
+    z, Omega_m, Omega_r, Omega_phi = solve_density_parameters(V)
 
     # Plot in the same figure
     plt.figure(figsize=figsize)
@@ -108,6 +126,28 @@ def plot_density_parameters(V: str, filename=None, figsize=(9, 5), prnt=True) ->
         )
 
 
+def solve_eos_parameter(V: str) -> tuple[np.ndarray, np.ndarray]:
+    """Solves the quintessence field equation of state parameter w_phi as
+    a function of the redshift
+
+    arguments:
+        V: the potential function in ["power", "exponential"]
+
+    returns:
+        the redshift array and the eos parameter array
+    """
+
+    N, y = solve_ode_system(V)
+    z = np.exp(-N) - 1  # convert time x-axis to the redshift z
+
+    x1, x2, _, _ = y
+
+    # The eos parameter
+    omega_phi = (x1**2 - x2**2) / (x1**2 + x2**2)
+
+    return z, omega_phi
+
+
 def plot_eos_parameter(V: str, filename=None, figsize=(9, 5), prnt=True) -> None:
     """Plots the quintessence field equation of state parameter w_phi as
     a function of the redshift
@@ -131,13 +171,7 @@ def plot_eos_parameter(V: str, filename=None, figsize=(9, 5), prnt=True) -> None
             )
         )
 
-    N, y = solve_ode_system(V)
-    z = np.exp(-N) - 1  # convert time x-axis to the redshift z
-
-    x1, x2, x3, _ = y
-
-    # The eos parameter
-    omega_phi = (x1**2 - x2**2) / (x1**2 + x2**2)
+    z, omega_phi = solve_eos_parameter(V)
 
     # Plot in the same figure
     plt.figure(figsize=figsize)
