@@ -10,6 +10,7 @@ from expressions import xi, ode_system
 N_i = np.log(1 / (1 + 2e7))  # characteristic initial time
 N_f = 0  # characteristic stop time
 
+
 def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
     """Solves the ode system of the equations of motion for x1, x2, x3, and lambda
 
@@ -76,7 +77,12 @@ def density_parameters(
     return z, Omega_m, Omega_r, Omega_phi
 
 
-def plot_density_parameters(V: str, filename=None, figsize=(9, 5), prnt=True) -> None:
+def plot_density_parameters(
+    V: str,
+    filename: str = None,
+    figsize: tuple[int, int] = (9, 5),
+    prnt: boolean = True,
+) -> None:
     """Plots the characteristic density parameters (Omega_i) for matter, radiation,
     and the quintessence field as functions of the redshift, in the same figure
 
@@ -84,7 +90,7 @@ def plot_density_parameters(V: str, filename=None, figsize=(9, 5), prnt=True) ->
         V: the potential function in ["power", "exponential"]
         filename: the filename to save the plot figure
         figsize: the plot figure size
-        prnt: boolean whether to todays values or not
+        prnt: if true, prints today's values
     returns:
         None
     """
@@ -148,7 +154,12 @@ def eos_parameter(V: str) -> tuple[np.ndarray, np.ndarray]:
     return z, omega_phi
 
 
-def plot_eos_parameter(V: str, filename=None, figsize=(9, 5), prnt=True) -> None:
+def plot_eos_parameter(
+    V: str,
+    filename: str = None,
+    figsize: tuple[int, int] = (9, 5),
+    prnt: boolean = True,
+) -> None:
     """Plots the quintessence field equation of state parameter w_phi as
     a function of the redshift
 
@@ -156,7 +167,7 @@ def plot_eos_parameter(V: str, filename=None, figsize=(9, 5), prnt=True) -> None
         V: the potential function in ["power", "exponential"]
         filename: the filename to save the plot figure
         figsize: the plot figure size
-        prnt: boolean whether to todays values or not
+        prnt: if true, prints today's values
 
     returns:
         None
