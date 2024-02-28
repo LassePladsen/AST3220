@@ -113,7 +113,7 @@ def plot_density_parameters(V: str, filename=None, figsize=(9, 5), prnt=True) ->
     # Labels and figure title
     plt.xlabel("z")
     plt.ylabel(r"$\Omega$")
-    plt.title(f"Density parameters of {V}-potential")
+    plt.title(f"Density parameters for {V}-potential")
 
     plt.savefig(filename)
 
@@ -182,7 +182,7 @@ def plot_eos_parameter(V: str, filename=None, figsize=(9, 5), prnt=True) -> None
     # Labels and figure title
     plt.xlabel("z")
     plt.ylabel(r"$\Omega$")
-    plt.title(f"EoS parameter $\omega_\phi$ of {V}-potential")
+    plt.title(f"EoS parameter $\omega_\phi$ for {V}-potential")
 
     plt.savefig(filename)
 
