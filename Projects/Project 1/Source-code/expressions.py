@@ -117,6 +117,6 @@ def eos_integral_N(omega_phi: float) -> float:
         omega_phi: the eos parameter
 
     returns:
-        the integral value at given input
+        the value at given input
     """
     return 3 * (1 + omega_phi)
