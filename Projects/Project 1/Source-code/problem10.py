@@ -55,10 +55,10 @@ def hubble_parameter_lambdacdm(z: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     Omega_m0 = 0.3
     Omega_lambda0 = 0.7
 
-    # Hubble parameter
-    H = np.sqrt(Omega_m0 * (1 + z) ** 3 + Omega_lambda0)
+    # Characteristic Hubble parameter
+    h = np.sqrt(Omega_m0 * (1 + z) ** 3 + Omega_lambda0)
 
-    return H
+    return h
 
 
 def plot_hubble_parameters(
@@ -91,23 +91,23 @@ def plot_hubble_parameters(
 
     # Quintessence models
     for V in ["power", "exponential"]:
-        z, H = hubble_parameter_quintessence(V)
-        plt.plot(z, H, label=f"{V}-potential")
+        z, h = hubble_parameter_quintessence(V)
+        plt.plot(z, h, label=f"{V}-potential")
         if prnt:
             print(f"Edge values for {V}-potential:")
             print("z=, H/H_0=")
-            print(z[-1], H[-1])
-            print(z[0], H[0])
+            print(z[-1], h[-1])
+            print(z[0], h[0])
             print()
 
     # Lambda-CDM model
-    H = hubble_parameter_lambdacdm(z)
-    plt.plot(z, H, label=r"$\Lambda$-CDM")
+    h = hubble_parameter_lambdacdm(z)
+    plt.plot(z, h, label=r"$\Lambda$-CDM")
     if prnt:
         print(f"Edge values for lambda-CDM:")
         print("z=, H/H_0=")
-        print(z[-1], H[-1])
-        print(z[0], H[0])
+        print(z[-1], h[-1])
+        print(z[0], h[0])
 
     plt.xscale("log")
     plt.yscale("log")
