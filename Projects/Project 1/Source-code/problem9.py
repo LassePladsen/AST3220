@@ -81,7 +81,7 @@ def plot_density_parameters(
     V: str,
     filename: str = None,
     figsize: tuple[int, int] = (9, 5),
-    prnt: boolean = True,
+    prnt: bool = True,
 ) -> None:
     """Plots the characteristic density parameters (Omega_i) for matter, radiation,
     and the quintessence field as functions of the redshift, in the same figure
@@ -158,7 +158,7 @@ def plot_eos_parameter(
     V: str,
     filename: str = None,
     figsize: tuple[int, int] = (9, 5),
-    prnt: boolean = True,
+    prnt: bool = True,
 ) -> None:
     """Plots the quintessence field equation of state parameter w_phi as
     a function of the redshift
