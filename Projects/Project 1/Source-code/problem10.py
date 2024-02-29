@@ -8,8 +8,9 @@ from problem9 import density_parameters
 from expressions import eos_integral_N
 
 
-def hubble_parameter(V: str) -> tuple[np.ndarray, np.ndarray]:
-    """Returns the characteristic Hubble parameter H/H_0 as a function of the redshift z (eq. 7)
+def hubble_parameter_quintessence(V: str) -> tuple[np.ndarray, np.ndarray]:
+    """Characteristic Hubble parameter H/H_0 as a function of the redshift z (eq. 7)
+    for the quintessence model, using a given potential function name
 
     arguments:
         V: the potential function in ["power", "exponential"]
@@ -39,13 +40,33 @@ def hubble_parameter(V: str) -> tuple[np.ndarray, np.ndarray]:
     return z, H
 
 
-def plot_hubble_parameter(
-    V: str, filename: str = None, figsize: tuple[int, int] = (9, 5), prnt=True
-) -> None:
-    """Plots the characteristic Hubble parameter H/H_0 as a function of the redshift z
+def hubble_parameter_lambdacdm(z: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Characteristic Hubble parameter H/H_0 as a function of the redshift z (eq. 7)
+    for the lambda-cdm model with Omega_m0=0.3, omega_lambda0 ~ 0.7, and Omega_r0=0
 
     arguments:
-        V: the potential function in ["power", "exponential"]
+        z: the redshift z array
+
+    returns:
+        H: the values of H/H_0 for each z from the z-interval
+    """
+    # Density parameters
+    Omega_m0 = 0.3
+    Omega_lambda0 = 0.7
+
+    # Hubble parameter
+    H = np.sqrt(Omega_m0 * (1 + z) ** 3 + Omega_lambda0)
+
+    return H
+
+
+def plot_hubble_parameters(
+    filename: str = None, figsize: tuple[int, int] = (9, 5), prnt=True
+) -> None:
+    """Plots the characteristic Hubble parameter H/H_0 as a function of the redshift z,
+    for both the power-law and the exponential potentials in addition to the lambda-CDM model
+
+    arguments:
         filename: the name of the file to save the plot
         figsize: the size of the figure
         prnt: if True, print the value of H/H_0 at the initla and final redshifts
@@ -60,28 +81,41 @@ def plot_hubble_parameter(
                 os.path.dirname(__file__),
                 "..",
                 "Figures",
-                f"10_hubble_parameter_{V}.png",
+                f"10_hubble_parameters.png",
             )
         )
 
-    z, H = hubble_parameter(V)
-
     plt.figure(figsize=figsize)
-    plt.title(f"Hubble parameter for {V}-potential")
-    plt.plot(z, H)
+    plt.title(f"Hubble parameter for quintesscence potentials and lambda-CDM model")
+
+    # Quintessence models
+    for V in ["power", "exponential"]:
+        z, H = hubble_parameter_quintessence(V)
+        plt.plot(z, H, label=f"{V}-potential")
+        if prnt:
+            print(f"Edge values for {V}-potential:")
+            print("z=, H/H_0=")
+            print(z[-1], H[-1])
+            print(z[0], H[0])
+            print()
+
+    # Lambda-CDM model
+    H = hubble_parameter_lambdacdm(z)
+    plt.plot(z, H, label=r"$\Lambda$-CDM")
+    if prnt:
+        print(f"Edge values for lambda-CDM:")
+        print("z=, H/H_0=")
+        print(z[-1], H[-1])
+        print(z[0], H[0])
+
     plt.xscale("log")
     plt.yscale("log")
     plt.xlabel("z")
     plt.ylabel("$H/H_0$")
     plt.grid()
+    plt.legend()
     plt.savefig(filename)
-
-    if prnt:
-        print("z=, H/H_0=")
-        print(z[-1], H[-1])
-        print(z[0], H[0])
 
 
 if __name__ == "__main__":
-    for V in ["power", "exponential"]:
-        plot_hubble_parameter(V)
+    plot_hubble_parameters()
