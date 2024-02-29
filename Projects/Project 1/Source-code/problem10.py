@@ -62,7 +62,7 @@ def hubble_parameter_lambdacdm(z: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 
 def plot_hubble_parameters(
-    filename: str = None, figsize: tuple[int, int] = (9, 5), prnt=True
+    filename: str = None, figsize: tuple[int, int] = (6, 5), prnt=True
 ) -> None:
     """Plots the characteristic Hubble parameter H/H_0 as a function of the redshift z,
     for both the power-law and the exponential potentials in addition to the lambda-CDM model
@@ -87,7 +87,7 @@ def plot_hubble_parameters(
         )
 
     plt.figure(figsize=figsize)
-    plt.title(f"Hubble parameter for quintesscence potentials and lambda-CDM model")
+    plt.title(f"Hubble parameter for quintessence and Lambda-CDM")
 
     # Quintessence models
     for V in ["power", "exponential"]:
