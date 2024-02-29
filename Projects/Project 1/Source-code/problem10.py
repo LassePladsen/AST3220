@@ -42,7 +42,8 @@ def hubble_parameter_quintessence(V: str) -> tuple[np.ndarray, np.ndarray]:
 
 def hubble_parameter_lambdacdm(z: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Characteristic Hubble parameter H/H_0 as a function of the redshift z (eq. 7)
-    for the lambda-cdm model with Omega_m0=0.3, omega_lambda0 ~ 0.7, and Omega_r0=0
+    for the spatially flat (k=0) lambda-cdm model with Omega_m0=0.3,
+    omega_lambda0 ~ 0.7, and Omega_r0=Omega_k0=0
 
     arguments:
         z: the redshift z array
