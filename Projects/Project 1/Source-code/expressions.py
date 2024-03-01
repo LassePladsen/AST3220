@@ -64,8 +64,8 @@ def ode_system(N: np.ndarray, X: np.ndarray, V: str) -> list[float]:
     return [dx1, dx2, dx3, dlmbda]
 
 
-def eos_integral_N(omega_phi: float) -> float:
-    """Represents the integral in the projects equation 7, integrated over N
+def eos_integrand(omega_phi: float) -> float:
+    """Represents the integrand over N of the equation of state (the projects equation 7)
 
     arguments:
         omega_phi: the eos parameter

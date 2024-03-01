@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import quad
 
 from problem9 import density_parameters
-from expressions import eos_integral_N
+from expressions import eos_integrand
 
 
 def hubble_parameter_quintessence(V: str) -> tuple[np.ndarray, np.ndarray]:
@@ -34,7 +34,7 @@ def hubble_parameter_quintessence(V: str) -> tuple[np.ndarray, np.ndarray]:
         H[i] = np.sqrt(
             Omega_m0 * (1 + zi) ** 3
             + Omega_r0 * (1 + zi) ** 4
-            + Omega_phi0 * np.exp(quad(eos_integral_N, N[i], 0)[0])
+            + Omega_phi0 * np.exp(quad(eos_integrand, N[i], 0)[0])
         )
 
     return z, H
