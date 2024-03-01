@@ -35,7 +35,7 @@ def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
     else:
         raise ValueError("V-string value not recognized")
 
-    no_points = int(1e6)
+    n_points = int(1e6)
     tol = 1e-8
     sol = solve_ivp(
         ode_system,
@@ -44,7 +44,7 @@ def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
         args=(V,),
         rtol=tol,
         atol=tol,
-        t_eval=np.linspace(N_i, N_f, no_points),
+        t_eval=np.linspace(N_i, N_f, n_points),
         # method="DOP853",
     )
 
