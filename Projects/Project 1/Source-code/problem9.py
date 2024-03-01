@@ -45,7 +45,6 @@ def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
         rtol=tol,
         atol=tol,
         t_eval=np.linspace(N_i, N_f, n_points),
-        # method="DOP853",
     )
 
     return sol.t, sol.y
