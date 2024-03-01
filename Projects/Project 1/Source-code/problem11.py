@@ -8,10 +8,10 @@ def universe_age_quintessence(V: str) -> float:
     """
     Calculate the dimensionless age of the universe H_0t_0 for the quintessence model
 
-    arguments
+    arguments:
     V: V: the quintessence potential function in ["power", "exponential"]
 
-    returns
+    returns:
         The dimensionless age of the universe
 
     """
@@ -24,9 +24,9 @@ def universe_age_lambdacdm() -> float:
     """
     Calculate the dimensionless age of the universe H_0t_0 for the Lambda-CDM model
 
-    arguments
+    arguments:
         none
-    returns
+    returns:
         The dimensionless age of the universe
 
     """
@@ -40,10 +40,10 @@ def print_universe_ages() -> None:
     """Prints the dimensionless ages of the universe for two quintessence models
     and the Lambda-CDM model
 
-    arguments
+    arguments:
         none
 
-    returns
+    returns:
         none
     """
     print("Dimensionless age of the universe for quintessence models:")
