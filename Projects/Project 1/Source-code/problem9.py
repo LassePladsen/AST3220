@@ -11,7 +11,7 @@ N_i = np.log(1 / (1 + 2e7))  # characteristic initial time
 N_f = 0  # characteristic stop time
 
 
-def solve_ode_system(V: str) -> tuple[np.ndarray, np.ndarray]:
+def solve_ode_system(V: str, N_i: float, N_f: float) -> tuple[np.ndarray, np.ndarray]:
     """Solves the ode system of the equations of motion for x1, x2, x3, and lambda
 
     arguments:
@@ -63,7 +63,7 @@ def density_parameters(
         the redshift array and the density parameters arrays
     """
 
-    N, y = solve_ode_system(V)
+    N, y = solve_ode_system(V, N_i, N_f)
     z = np.exp(-N) - 1  # convert time x-axis to the redshift z
 
     x1, x2, x3, _ = y
@@ -142,7 +142,7 @@ def eos_parameter(V: str) -> tuple[np.ndarray, np.ndarray]:
         the redshift array and the eos parameter array
     """
 
-    N, y = solve_ode_system(V)
+    N, y = solve_ode_system(V, N_i, N_f)
     z = np.exp(-N) - 1  # convert time x-axis to the redshift z
 
     x1, x2, _, _ = y
