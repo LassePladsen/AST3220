@@ -16,6 +16,8 @@ def solve_ode_system(V: str, N_i: float, N_f: float) -> tuple[np.ndarray, np.nda
 
     arguments:
         V: the potential function in ["power", "exponential"]
+        N_i: the characteristic initial time
+        N_f: the characteristic stop time
 
     returns:
         the time array and the solution array
@@ -52,12 +54,16 @@ def solve_ode_system(V: str, N_i: float, N_f: float) -> tuple[np.ndarray, np.nda
 
 def density_parameters(
     V: str,
+    N_i: float,
+    N_f: float,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Returns the characteristic density parameters (Omega_i) for matter, radiation,
     and the quintessence field as functions of the redshift
 
     arguments:
         V: the potential function in ["power", "exponential"]
+        N_i: the characteristic initial time
+        N_f: the characteristic stop time
 
     returns:
         the redshift array and the density parameters arrays
@@ -104,7 +110,7 @@ def plot_density_parameters(
             )
         )
 
-    z, Omega_m, Omega_r, Omega_phi = density_parameters(V)
+    z, Omega_m, Omega_r, Omega_phi = density_parameters(V, N_i, N_f)
 
     # Plot in the same figure
     plt.figure(figsize=figsize)
@@ -131,12 +137,14 @@ def plot_density_parameters(
         )
 
 
-def eos_parameter(V: str) -> tuple[np.ndarray, np.ndarray]:
+def eos_parameter(V: str, N_i: float, N_f: float) -> tuple[np.ndarray, np.ndarray]:
     """Returns the quintessence field equation of state parameter omega_phi as
     a function of the redshift
 
     arguments:
         V: the potential function in ["power", "exponential"]
+        N_i: the characteristic initial time
+        N_f: the characteristic stop time
 
     returns:
         the redshift array and the eos parameter array
@@ -181,7 +189,7 @@ def plot_eos_parameter(
             )
         )
 
-    z, omega_phi = eos_parameter(V)
+    z, omega_phi = eos_parameter(V, N_i, N_f)
 
     # Plot in the same figure
     plt.figure(figsize=figsize)
