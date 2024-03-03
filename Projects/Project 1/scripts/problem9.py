@@ -223,17 +223,15 @@ def eos_parameter(V: str, N_i: float, N_f: float) -> tuple[np.ndarray, np.ndarra
     return z, omega_phi
 
 
-def plot_eos_parameter(
-    V: str,
+def plot_eos_parameters(
     filename: str = None,
     figsize: tuple[int, int] = (9, 5),
     prnt: bool = True,
 ) -> None:
     """Plots the quintessence field equation of state parameter w_phi as
-    a function of the redshift
+    a function of the redshift for the two potentials
 
     arguments:
-        V: the potential function in ["power", "exponential"]
         filename: the filename to save the plot figure
         figsize: the plot figure size
         prnt: if true, prints today's values
@@ -247,31 +245,28 @@ def plot_eos_parameter(
                 os.path.dirname(__file__),
                 "..",
                 "Figures",
-                f"9_eos_parameter_{V}.png",
+                f"9_eos_parameters.png",
             )
         )
 
-    z, omega_phi = eos_parameter(V, N_i, N_f)
-    z = np.flip(z)
-
-    # Plot in the same figure
     plt.figure(figsize=figsize)
+    for V in ["power", "exponential"]:
+        z, omega_phi = eos_parameter(V, N_i, N_f)
+        # z = np.flip(z)  # not sure if need to flip or not...
+        plt.plot(z, omega_phi, label=f"{V}-potential")
+        if prnt:
+            print(
+                f"Today's value of the EoS parameter ({V}-potential):"
+                f"\nomega_phi0 = {omega_phi[-1]}\n"
+            )
+    
     plt.grid()
+    plt.legend()
     plt.xscale("log")
-    plt.plot(z, omega_phi)
-
-    # Labels and figure title
     plt.xlabel("z")
-    plt.ylabel(r"$\Omega$")
+    plt.ylabel(r"$\omega$")
     plt.title(f"EoS parameter $\omega_\phi$ for {V}-potential")
-
     plt.savefig(filename)
-
-    if prnt:
-        print(
-            f"Today's value of the EoS parameter ({V}-potential):"
-            f"\nomega_phi0 = {omega_phi[-1]}\n"
-        )
 
 
 if __name__ == "__main__":
@@ -279,4 +274,4 @@ if __name__ == "__main__":
     figsize = (7, 5)
     for V in ["power", "exponential"]:
         plot_density_parameters(V, figsize=figsize)
-        plot_eos_parameter(V, figsize=figsize)
+    plot_eos_parameters(figsize=figsize)
