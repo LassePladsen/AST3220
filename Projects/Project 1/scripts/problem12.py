@@ -6,18 +6,18 @@ from scipy.integrate import cumulative_trapezoid
 
 from problem10 import hubble_parameter_quintessence, hubble_parameter_lambdacdm
 
-# Parameters
-N_i = np.log(1 / 3)  # characteristic initial time
-N_f = 0  # characteristic stop time
 
-
-def lumonisity_integrand_quintessence(V: str) -> tuple[np.ndarray, np.ndarray]:
+def lumonisity_integrand_quintessence(
+    V: str, N_i: float, N_f: float
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Represents the integral over N of the dimensionless luminosity distance (eq. S)
     for the quintessence model
 
     arguments:
         V: the quintessence potential function in ["power", "exponential"]
+        N_i: the characteristic initial time
+        N_f: the characteristic stop time
 
     returns:
         The characteristic time array N
@@ -29,59 +29,30 @@ def lumonisity_integrand_quintessence(V: str) -> tuple[np.ndarray, np.ndarray]:
     return N, np.exp(-N) / h
 
 
-def lumonisity_integrand_lambdacdm(z) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Represents the integral over N of the dimensionless luminosity distance (eq. S)
-    for the lambda-cdm model
-
-    arguments:
-        z: the redshift array
-
-    returns:
-        The characteristic time array N
-        The integrand values array
-    """
-
-    h = hubble_parameter_lambdacdm(z)
-    N = np.log(1 / (1 + z))
-    return N, np.exp(-N) / h
-
-
-def luminosity_distance_quintessence(V: str) -> tuple[np.ndarray, np.ndarray]:
+def luminosity_distance_quintessence(
+    V: str, N_i: float, N_f: float
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the dimensionless luminosity distance H_0d_L/c for the quintessence model
     as a function of the characteristic time: ln(1/3) <= N <= 0
 
     arguments:
         V: the quintessence potential function in ["power", "exponential"]
+        N_i: the characteristic initial time
+        N_f: the characteristic stop time
 
     returns:
         The characteristic time array N
         The dimensionless luminosity distance
     """
-    N, I = lumonisity_integrand_quintessence(V)
-
-    return N, cumulative_trapezoid(I, N, initial=0)
-
-
-def luminosity_distance_lambdacdm(z) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Calculate the dimensionless luminosity distance H_0d_L/c for the lambda-cdm model
-    as a function of the characteristic time: ln(1/3) <= N <= 0
-
-    arguments:
-        z: the redshift array
-
-    returns:
-        The characteristic time array N
-        The dimensionless luminosity distance
-    """
-    N, I = lumonisity_integrand_lambdacdm(z)
+    N, I = lumonisity_integrand_quintessence(V, N_i, N_f)
 
     return N, cumulative_trapezoid(I, N, initial=0)
 
 
 def plot_lumosity_distances(
+    N_i: float,
+    N_f: float,
     filename: str = None,
     figsize: tuple[int, int] = (6, 4),
     prnt: bool = True,
@@ -89,6 +60,8 @@ def plot_lumosity_distances(
     """Plots the dimensionless luminosity distance for the two quintessence models
 
     arguments:
+        N_i: the characteristic initial time
+        N_f: the characteristic stop time
         filename: the filename to save the plot figure
         figsize: the plot figure size
         prnt: if true, prints the edge values
@@ -111,7 +84,7 @@ def plot_lumosity_distances(
 
     # The two quintessence models
     for V in ["power", "exponential"]:
-        N, d = luminosity_distance_quintessence(V)
+        N, d = luminosity_distance_quintessence(V, N_i, N_f)
         z = np.flip(np.exp(-N) - 1)  # convert time x-axis to the redshift z
         plt.plot(z, d, label=V)
         if prnt:
@@ -143,4 +116,8 @@ def plot_lumosity_distances(
 
 
 if __name__ == "__main__":
-    plot_lumosity_distances()
+    # Plotting parameters
+    N_i = np.log(1 / 3)  # characteristic initial time
+    N_f = 0  # characteristic stop time
+    
+    plot_lumosity_distances(N_i, N_f)
