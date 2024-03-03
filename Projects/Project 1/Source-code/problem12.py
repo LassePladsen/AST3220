@@ -86,7 +86,7 @@ def plot_lumosity_distances(
             print(z[-1], d[-1])
             print()
 
-    plt.yscale("log")
+    # plt.yscale("log")
     plt.xlabel("$z$")
     plt.ylabel(r"$\frac{H_0}{c}d_L$")
     plt.title("Dimensionless luminosity distance for the quintessence models")
