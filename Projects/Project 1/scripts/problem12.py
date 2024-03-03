@@ -8,7 +8,7 @@ from problem10 import hubble_parameter_quintessence, hubble_parameter_lambdacdm
 
 
 def lumonisity_integrand_quintessence(
-    V: str, N_i: float, N_f: float
+    V: str, N_i: float, N_f: float, n_points: int = int(1e6)
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Represents the integral over N of the dimensionless luminosity distance (eq. S)
@@ -18,19 +18,20 @@ def lumonisity_integrand_quintessence(
         V: the quintessence potential function in ["power", "exponential"]
         N_i: the characteristic initial time
         N_f: the characteristic stop time
+        n_points: the number of points to evaluate the integral
 
     returns:
         The characteristic time array N
         The integrand values array
     """
 
-    z, h = hubble_parameter_quintessence(V, N_i, N_f)
+    z, h = hubble_parameter_quintessence(V, N_i, N_f, n_points)
     N = np.log(1 / (1 + z))
     return N, np.exp(-N) / h
 
 
 def luminosity_distance_quintessence(
-    V: str, N_i: float, N_f: float
+    V: str, N_i: float, N_f: float, n_points: int = int(1e6)
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the dimensionless luminosity distance H_0d_L/c for the quintessence model
@@ -40,12 +41,13 @@ def luminosity_distance_quintessence(
         V: the quintessence potential function in ["power", "exponential"]
         N_i: the characteristic initial time
         N_f: the characteristic stop time
+        n_points: the number of points to evaluate the integral
 
     returns:
         The characteristic time array N
         The dimensionless luminosity distance
     """
-    N, I = lumonisity_integrand_quintessence(V, N_i, N_f)
+    N, I = lumonisity_integrand_quintessence(V, N_i, N_f, n_points)
 
     return N, cumulative_trapezoid(I, N, initial=0)
 
@@ -119,5 +121,5 @@ if __name__ == "__main__":
     # Plotting parameters
     N_i = np.log(1 / 3)  # characteristic initial time
     N_f = 0  # characteristic stop time
-    
+
     plot_lumosity_distances(N_i, N_f)

@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.integrate import simpson
 
+from problem9 import N_i, N_f
 from problem10 import hubble_parameter_quintessence, hubble_parameter_lambdacdm
 
 
@@ -15,7 +16,7 @@ def universe_age_quintessence(V: str) -> float:
         The dimensionless age of the universe
 
     """
-    z, h = hubble_parameter_quintessence(V)
+    z, h = hubble_parameter_quintessence(V, N_i, N_f)
     N = np.log(1 / (1 + z))
     return simpson(h, N)
 
@@ -30,7 +31,7 @@ def universe_age_lambdacdm() -> float:
         The dimensionless age of the universe
 
     """
-    z = hubble_parameter_quintessence("power")[0]
+    z = hubble_parameter_quintessence("power", N_i, N_f)[0]
     h = hubble_parameter_lambdacdm(z)
     N = np.log(1 / (1 + z))
     return simpson(h, N)
