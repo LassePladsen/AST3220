@@ -265,7 +265,7 @@ def plot_eos_parameters(
     plt.xscale("log")
     plt.xlabel("z")
     plt.ylabel(r"$\omega$")
-    plt.title(f"EoS parameter $\omega_\phi$ for {V}-potential")
+    plt.title(f"EoS parameter $\omega_\phi$")
     plt.savefig(filename)
 
 
