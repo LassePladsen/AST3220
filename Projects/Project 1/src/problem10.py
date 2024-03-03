@@ -5,7 +5,18 @@ import matplotlib.pyplot as plt
 from scipy.integrate import quad
 
 from problem9 import density_parameters, N_i, N_f
-from expressions import eos_integrand
+
+
+def eos_integrand(omega_phi: float) -> float:
+    """Represents the integrand over N of the equation of state (the projects equation 7)
+
+    arguments:
+        omega_phi: the eos parameter
+
+    returns:
+        the value at given input
+    """
+    return 3 * (1 + omega_phi)
 
 
 def hubble_parameter_quintessence(
