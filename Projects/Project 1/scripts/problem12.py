@@ -123,7 +123,7 @@ def plot_lumosity_distances(
             print(z[-1], d[-1])
             print()
 
-    # Lambda-cdm model
+    """# Lambda-cdm model
     N, d = luminosity_distance_lambdacdm(np.flip(z))
     z = np.flip(np.exp(-N) - 1)  # convert time x-axis to the redshift z
     plt.plot(z, d, label=r"$\Lambda$-CDM")
@@ -133,7 +133,7 @@ def plot_lumosity_distances(
         print(z[0], d[0])
         print(z[-1], d[-1])
         print()
-
+    """
     plt.xlabel("$z$")
     plt.ylabel(r"$\frac{H_0}{c}d_L$")
     plt.title("Dimensionless luminosity distance")
