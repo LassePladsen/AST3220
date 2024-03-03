@@ -8,10 +8,10 @@ from scipy.integrate import solve_ivp
 
 # Constants
 G = 6.6743e-11  # Newton gravitational constant [m^3/(kg s^2)]
+
+# Parameters
 alpha = 1
 xi = 3 / 2
-
-# Differential equation parameters
 N_i = np.log(1 / (1 + 2e7))  # characteristic initial time
 N_f = 0  # characteristic stop time
 
@@ -252,6 +252,7 @@ def plot_eos_parameter(
         )
 
     z, omega_phi = eos_parameter(V, N_i, N_f)
+    z = np.flip(z)
 
     # Plot in the same figure
     plt.figure(figsize=figsize)
