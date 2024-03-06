@@ -72,6 +72,7 @@ def plot_lumosity_distances(
         none
     """
 
+    # Default filename
     if not filename:
         filename = os.path.abspath(
             os.path.join(
@@ -87,6 +88,7 @@ def plot_lumosity_distances(
     # The two quintessence models
     for V in ["power", "exponential"]:
         N, d = luminosity_distance_quintessence(V, N_i, N_f)
+        # z = np.exp(-N) - 1  # convert time x-axis to the redshift z
         z = np.flip(np.exp(-N) - 1)  # convert time x-axis to the redshift z
         plt.plot(z, d, label=V)
         if prnt:
@@ -111,9 +113,10 @@ def plot_lumosity_distances(
     """
     plt.xlabel("$z$")
     plt.ylabel(r"$\frac{H_0}{c}d_L$")
-    plt.title("Dimensionless luminosity distance")
+    plt.title("Luminosity distance for quintessence models")
     plt.legend()
     plt.grid()
+    plt.gca().invert_xaxis()  # revert x-axis
     plt.savefig(filename)
 
 
