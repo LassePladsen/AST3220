@@ -1,10 +1,12 @@
 import os
-from typing import Callable
+import warnings
 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
+# ignore pyplot legend loc=best user warning (cba)
+warnings.filterwarnings("ignore", category=UserWarning) 
 
 # Constants
 G = 6.6743e-11  # Newton gravitational constant [m^3/(kg s^2)]
@@ -184,6 +186,12 @@ def plot_density_parameters(
     plt.plot(z, Omega_m, label=r"Matter $\Omega_m$")
     plt.plot(z, Omega_r, label=r"Radiation $\Omega_r$")
     plt.plot(z, Omega_phi, label=r"Quintessence field $\Omega_{\phi}$")
+
+    # Plot sum of density parameters-line
+    plt.plot(
+        z, Omega_m + Omega_r + Omega_phi, label=r"sum", linestyle="--", color="gray"
+    )
+
     plt.legend()
     plt.gca().invert_xaxis()  # invert x-axis
 
