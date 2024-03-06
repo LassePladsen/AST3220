@@ -11,7 +11,7 @@ def lumonisity_integrand_quintessence(
     V: str, N_i: float, N_f: float, n_points: int = int(1e6)
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Represents the integral over N of the dimensionless luminosity distance (eq. S)
+    Represents the integral over z of the dimensionless luminosity distance (eq. S)
     for the quintessence model
 
     arguments:
@@ -21,14 +21,12 @@ def lumonisity_integrand_quintessence(
         n_points: the number of points to evaluate the integral
 
     returns:
-        N: The characteristic time array N
+        z: The redshift array
         I: The integrand values array
     """
 
     z, h = hubble_parameter_quintessence(V, N_i, N_f, n_points)
     z = np.flip(z)
-    # N = np.log(1 / (1 + z))
-    # return N, np.exp(-N) / h
     return z, 1 / h
 
 
@@ -37,7 +35,7 @@ def luminosity_distance_quintessence(
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the dimensionless luminosity distance H_0d_L/c for the quintessence model
-    as a function of the characteristic time
+    as a function of the redshift
 
     arguments:
         V: the quintessence potential function in ["power", "exponential"]
@@ -46,15 +44,13 @@ def luminosity_distance_quintessence(
         n_points: the number of points to evaluate the integral
 
     returns:
-        N: The characteristic time array N
+        z: The redshift array
         d: The dimensionless luminosity distances array
     """
-    # N, I = lumonisity_integrand_quintessence(V, N_i, N_f, n_points)
     z, I = lumonisity_integrand_quintessence(V, N_i, N_f, n_points)
 
     # flip integrand to integrate the correct way,
     # then also flip the integral array back
-    # return z, (1 + z) * np.flip(cumulative_trapezoid(np.flip(I), z, initial=0))
     return z, (1 + z) * cumulative_trapezoid(I, z, initial=0)
 
 
@@ -93,10 +89,7 @@ def plot_lumosity_distances(
 
     # The two quintessence models
     for V in ["power", "exponential"]:
-        # N, d = luminosity_distance_quintessence(V, N_i, N_f)
         z, d = luminosity_distance_quintessence(V, N_i, N_f)
-        # z = np.exp(-N) - 1  # convert time x-axis to the redshift z
-        # z = np.flip(np.exp(-N) - 1)  # convert time x-axis to the redshift z and flip
         plt.plot(z, d, label=V)
         if prnt:
             print(
