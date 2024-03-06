@@ -8,6 +8,10 @@ DATA_PATH = os.path.join(
     os.path.dirname(__file__), "..", "data", "luminosity_distances.txt"
 )
 
+# Constants
+H_0 = 70  # Hubble constant [m/s/Gpc]
+c = 3e8  # speed of light [m/s]
+
 
 def chi_squared(prediction: np.ndarray, data: np.ndarray, err: np.ndarray) -> float:
     """
@@ -35,7 +39,7 @@ def print_chi_squared_values() -> None:
     """
 
     # Load data
-    z, d_L, err = np.loadtxt(DATA_PATH, skiprows=5, unpack=True)
+    z, d_L, err = np.loadtxt(DATA_PATH, skiprows=5, unpack=True)  # [-, Gpc, Gpc]
 
     # Characteristic time interval
     N_i = np.log(1 / (z[-1] + 1))
@@ -44,6 +48,9 @@ def print_chi_squared_values() -> None:
     # Model predictions
     for V in ["power", "exponential"]:
         d_L_model = luminosity_distance_quintessence(V, N_i, N_f, n_points=len(z))[-1]
+        d_L_model *= c / H_0  # convert to Gpc
+        print(d_L_model)
+        print(d_L)
         print(
             f"Chi-squared value for {V}-potential: {chi_squared(d_L_model, d_L, err)}"
         )

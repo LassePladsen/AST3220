@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 
-from problem10 import hubble_parameter_quintessence, hubble_parameter_lambdacdm
+from problem10 import hubble_parameter_quintessence
 
 
 def lumonisity_integrand_quintessence(
@@ -21,8 +21,8 @@ def lumonisity_integrand_quintessence(
         n_points: the number of points to evaluate the integral
 
     returns:
-        The characteristic time array N
-        The integrand values array
+        N: The characteristic time array N
+        I: The integrand values array
     """
 
     z, h = hubble_parameter_quintessence(V, N_i, N_f, n_points)
@@ -35,7 +35,7 @@ def luminosity_distance_quintessence(
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the dimensionless luminosity distance H_0d_L/c for the quintessence model
-    as a function of the characteristic time: ln(1/3) <= N <= 0
+    as a function of the characteristic time
 
     arguments:
         V: the quintessence potential function in ["power", "exponential"]
@@ -44,12 +44,14 @@ def luminosity_distance_quintessence(
         n_points: the number of points to evaluate the integral
 
     returns:
-        The characteristic time array N
-        The dimensionless luminosity distance
+        N: The characteristic time array N
+        d: The dimensionless luminosity distances array
     """
     N, I = lumonisity_integrand_quintessence(V, N_i, N_f, n_points)
 
-    return N, cumulative_trapezoid(I, N, initial=0)
+    # flip integrand to integrate the correct way,
+    # then also flip the integral array back
+    return N, np.exp(-N) * np.flip(cumulative_trapezoid(np.flip(I), N, initial=0))
 
 
 def plot_lumosity_distances(
@@ -88,35 +90,24 @@ def plot_lumosity_distances(
     # The two quintessence models
     for V in ["power", "exponential"]:
         N, d = luminosity_distance_quintessence(V, N_i, N_f)
-        # z = np.exp(-N) - 1  # convert time x-axis to the redshift z
-        z = np.flip(np.exp(-N) - 1)  # convert time x-axis to the redshift z
+        z = np.exp(-N) - 1  # convert time x-axis to the redshift z
+        # z = np.flip(np.exp(-N) - 1)  # convert time x-axis to the redshift z and flip
         plt.plot(z, d, label=V)
         if prnt:
             print(
                 f"Edge values for dimensionless luminosity distance for {V}-potential:"
             )
             print("z=, d_L=")
-            print(z[0], d[0])
             print(z[-1], d[-1])
+            print(z[0], d[0])
             print()
 
-    """# Lambda-cdm model
-    N, d = luminosity_distance_lambdacdm(np.flip(z))
-    z = np.flip(np.exp(-N) - 1)  # convert time x-axis to the redshift z
-    plt.plot(z, d, label=r"$\Lambda$-CDM")
-    if prnt:
-        print("Edge values for dimensionless luminosity distance for Lambda-CDM:")
-        print("z=, d_L=")
-        print(z[0], d[0])
-        print(z[-1], d[-1])
-        print()
-    """
     plt.xlabel("$z$")
     plt.ylabel(r"$\frac{H_0}{c}d_L$")
     plt.title("Luminosity distance for quintessence models")
     plt.legend()
     plt.grid()
-    plt.gca().invert_xaxis()  # revert x-axis
+    plt.gca().invert_xaxis()  # invert x-axis
     plt.savefig(filename)
 
 
