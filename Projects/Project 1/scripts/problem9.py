@@ -185,7 +185,7 @@ def plot_density_parameters(
     plt.plot(z, Omega_r, label=r"Radiation $\Omega_r$")
     plt.plot(z, Omega_phi, label=r"Quintessence field $\Omega_{\phi}$")
     plt.legend()
-    plt.gca().invert_xaxis()  # revert x-axis
+    plt.gca().invert_xaxis()  # invert x-axis
 
     # Labels and figure title
     plt.xlabel("z")
@@ -266,7 +266,7 @@ def plot_eos_parameters(
 
     plt.grid()
     plt.legend()
-    plt.gca().invert_xaxis()  # revert x-axis
+    plt.gca().invert_xaxis()  # invert x-axis
     plt.xscale("log")
     plt.xlabel("z")
     plt.ylabel(r"$\omega$")

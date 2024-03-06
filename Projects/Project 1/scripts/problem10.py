@@ -125,7 +125,7 @@ def plot_hubble_parameters(
         print(z[-1], h[-1])
         print(z[0], h[0])
 
-    plt.gca().invert_xaxis()  # revert x-axis
+    plt.gca().invert_xaxis()  # invert x-axis
     plt.xscale("log")
     plt.yscale("log")
     plt.xlabel("z")
