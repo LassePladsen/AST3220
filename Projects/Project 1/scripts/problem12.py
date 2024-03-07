@@ -49,8 +49,6 @@ def luminosity_distance_quintessence(
     """
     z, I = lumonisity_integrand_quintessence(V, N_i, N_f, n_points)
 
-    # flip integrand to integrate the correct way,
-    # then also flip the integral array back
     return z, (1 + z) * cumulative_trapezoid(I, z, initial=0)
 
 
