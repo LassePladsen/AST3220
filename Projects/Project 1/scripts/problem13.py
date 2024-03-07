@@ -72,7 +72,7 @@ def plot_luminosity_distances(
 
     plt.xlabel("$z$")
     plt.ylabel("$d_L$ [Gpc]")
-    plt.title("Luminosity distance")
+    plt.title("Luminosity distance comparision for quintessence models")
     plt.gca().invert_xaxis()  # invert x-axis
     plt.legend()
     plt.grid()
