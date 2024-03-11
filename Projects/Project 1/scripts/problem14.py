@@ -9,7 +9,7 @@ from problem13 import DATA_PATH, c, H_0, chi_squared
 
 
 def lumonisity_integrand_lambdacdm(
-    z, Omega_m0: float = 0.3
+    z: np.ndarray, Omega_m0: float = 0.3
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Represents the integral over z of the dimensionless luminosity distance (eq. S)
@@ -21,12 +21,12 @@ def lumonisity_integrand_lambdacdm(
         The integrand values array
     """
 
-    h = hubble_parameter_lambdacdm(np.flip(z), Omega_m0)
+    h = hubble_parameter_lambdacdm(z, Omega_m0)
     return 1 / h
 
 
 def luminosity_distance_lambdacdm(
-    z, Omega_m0: float = 0.3
+    z: np.ndarray, Omega_m0: float = 0.3
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the dimensionless luminosity distance H_0d_L/c for the lambda-cdm model
