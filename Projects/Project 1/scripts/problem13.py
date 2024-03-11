@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 from problem12 import luminosity_distance_quintessence
 
+# Path to the data file
 DATA_PATH = os.path.join(
     os.path.dirname(__file__), "..", "data", "luminosity_distances.txt"
 )
