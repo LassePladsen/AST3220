@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
 # ignore pyplot legend loc=best user warning (cba)
-warnings.filterwarnings("ignore", category=UserWarning) 
+warnings.filterwarnings("ignore", category=UserWarning)
 
 # Constants
 G = 6.6743e-11  # Newton gravitational constant [m^3/(kg s^2)]
@@ -211,7 +211,9 @@ def plot_density_parameters(
         )
 
 
-def eos_parameter(V: str, N_i: float, N_f: float) -> tuple[np.ndarray, np.ndarray]:
+def eos_parameter(
+    V: str, N_i: float, N_f: float, n_points: int = int(1e6)
+) -> tuple[np.ndarray, np.ndarray]:
     """Returns the quintessence field equation of state parameter omega_phi as
     a function of the redshift
 
@@ -219,12 +221,13 @@ def eos_parameter(V: str, N_i: float, N_f: float) -> tuple[np.ndarray, np.ndarra
         V: the potential function in ["power", "exponential"]
         N_i: the characteristic initial time
         N_f: the characteristic stop time
+        n_points: the number of points in the time array
 
     returns:
         the redshift array and the eos parameter array
     """
 
-    N, y = solve_ode_system(V, N_i, N_f)
+    N, y = solve_ode_system(V, N_i, N_f, n_points)
     z = np.exp(-N) - 1  # convert time x-axis to the redshift z
 
     x1, x2, _, _ = y

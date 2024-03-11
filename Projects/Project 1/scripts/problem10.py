@@ -42,10 +42,11 @@ def hubble_parameter_quintessence(
     Omega_phi0 = Omega_phi[-1]
 
     # Eos parameter
-    _, omega_phi = eos_parameter(V, N_i, N_f)
+    omega_phi = eos_parameter(V, N_i, N_f, n_points)[-1]
 
     # Convert redshift z to characteristic time N
     N = np.log(1 / (1 + z))
+
 
     # Calculate the characteristic Hubble parameter
     H = np.sqrt(
