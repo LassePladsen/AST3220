@@ -90,7 +90,6 @@ def plot_lambdacdm_chisquared(
     plt.ylabel("$\chi^2$")
     plt.title("$\chi^2$-values for the $\Lambda$-CDM model")
     plt.grid()
-    plt.gca().invert_xaxis()  # invert x-axis
     plt.savefig(filename)
 
     if prnt:
