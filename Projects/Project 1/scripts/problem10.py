@@ -53,7 +53,7 @@ def hubble_parameter_quintessence(
         + Omega_r0 * (1 + z) ** 4
         + Omega_phi0
         * np.exp(
-            np.flip(
+            np.flip(  # Flip integrand and flip resulting integral array to get correct order
                 cumulative_trapezoid(np.flip(eos_integrand(omega_phi)), N, initial=0)
             )
         )
