@@ -25,9 +25,9 @@ def lumonisity_integrand_quintessence(
         I: The integrand values array
     """
 
-    z, h = hubble_parameter_quintessence(V, N_i, N_f, n_points)
+    z, H = hubble_parameter_quintessence(V, N_i, N_f, n_points)
     z = np.flip(z)
-    return z, 1 / h
+    return z, 1 / H
 
 
 def luminosity_distance_quintessence(
