@@ -14,6 +14,7 @@ DATA_PATH = os.path.join(
 H_0 = 70e6  # Hubble constant [m/(s Gpc)]
 c = 3e8  # speed of light [m/s]
 
+
 def chi_squared(prediction: np.ndarray, data: np.ndarray, err: np.ndarray) -> float:
     """
     Calculate the chi-squared value for a model prediction given the data and the errors
@@ -59,13 +60,11 @@ def plot_luminosity_distances(
 
     # Load data
     z, d_data, d_err = np.loadtxt(DATA_PATH, skiprows=5, unpack=True)  # [-, Gpc, Gpc]
-    N_i = np.log(1 / (1 + z[-1]))
-    N_f = np.log(1 / (1 + z[0]))
 
     # Plot the two quintessence models
     for V in ["power", "exponential"]:
-        zi, d_model = luminosity_distance_quintessence(V, N_i, N_f)
-        plt.plot(zi, d_model * c/H_0, label=V)  # convert to Gpc when plotting
+        d_model = luminosity_distance_quintessence(V, z=z)[-1]
+        plt.plot(z, d_model * c / H_0, label=V)  # convert to Gpc when plotting
 
     # Plot the data
     plt.errorbar(z, d_data, yerr=d_err, fmt=".", label="Data points", color="gray")
@@ -92,13 +91,9 @@ def print_chi_squared_values() -> None:
     # Load data
     z, d_data, d_err = np.loadtxt(DATA_PATH, skiprows=5, unpack=True)  # [-, Gpc, Gpc]
 
-    # Characteristic time interval
-    N_i = np.log(1 / (z[-1] + 1))
-    N_f = np.log(1 / (z[0] + 1))
-
     # Model predictions
     for V in ["power", "exponential"]:
-        d_model = luminosity_distance_quintessence(V, N_i, N_f, n_points=len(z))[-1]
+        d_model = luminosity_distance_quintessence(V, z=z)[-1]
         d_model *= c / H_0  # convert to Gpc
         print(
             f"Chi-squared value for {V}-potential: {chi_squared(d_model, d_data, d_err)}"

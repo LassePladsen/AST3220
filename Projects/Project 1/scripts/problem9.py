@@ -76,7 +76,11 @@ def ode_system(N: np.ndarray, X: np.ndarray, V: str) -> list[float]:
 
 
 def solve_ode_system(
-    V: str, N_i: float, N_f: float, n_points: int = int(1e6)
+    V: str,
+    N_i: float = None,
+    N_f: float = None,
+    n_points: int = int(1e6),
+    z: np.ndarray = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Solves the ode system of the equations of motion for x1, x2, x3, and lambda
 
@@ -85,6 +89,7 @@ def solve_ode_system(
         N_i: the characteristic initial time
         N_f: the characteristic stop time
         n_points: the number of points in the time array
+        z: optionally give the redshift array instead of start and stop time
 
     returns:
         the time array and the solution array
@@ -105,24 +110,38 @@ def solve_ode_system(
         raise ValueError("V-string value not recognized")
 
     tol = 1e-8
-    sol = solve_ivp(
-        ode_system,
-        [N_i, N_f],
-        [x1_i, x2_i, x3_i, lmbda_i],
-        args=(V,),
-        rtol=tol,
-        atol=tol,
-        t_eval=np.linspace(N_i, N_f, n_points),
-    )
+
+    if z is None:
+        sol = solve_ivp(
+            ode_system,
+            [N_i, N_f],
+            [x1_i, x2_i, x3_i, lmbda_i],
+            args=(V,),
+            rtol=tol,
+            atol=tol,
+            t_eval=np.linspace(N_i, N_f, n_points),
+        )
+    else:
+        N = np.flip(np.log(1 / (1 + z)))
+        sol = solve_ivp(
+            ode_system,
+            [N[0], N[-1]],
+            [x1_i, x2_i, x3_i, lmbda_i],
+            args=(V,),
+            rtol=tol,
+            atol=tol,
+            t_eval=N,
+        )
 
     return sol.t, sol.y
 
 
 def density_parameters(
     V: str,
-    N_i: float,
-    N_f: float,
+    N_i: float = None,
+    N_f: float = None,
     n_points: int = int(1e6),
+    z: np.ndarray = None,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Returns the characteristic density parameters (Omega_i) for matter, radiation,
     and the quintessence field as functions of the redshift
@@ -131,12 +150,17 @@ def density_parameters(
         V: the potential function in ["power", "exponential"]
         N_i: the characteristic initial time
         N_f: the characteristic stop time
+        z: optionally give the redshift array instead of start and stop time
 
     returns:
         the redshift array and the density parameters arrays
     """
 
-    N, y = solve_ode_system(V, N_i, N_f, n_points)
+    if z is None:
+        N, y = solve_ode_system(V, N_i, N_f, n_points)
+
+    else:
+        N, y = solve_ode_system(V, z=z)
     z = np.exp(-N) - 1  # convert time x-axis to the redshift z
 
     x1, x2, x3, _ = y
@@ -212,7 +236,11 @@ def plot_density_parameters(
 
 
 def eos_parameter(
-    V: str, N_i: float, N_f: float, n_points: int = int(1e6)
+    V: str,
+    N_i: float = None,
+    N_f: float = None,
+    n_points: int = int(1e6),
+    z: np.ndarray = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Returns the quintessence field equation of state parameter omega_phi as
     a function of the redshift
@@ -222,13 +250,18 @@ def eos_parameter(
         N_i: the characteristic initial time
         N_f: the characteristic stop time
         n_points: the number of points in the time array
+        z: optionally give the redshift array instead of start and stop time
 
     returns:
         the redshift array and the eos parameter array
     """
 
-    N, y = solve_ode_system(V, N_i, N_f, n_points)
-    z = np.exp(-N) - 1  # convert time x-axis to the redshift z
+    if z is None:
+        N, y = solve_ode_system(V, N_i, N_f, n_points)
+        z = np.exp(-N) - 1  # convert time x-axis to the redshift z
+
+    else:
+        N, y = solve_ode_system(V, z=z)
 
     x1, x2, _, _ = y
 

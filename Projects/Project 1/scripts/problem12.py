@@ -8,7 +8,11 @@ from problem10 import hubble_parameter_quintessence
 
 
 def lumonisity_integrand_quintessence(
-    V: str, N_i: float, N_f: float, n_points: int = int(1e6)
+    V: str,
+    N_i: float = None,
+    N_f: float = None,
+    n_points: int = int(1e6),
+    z: np.ndarray = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Represents the integral over z of the dimensionless luminosity distance (eq. S)
@@ -19,19 +23,28 @@ def lumonisity_integrand_quintessence(
         N_i: the characteristic initial time
         N_f: the characteristic stop time
         n_points: the number of points to evaluate the integral
+        z: optionally give the redshift array instead of start and stop time
 
     returns:
         z: The redshift array
         I: The integrand values array
     """
 
-    z, H = hubble_parameter_quintessence(V, N_i, N_f, n_points)
+    if z is None:
+        z, H = hubble_parameter_quintessence(V, N_i, N_f, n_points)
+    else:
+        z, H = hubble_parameter_quintessence(V, z=z)
+
     z = np.flip(z)
     return z, 1 / H
 
 
 def luminosity_distance_quintessence(
-    V: str, N_i: float, N_f: float, n_points: int = int(1e6)
+    V: str,
+    N_i: float = None,
+    N_f: float = None,
+    n_points: int = int(1e6),
+    z: np.ndarray = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the dimensionless luminosity distance H_0 d_L/c for the quintessence model
@@ -42,12 +55,16 @@ def luminosity_distance_quintessence(
         N_i: the characteristic initial time
         N_f: the characteristic stop time
         n_points: the number of points to evaluate the integral
+        z: optionally give the redshift array instead of start and stop time
 
     returns:
         z: The redshift array
         d: The dimensionless luminosity distances array
     """
-    z, I = lumonisity_integrand_quintessence(V, N_i, N_f, n_points)
+    if z is None:
+        z, I = lumonisity_integrand_quintessence(V, N_i, N_f, n_points)
+    else:
+        z, I = lumonisity_integrand_quintessence(V, z=z)
 
     return z, (1 + z) * cumulative_trapezoid(I, z, initial=0)
 

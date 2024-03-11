@@ -20,7 +20,11 @@ def eos_integrand(omega_phi: float) -> float:
 
 
 def hubble_parameter_quintessence(
-    V: str, N_i: float, N_f: float, n_points: int = int(1e6)
+    V: str,
+    N_i: float = None,
+    N_f: float = None,
+    n_points: int = int(1e6),
+    z: np.ndarray = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Characteristic Hubble parameter H/H_0 as a function of the redshift z (eq. 7)
     for the quintessence model, using a given potential function name
@@ -30,23 +34,31 @@ def hubble_parameter_quintessence(
         N_i: the characteristic initial time
         N_f: the characteristic stop time
         n_points: the number of points to evaluate the integral
+        z: optionally give the redshift array instead of start and stop time
 
     returns:
         z: the redshift z
         H: the values of H/H_0 for each z from the z-interval
     """
-    # Density parameters
-    z, Omega_m, Omega_r, Omega_phi = density_parameters(V, N_i, N_f, n_points)
+    if z is None:
+        # Density parameters
+        z, Omega_m, Omega_r, Omega_phi = density_parameters(V, N_i, N_f, n_points)
+
+        # Eos parameter
+        omega_phi = eos_parameter(V, N_i, N_f, n_points)[-1]
+    else:
+        # Density parameters
+        z, Omega_m, Omega_r, Omega_phi = density_parameters(V, z=z)
+
+        # Eos parameter
+        omega_phi = eos_parameter(V, z=z)[-1]
+
     Omega_m0 = Omega_m[-1]
     Omega_r0 = Omega_r[-1]
     Omega_phi0 = Omega_phi[-1]
 
-    # Eos parameter
-    omega_phi = eos_parameter(V, N_i, N_f, n_points)[-1]
-
     # Convert redshift z to characteristic time N
     N = np.log(1 / (1 + z))
-
 
     # Calculate the characteristic Hubble parameter
     H = np.sqrt(
