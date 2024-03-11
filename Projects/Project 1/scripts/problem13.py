@@ -10,9 +10,8 @@ DATA_PATH = os.path.join(
 )
 
 # Constants
-H_0 = 70e6  # Hubble constant [m/s/Gpc]
+H_0 = 70e6  # Hubble constant [m/(s Gpc)]
 c = 3e8  # speed of light [m/s]
-
 
 def chi_squared(prediction: np.ndarray, data: np.ndarray, err: np.ndarray) -> float:
     """
