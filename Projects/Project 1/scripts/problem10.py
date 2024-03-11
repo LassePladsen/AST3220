@@ -2,9 +2,9 @@ import os
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.integrate import quad
+from scipy.integrate import cumulative_trapezoid
 
-from problem9 import density_parameters, N_i, N_f
+from problem9 import density_parameters, N_i, N_f, eos_parameter
 
 
 def eos_integrand(omega_phi: float) -> float:
@@ -41,17 +41,23 @@ def hubble_parameter_quintessence(
     Omega_r0 = Omega_r[-1]
     Omega_phi0 = Omega_phi[-1]
 
+    # Eos parameter
+    _, omega_phi = eos_parameter(V, N_i, N_f)
+
     # Convert redshift z to characteristic time N
     N = np.log(1 / (1 + z))
 
-    H = np.empty_like(z)
-
-    for i, zi in enumerate(z):
-        H[i] = np.sqrt(
-            Omega_m0 * (1 + zi) ** 3
-            + Omega_r0 * (1 + zi) ** 4
-            + Omega_phi0 * np.exp(quad(eos_integrand, N[i], 0)[0])
+    # Calculate the characteristic Hubble parameter
+    H = np.sqrt(
+        Omega_m0 * (1 + z) ** 3
+        + Omega_r0 * (1 + z) ** 4
+        + Omega_phi0
+        * np.exp(
+            np.flip(
+                cumulative_trapezoid(np.flip(eos_integrand(omega_phi)), N, initial=0)
+            )
         )
+    )
 
     return z, H
 
