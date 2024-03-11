@@ -34,7 +34,7 @@ def luminosity_distance_quintessence(
     V: str, N_i: float, N_f: float, n_points: int = int(1e6)
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Calculate the dimensionless luminosity distance H_0d_L/c for the quintessence model
+    Calculate the dimensionless luminosity distance H_0 d_L/c for the quintessence model
     as a function of the redshift
 
     arguments:
