@@ -119,8 +119,12 @@ def solve_ode_system(
             args=(V,),
             rtol=tol,
             atol=tol,
+            dense_output=True,
             t_eval=np.linspace(N_i, N_f, n_points),
+            method="DOP853",
         )
+        t = np.linspace(sol.t[0], sol.t[-1], n_points)
+        return t, sol.sol(t)
     else:
         N = np.flip(np.log(1 / (1 + z)))
         sol = solve_ivp(
@@ -130,10 +134,13 @@ def solve_ode_system(
             args=(V,),
             rtol=tol,
             atol=tol,
+            dense_output=True,
             t_eval=N,
         )
+        # return sol.t, sol.y
+        return N, sol.sol(N)
 
-    return sol.t, sol.y
+    # return sol.t, sol.y
 
 
 def density_parameters(
@@ -158,10 +165,10 @@ def density_parameters(
 
     if z is None:
         N, y = solve_ode_system(V, N_i, N_f, n_points)
+        z = np.exp(-N) - 1  # convert time x-axis to the redshift z
 
     else:
         N, y = solve_ode_system(V, z=z)
-    z = np.exp(-N) - 1  # convert time x-axis to the redshift z
 
     x1, x2, x3, _ = y
 
