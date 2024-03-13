@@ -66,7 +66,7 @@ def plot_luminosity_distances(
 
     # Plot the two quintessence models
     for V in ["power", "exponential"]:
-        d_model = luminosity_distance_quintessence(V, z=np.flip(z)[-1]
+        d_model = luminosity_distance_quintessence(V, z=z)[-1]
         # zi, d_model = luminosity_distance_quintessence(
         #     V, np.log(1 / (1 + z[-1])), np.log(1 / (1 + z[0]))
         # )
