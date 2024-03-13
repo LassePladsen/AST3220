@@ -18,7 +18,7 @@ def universe_age_quintessence(V: str) -> float:
     """
     z, h = hubble_parameter_quintessence(V, N_i, N_f)
     N = np.log(1 / (1 + z))
-    return simpson(1/h, N)
+    return simpson(1 / h, N)
 
 
 def universe_age_lambdacdm() -> float:
@@ -34,7 +34,7 @@ def universe_age_lambdacdm() -> float:
     z = hubble_parameter_quintessence("power", N_i, N_f)[0]
     h = hubble_parameter_lambdacdm(z)
     N = np.log(1 / (1 + z))
-    return simpson(1/h, N)
+    return simpson(1 / h, N)
 
 
 def print_universe_ages() -> None:
@@ -54,6 +54,7 @@ def print_universe_ages() -> None:
     print(
         f"Dimensionless age of the universe for Lambda-CDM: {universe_age_lambdacdm()}"
     )
+
 
 if __name__ == "__main__":
     print_universe_ages()
