@@ -111,8 +111,8 @@ def plot_lumosity_distances(
                 f"Edge values for dimensionless luminosity distance for {V}-potential:"
             )
             print("z=, d_L=")
-            print(z[-1], d[-1])
             print(z[0], d[0])
+            print(z[-1], d[-1])
             print()
 
     plt.xlabel("$z$")
