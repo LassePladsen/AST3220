@@ -41,19 +41,19 @@ def lumonisity_integrand_quintessence(
 
 def luminosity_distance_quintessence(
     V: str,
-    N_i: float = None,
-    N_f: float = None,
+    z_i: float = None,
+    z_f: float = None,
     n_points: int = int(1e6),
     z: np.ndarray = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the dimensionless luminosity distance H_0 d_L/c for the quintessence model
-    as a function of the redshift
+    as a function of the redshift z
 
     arguments:
         V: the quintessence potential function in ["power", "exponential"]
-        N_i: the characteristic initial time
-        N_f: the characteristic stop time
+        z_i: the initial redshift
+        z_f: the final redshift
         n_points: the number of points to evaluate the integral
         z: optionally give the redshift array instead of start and stop time
 
@@ -62,6 +62,8 @@ def luminosity_distance_quintessence(
         d: The dimensionless luminosity distances array
     """
     if z is None:
+        N_i = np.log(1 / (1 + z_f))
+        N_f = np.log(1 / (1 + z_i))
         z, I = lumonisity_integrand_quintessence(V, N_i, N_f, n_points)
     else:
         z, I = lumonisity_integrand_quintessence(V, z=z)
@@ -70,8 +72,8 @@ def luminosity_distance_quintessence(
 
 
 def plot_lumosity_distances(
-    N_i: float,
-    N_f: float,
+    z_i: float,
+    z_f: float,
     filename: str = None,
     figsize: tuple[int, int] = (6, 4),
     prnt: bool = True,
@@ -79,8 +81,8 @@ def plot_lumosity_distances(
     """Plots the dimensionless luminosity distance for the two quintessence models
 
     arguments:
-        N_i: the characteristic initial time
-        N_f: the characteristic stop time
+        z_i: the initial redshift
+        z_f: the final redshift
         filename: the filename to save the plot figure
         figsize: the plot figure size
         prnt: if true, prints the edge values
@@ -104,15 +106,15 @@ def plot_lumosity_distances(
 
     # The two quintessence models
     for V in ["power", "exponential"]:
-        z, d = luminosity_distance_quintessence(V, N_i, N_f)
+        z, d = luminosity_distance_quintessence(V, z_i, z_f)
         plt.plot(z, d, label=V)
         if prnt:
             print(
                 f"Edge values for dimensionless luminosity distance for {V}-potential:"
             )
-            print("z=, d_L=")
-            print(z[0], d[0])
-            print(z[-1], d[-1])
+            print("z=, H0/c d_L=")
+            print(f"{z[0]:3g}, {d[0]:6g}")
+            print(f"{z[-1]:3g}, {d[-1]:6.4f}")
             print()
 
     plt.xlabel("$z$")
@@ -120,13 +122,13 @@ def plot_lumosity_distances(
     plt.title("Luminosity distance for quintessence models")
     plt.legend()
     plt.grid()
-    plt.gca().invert_xaxis()  # invert x-axis
+    plt.gca().invert_xaxis()
     plt.savefig(filename)
 
 
 if __name__ == "__main__":
     # Plotting parameters
-    N_i = np.log(1 / 3)  # characteristic initial time
-    N_f = 0  # characteristic stop time
+    z_i = 0  # initial redshift
+    z_f = 2  # final redshift
 
-    plot_lumosity_distances(N_i, N_f)
+    plot_lumosity_distances(z_i, z_f)
