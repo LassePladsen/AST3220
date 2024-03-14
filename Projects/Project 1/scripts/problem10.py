@@ -60,10 +60,10 @@ def hubble_parameter_quintessence(
     # Convert redshift z to characteristic time N
     N = np.log(1 / (1 + z))
 
-    # Calculate the characteristic Hubble parameter
+    # Calculate the characteristic Hubble parameter H/H_0 (will just call it H for simplicity)
     H = np.sqrt(
-        Omega_m0 * (1 + z) ** 3
-        + Omega_r0 * (1 + z) ** 4
+        Omega_m0 * np.exp(-3 * N)
+        + Omega_r0 * np.exp(-4 * N)
         + Omega_phi0
         * np.exp(
             np.flip(  # Flip integrand and flip resulting integral array to get correct order
