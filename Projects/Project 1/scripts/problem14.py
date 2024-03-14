@@ -45,7 +45,7 @@ def luminosity_distance_lambdacdm(
 def plot_lambdacdm_chisquared(
     Omega_m0_vals: np.ndarray,
     filename: str = None,
-    figsize: tuple[int, int] = (7, 4),
+    figsize: tuple[int, int] = (6, 4),
     prnt: bool = True,
 ) -> None:
     """Plots the chi-squared value as a function of the Omega_m0 parameter for
