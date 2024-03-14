@@ -44,6 +44,10 @@ def lumonisity_integrand_quintessence(
     H = H[ind:]
     z = z[ind:]
 
+    # using this z-array to integrate can be problematic, because it is not
+    # linearly spaced, however integrating over N I for some reason get
+    # completely wrong results, so I'm forced to use this z-array because im stupid
+
     return np.flip(z), 1 / H
 
 
