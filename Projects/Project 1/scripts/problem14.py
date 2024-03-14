@@ -12,11 +12,11 @@ def lumonisity_integrand_lambdacdm(
     z: np.ndarray, Omega_m0: float = 0.3
 ) -> tuple[np.ndarray, np.ndarray]:
     """
-    Represents the integral over z of the dimensionless luminosity distance (eq. S)
+    Represents the integral over z of the dimensionless luminosity distance
     for the lambda-cdm model
     arguments:
         z: the redshift array
-        Omega_m0: the Omega_m0 parameter
+        Omega_m0: the matter density constant of today
     returns:
         The integrand values array
     """
@@ -33,7 +33,7 @@ def luminosity_distance_lambdacdm(
     as a function of the redshift
     arguments:
         z: the redshift array
-        Omega_m0: the Omega_m0 parameter
+        Omega_m0: the matter density constant of today
     returns:
         The dimensionless luminosity distance
     """
@@ -76,10 +76,20 @@ def plot_lambdacdm_chisquared(
     # Load data
     z, d_data, d_err = np.loadtxt(DATA_PATH, skiprows=5, unpack=True)  # [-, Gpc, Gpc]
 
+    z_model = np.linspace(0, z[-1], 500)
+
     chi_vals = []
     for Omega_m0 in Omega_m0_vals:
         # Get model prediction
-        d = luminosity_distance_lambdacdm(z, Omega_m0) * c / H_0  # Convert to Gpc
+        d_model = luminosity_distance_lambdacdm(z_model, Omega_m0) * c / H_0  # Convert to Gpc
+
+        # Cut model to data range
+        # For each z from data, find corresponding d_model value
+        tol = 1e-3
+        d = []
+        for zi in z:
+            ind = np.where(abs(zi - z_model) < tol)[0][0]
+            d.append(d_model[ind])
 
         # Compare to data, append to list
         chi_vals.append(chi_squared(d, d_data, d_err))
@@ -93,8 +103,8 @@ def plot_lambdacdm_chisquared(
     plt.savefig(filename)
 
     if prnt:
-        print(f"Lowest chi-squared value: {min(chi_vals)}")
-        print(f"Corresponding Omega_m0 value: {Omega_m0_vals[np.argmin(chi_vals)]}")
+        print(f"Lowest chi-squared value: {np.min(chi_vals):.4f}")
+        print(f"Corresponding Omega_m0 value: {Omega_m0_vals[np.argmin(chi_vals)]:.4f}")
 
 
 if __name__ == "__main__":
