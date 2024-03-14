@@ -136,6 +136,7 @@ def solve_ode_system(
             atol=tol,
             dense_output=True,
             t_eval=N,
+            method="DOP853",
         )
         # return sol.t, sol.y
         return N, sol.sol(N)
