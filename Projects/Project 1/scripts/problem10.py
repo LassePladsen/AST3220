@@ -131,7 +131,7 @@ def plot_hubble_parameters(
             print(f"Edge values for {V}-potential:")
             print("z=, H/H_0=")
             print(f"{z[-1]:g}, {h[-1]:g}")
-            print(f"{z[0]:g}, {h[0]:g}")
+            print(f"{z[0]:.4e}, {h[0]:.4e}")
             print()
 
     # Lambda-CDM model
@@ -141,7 +141,7 @@ def plot_hubble_parameters(
         print(f"Edge values for lambda-CDM:")
         print("z=, H/H_0=")
         print(f"{z[-1]:g}, {h[-1]:g}")
-        print(f"{z[0]:g}, {h[0]:g}")
+        print(f"{z[0]:.4e}, {h[0]:.4e}")
 
     plt.gca().invert_xaxis()  # invert x-axis
     plt.xscale("log")
