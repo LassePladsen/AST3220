@@ -120,7 +120,6 @@ def solve_ode_system(
             rtol=tol,
             atol=tol,
             dense_output=True,
-            t_eval=np.linspace(N_i, N_f, n_points),
             method="DOP853",
         )
         t = np.linspace(sol.t[0], sol.t[-1], n_points)
