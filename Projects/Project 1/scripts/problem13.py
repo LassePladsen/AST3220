@@ -107,7 +107,7 @@ def print_chi_squared_values() -> None:
             d.append(d_model[ind])
 
         print(
-            f"Chi-squared value for {V}-potential: {chi_squared(d, d_data, d_err):.4f}"
+            f"Chi-squared value for {V}-potential: {chi_squared(d, d_data, d_err):.0f}"
         )
 
 

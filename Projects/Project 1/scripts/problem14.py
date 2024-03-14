@@ -103,8 +103,8 @@ def plot_lambdacdm_chisquared(
     plt.savefig(filename)
 
     if prnt:
-        print(f"Lowest chi-squared value: {np.min(chi_vals):.4f}")
-        print(f"Corresponding Omega_m0 value: {Omega_m0_vals[np.argmin(chi_vals)]:.4f}")
+        print(f"Lowest chi-squared value: {np.min(chi_vals):.0f}")
+        print(f"Corresponding Omega_m0 value: {Omega_m0_vals[np.argmin(chi_vals)]:.3f}")
 
 
 if __name__ == "__main__":
