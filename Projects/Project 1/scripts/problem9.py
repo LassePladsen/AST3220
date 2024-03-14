@@ -237,9 +237,9 @@ def plot_density_parameters(
     if prnt:
         print(
             f"Today's values of the density parameters ({V}-potential):"
-            f"\nOmega_m0 = {Omega_m[-1]}"
-            f"\nOmega_r0 = {Omega_r[-1]}"
-            f"\nOmega_phi0 = {Omega_phi[-1]}\n"
+            f"\nOmega_m0 = {Omega_m[-1]:g}"
+            f"\nOmega_r0 = {Omega_r[-1]:g}"
+            f"\nOmega_phi0 = {Omega_phi[-1]:g}\n"
         )
 
 
@@ -313,7 +313,7 @@ def plot_eos_parameters(
         if prnt:
             print(
                 f"Today's value of the EoS parameter ({V}-potential):"
-                f"\nomega_phi0 = {omega_phi[-1]}\n"
+                f"\nomega_phi0 = {omega_phi[-1]:g}\n"
             )
 
     plt.grid()
