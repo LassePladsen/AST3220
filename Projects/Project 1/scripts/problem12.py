@@ -74,7 +74,7 @@ def luminosity_distance_quintessence(
     if z is None:
         z, I = lumonisity_integrand_quintessence(V, z_max, N_i, N_f, n_points)
     else:
-        z, I = lumonisity_integrand_quintessence(V, z=z)
+        z, I = lumonisity_integrand_quintessence(V, z_max, z=z)
 
     return z, (1 + z) * cumulative_trapezoid(I, z, initial=0)
 
