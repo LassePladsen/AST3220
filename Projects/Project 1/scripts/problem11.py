@@ -49,10 +49,10 @@ def print_universe_ages() -> None:
     """
     print("Dimensionless age of the universe for quintessence models:")
     for V in ["power", "exponential"]:
-        print(f"{V}-potential: {universe_age_quintessence(V)}")
+        print(f"{V}-potential: {universe_age_quintessence(V):.4f}")
     print()
     print(
-        f"Dimensionless age of the universe for Lambda-CDM: {universe_age_lambdacdm()}"
+        f"Dimensionless age of the universe for Lambda-CDM: {universe_age_lambdacdm():.4f}"
     )
 
 
