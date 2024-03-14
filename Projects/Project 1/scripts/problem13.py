@@ -3,6 +3,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
+from problem9 import N_i, N_f
 from problem12 import luminosity_distance_quintessence
 
 # Path to the data file
@@ -60,23 +61,15 @@ def plot_luminosity_distances(
 
     # Load data
     z, d_data, d_err = np.loadtxt(DATA_PATH, skiprows=5, unpack=True)  # [-, Gpc, Gpc]
-    # print(z)
-    # print(d_data)
-    # print()
 
     # Plot the two quintessence models
     for V in ["power", "exponential"]:
-        d_model = luminosity_distance_quintessence(V, z=z)[-1]
-        # zi, d_model = luminosity_distance_quintessence(
-        #     V, np.log(1 / (1 + z[-1])), np.log(1 / (1 + z[0]))
-        # )
-        # print(zi)
-        # print(d_model)
-        # plt.plot(z, d_model * c / H_0, label=V)  # convert to Gpc when plotting
-        plt.plot(z, d_model, label=V)  # convert to Gpc when plotting
+        # d_model = luminosity_distance_quintessence(V, 2, z=z)[-1]
+        z_model, d_model = luminosity_distance_quintessence(V, z[-1], N_i, N_f)
+        plt.plot(z_model, d_model * c / H_0, label=V)  # convert to Gpc when plotting
 
     # Plot the data
-    # plt.errorbar(z, d_data, yerr=d_err, fmt=".", label="Data points", color="gray")
+    plt.errorbar(z, d_data, yerr=d_err, fmt=".", label="Data points", color="gray")
 
     plt.xlabel("$z$")
     plt.ylabel("$d_L$ [Gpc]")
@@ -102,13 +95,22 @@ def print_chi_squared_values() -> None:
 
     # Model predictions
     for V in ["power", "exponential"]:
-        d_model = luminosity_distance_quintessence(V, z=z)[-1]
+        z_model, d_model = luminosity_distance_quintessence(V, z[-1], N_i, N_f)
         d_model *= c / H_0  # convert to Gpc
+
+        # Cut model to data range
+        # For each z from data, find corresponding d_model value
+        tol = 1e-5
+        d = []
+        for zi in z:
+            ind = np.where(abs(zi - z_model) < tol)[0][0]
+            d.append(d_model[ind])
+
         print(
-            f"Chi-squared value for {V}-potential: {chi_squared(d_model, d_data, d_err)}"
+            f"Chi-squared value for {V}-potential: {chi_squared(d, d_data, d_err):.4f}"
         )
 
 
 if __name__ == "__main__":
     plot_luminosity_distances()
-    # print_chi_squared_values()
+    print_chi_squared_values()
