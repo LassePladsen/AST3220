@@ -14,7 +14,6 @@ def lumonisity_integrand_quintessence(
     N_i: float = None,
     N_f: float = None,
     n_points: int = int(1e6),
-    z: np.ndarray = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Represents the integral over z of the dimensionless luminosity distance (eq. S)
@@ -26,27 +25,19 @@ def lumonisity_integrand_quintessence(
         N_i: the characteristic initial time
         N_f: the characteristic stop time
         n_points: the number of points to evaluate the integral
-        z: optionally give the redshift array instead of start and stop time
 
     returns:
         z: The redshift array
         I: The integrand values array
     """
 
-    if z is None:
-        z, H = hubble_parameter_quintessence(V, N_i, N_f, n_points)
-    else:
-        z, H = hubble_parameter_quintessence(V, z=z)
+    z, H = hubble_parameter_quintessence(V, N_i, N_f, n_points)
 
     # Stop arrays at z=z_max
     tol = 1e-4
     ind = np.where(abs(z - z_max) < tol)[0][0]
     H = H[ind:]
     z = z[ind:]
-
-    # using this z-array to integrate can be problematic, because it is not
-    # linearly spaced, however integrating over N I for some reason get
-    # completely wrong results, so I'm forced to use this z-array because im stupid
 
     return np.flip(z), 1 / H
 
@@ -57,7 +48,6 @@ def luminosity_distance_quintessence(
     N_i: float = None,
     N_f: float = None,
     n_points: int = int(1e6),
-    z: np.ndarray = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Calculate the dimensionless luminosity distance H_0 d_L/c for the quintessence model
@@ -69,16 +59,12 @@ def luminosity_distance_quintessence(
         N_i: the characteristic initial time for equations of motion calculation
         N_f: the characteristic stop time for equations of motion calculation
         n_points: the number of points to evaluate the integral
-        z: optionally give the redshift array instead of start and stop time
 
     returns:
         z: The redshift array
         d: The dimensionless luminosity distances array
     """
-    if z is None:
-        z, I = lumonisity_integrand_quintessence(V, z_max, N_i, N_f, n_points)
-    else:
-        z, I = lumonisity_integrand_quintessence(V, z_max, z=z)
+    z, I = lumonisity_integrand_quintessence(V, z_max, N_i, N_f, n_points)
 
     return z, (1 + z) * cumulative_trapezoid(I, z, initial=0)
 
