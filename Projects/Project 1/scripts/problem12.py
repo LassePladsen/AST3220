@@ -123,8 +123,6 @@ def plot_luminosity_distances(
     plt.ylabel(r"$\frac{H_0}{c}d_L$")
     plt.title("Luminosity distance for quintessence models")
     plt.legend()
-    plt.xlim(-0.1, z_max * 1.05)  # limit to z=z_max
-    plt.ylim(-0.1, d[-1] * 1.1)
     plt.grid()
     plt.gca().invert_xaxis()
     plt.savefig(filename)
