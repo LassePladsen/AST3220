@@ -7,9 +7,7 @@ from problem9 import N_i, N_f
 from problem12 import luminosity_distance_quintessence
 
 # Path to the data file
-DATA_PATH = os.path.join(
-    os.path.dirname(__file__), "..", "data", "luminosity_distances.txt"
-)
+DATA_PATH = os.path.join(os.path.dirname(__file__), "sndata.txt")
 
 # Constants
 H_0 = 70e6  # Hubble constant [m/(s Gpc)]
