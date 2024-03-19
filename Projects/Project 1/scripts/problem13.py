@@ -3,7 +3,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from problem9 import N_i, N_f
+from problem9 import N_i, N_f, FIGURES_DIR
 from problem12 import luminosity_distance_quintessence
 
 # Path to the data file
@@ -46,13 +46,9 @@ def plot_luminosity_distances(
 
     # Default filename
     if not filename:
-        filename = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "Figures",
-                f"13_luminosity_distances.png",
-            )
+        filename = os.path.join(
+            FIGURES_DIR,
+            f"13_luminosity_distances.png",
         )
 
     plt.figure(figsize=figsize)

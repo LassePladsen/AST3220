@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 
-from problem9 import density_parameters, N_i, N_f, eos_parameter
+from problem9 import density_parameters, N_i, N_f, eos_parameter, FIGURES_DIR
 
 
 def eos_integrand(omega_phi: float) -> float:
@@ -102,13 +102,9 @@ def plot_hubble_parameters(
     """
 
     if not filename:
-        filename = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "Figures",
-                f"10_hubble_parameters.png",
-            )
+        filename = os.path.join(
+            FIGURES_DIR,
+            f"10_hubble_parameters.png",
         )
 
     plt.figure(figsize=figsize)

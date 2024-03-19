@@ -17,6 +17,12 @@ xi = 3 / 2
 N_i = np.log(1 / (1 + 2e7))  # characteristic initial time
 N_f = 0  # characteristic stop time
 
+FIGURES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "figures"))
+
+if not os.path.exists(FIGURES_DIR):
+    os.makedirs(FIGURES_DIR)
+    
+
 
 def gamma(V: str) -> float:
     """Describes Gamma(phi), equation 18 of the project, which depends on
@@ -173,13 +179,9 @@ def plot_density_parameters(
     """
 
     if not filename:
-        filename = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "Figures",
-                f"9_density_parameters_{V}.png",
-            )
+        filename = os.path.join(
+            FIGURES_DIR,
+            f"9_density_parameters_{V}.png",
         )
 
     z, Omega_m, Omega_r, Omega_phi = density_parameters(V, N_i, N_f)
@@ -263,13 +265,9 @@ def plot_eos_parameters(
         None
     """
     if not filename:
-        filename = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "Figures",
-                f"9_eos_parameters.png",
-            )
+        filename = os.path.join(
+            FIGURES_DIR,
+            f"9_eos_parameters.png",
         )
 
     plt.figure(figsize=figsize)

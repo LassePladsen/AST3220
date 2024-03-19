@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import cumulative_trapezoid
 
-from problem9 import N_i, N_f
+from problem9 import N_i, N_f, FIGURES_DIR
 from problem10 import hubble_parameter_quintessence
 
 
@@ -93,13 +93,9 @@ def plot_luminosity_distances(
 
     # Default filename
     if not filename:
-        filename = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "Figures",
-                f"12_luminosity_distances.png",
-            )
+        filename = os.path.join(
+            FIGURES_DIR,
+            f"12_luminosity_distances.png",
         )
 
     plt.figure(figsize=figsize)

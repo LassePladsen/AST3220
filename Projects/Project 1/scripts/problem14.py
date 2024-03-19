@@ -4,6 +4,7 @@ from scipy.integrate import cumulative_trapezoid
 import numpy as np
 import matplotlib.pyplot as plt
 
+from problem9 import FIGURES_DIR
 from problem10 import hubble_parameter_lambdacdm
 from problem13 import DATA_PATH, c, H_0, chi_squared
 
@@ -62,13 +63,9 @@ def plot_lambdacdm_chisquared(
 
     # Default filename
     if not filename:
-        filename = os.path.abspath(
-            os.path.join(
-                os.path.dirname(__file__),
-                "..",
-                "Figures",
-                f"14_chi_squared_vals.png",
-            )
+        filename = os.path.join(
+            FIGURES_DIR,
+            f"14_chi_squared_vals.png",
         )
 
     plt.figure(figsize=figsize)
@@ -81,7 +78,9 @@ def plot_lambdacdm_chisquared(
     chi_vals = []
     for Omega_m0 in Omega_m0_vals:
         # Get model prediction
-        d_model = luminosity_distance_lambdacdm(z_model, Omega_m0) * c / H_0  # Convert to Gpc
+        d_model = (
+            luminosity_distance_lambdacdm(z_model, Omega_m0) * c / H_0
+        )  # Convert to Gpc
 
         # Cut model to data range
         # For each z from data, find corresponding d_model value
