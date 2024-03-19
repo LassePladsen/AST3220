@@ -1,6 +1,8 @@
 import subprocess
 import os
 
+"""Runs all problem scripts sequentially"""
+
 if __name__ == "__main__":
     print("Running all project 1 scripts...")
 
