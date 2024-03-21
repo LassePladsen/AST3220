@@ -93,7 +93,7 @@ def print_chi_squared_values() -> None:
         d_model *= c / H_0  # convert to Gpc
 
         # Cut model to data range
-        # For each z from data, find corresponding d_model value
+        # For each z from the data, find corresponding d_model value for comparison
         tol = 1e-5
         d = []
         for zi in z:
