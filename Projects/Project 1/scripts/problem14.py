@@ -73,7 +73,7 @@ def plot_lambdacdm_chisquared(
     # Load data
     z, d_data, d_err = np.loadtxt(DATA_PATH, skiprows=5, unpack=True)  # [-, Gpc, Gpc]
 
-    z_model = np.linspace(0, z[-1], 500)
+    z_model = np.linspace(z[0], z[-1], 500)  # increase resolution for model 
 
     chi_vals = []
     for Omega_m0 in Omega_m0_vals:
