@@ -75,6 +75,8 @@ def hubble_parameter_lambdacdm(
 
     arguments:
         z: the redshift z array
+        Omega_m0: the matter density constant of today
+        Omega_lambda0: the dark energy density constant of today
 
     returns:
         H: the values of H/H_0 for each z from the z-interval
