@@ -67,7 +67,7 @@ def hubble_parameter_quintessence(
 
 
 def hubble_parameter_lambdacdm(
-    z: np.ndarray, Omega_m0: float = 0.3, Omega_lambda0: float = 0.7
+    z: np.ndarray, Omega_m0: float = 0.3
 ) -> tuple[np.ndarray, np.ndarray]:
     """Characteristic Hubble parameter H/H_0 as a function of the redshift z (eq. 7)
     for the spatially flat (k=0) lambda-cdm model with Omega_m0=0.3,
@@ -76,12 +76,12 @@ def hubble_parameter_lambdacdm(
     arguments:
         z: the redshift z array
         Omega_m0: the matter density constant of today
-        Omega_lambda0: the dark energy density constant of today
 
     returns:
         H: the values of H/H_0 for each z from the z-interval
     """
 
+    Omega_lambda0 = 1 - Omega_m0 
     # Characteristic Hubble parameter
     h = np.sqrt(Omega_m0 * (1 + z) ** 3 + Omega_lambda0)
 
