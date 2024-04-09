@@ -7,13 +7,14 @@ import numpy as np
 class ReactionRates:
     """Reaction rate class"""
 
-    def init(self, tau: float = 1700) -> None:
+    def __init__(self, tau: float = 1700) -> None:
         """Initializes the class with a given neutron lifetime.
-6
-        arguments:
-            tau: free neutron decay time [s]
+        6
+                arguments:
+                    tau: free neutron decay time [s]
         """
-        self.tau = tau
+
+        self.tau = tau  # free neutron decay time [s]
         self.q = 2.53  # mass difference ratio [(m_n - m_p) / m_e]
 
     @lru_cache
@@ -66,7 +67,7 @@ class ReactionRates:
         returns:
             the reaction rate of p -> n
         """
-        return self._gamma_np(T, -self.q)
+        return self._gamma_np(T, -1)
 
     @lru_cache
     def _T_nu(self, T: float) -> float:
