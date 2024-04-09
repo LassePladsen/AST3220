@@ -40,16 +40,6 @@ class BBN:
             "Be7",
         ]
         # self.mass_numbers = [1, 1, 2, 3, 3, 4, 7, 7]  # the particle atomic mass numbers  # TODO: FJERN?
-        self.colors = [
-            "r",
-            "b",
-            "g",
-            "c",
-            "m",
-            "y",
-            "k",
-            "orange",
-        ]  # colors for consistent plot colors
 
         # Initialize the reaction rates and background
         self.RR = ReactionRates()
@@ -203,7 +193,7 @@ class BBN:
         return self.T, self.Y
 
     def plot_relative_number_densities(
-        self, filename: str = None, figsize: tuple[int, int] = (7, 5)
+        self, filename: str, figsize: tuple[int, int] = (7, 5)
     ) -> None:
         """Plots the relative number densities for each species, as a function of logarithmic temperature ln(T)
 
@@ -220,28 +210,19 @@ class BBN:
             print("Warning: cannot plot before solving the ODE system.")
             return
 
-        # Make default filename
-        if not filename:
-            filename = os.path.join(
-                self.FIGURES_DIR,
-                f"f_relative_number_densities.png",
-            )
-
         fig, ax = plt.subplots(figsize=figsize)
 
         total = 0  # total sum of relative number densities
         for i, y in enumerate(self.Y):
-            # i-th color
-            col = self.colors[i]
-
             # Plot relative number density of species i
-            ax.loglog(self.T, y, col, label=self.species_labels[i])
-
-            # Plot thermal equilibrium value of species i as dotted line
-            ax.loglog(self.T, self._Y_n_equil(self.T), f"{col}:")
+            ax.loglog(self.T, y, label=self.species_labels[i])
 
             # Add to total sum
             total += y
+
+        # Plot thermal equilibrium value of neutron and proton
+        ax.loglog(self.T, self._Y_n_equil(self.T), color="C0", linestyle=":")
+        ax.loglog(self.T, self._Y_p_equil(self.T), color="C1", linestyle=":")
 
         # Finally plot the sum of the relative densities, which should always be equal to one
         ax.loglog(self.T, total, "k:", label="Sum")
@@ -262,8 +243,14 @@ if __name__ == "__main__":
     N_species = 2
     T_i = 1e11  # initial temperature [K]
     T_f = 1e8  # final temperature [K]
-    n_points = 100
+    n_points = 1001
 
-    bbn = BBN(N_species)
+    # Initialize
+    bbn = BBN(N_species, N_eff=15)
+
+    # Solve ode
     bbn.solve_ode_system(T_i, T_f, n_points)
-    bbn.plot_relative_number_densities()
+
+    # Plot
+    filename = os.path.join(bbn.FIGURES_DIR, "f_relative_number_densities.png")
+    bbn.plot_relative_number_densities(filename)
