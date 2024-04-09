@@ -12,16 +12,16 @@ n_points = 1000  # number of points in the time array
 tau = 1700  # fee neutron decay time [s]
 N_eff = 3  # effective number of neutrino species
 
-# Constants
-c = 2.9979e10  # speed of light [cm/s]
-k = 1.380649e-23  # Boltzmann constant [J/K]
-hbar = 1.05457182e-34  # reduced Planck constant [J*s]
-G = 6.6743e-11  # gravitational constant [N*m^2/kg^2]
+# Constants, in CGS units
+c = 2.9979e8  # speed of light [m/s]
+k = 1.380649  # Boltzmann constant [eV/K]
+hbar = 6.582119569e-16  # reduced Planck constant [eV*s]
+G = 6.67430e-11  # gravitational constant [N*m^2/kg^2]
 T_0 = 2.725  # CMB temperature [K]
-m_p = 1.67262192e-27  # proton mass [kg]
-m_n = 1.6749286e-27  # neutron mass [kg]
-H_0 = 2.26534e-18  # Hubble constant [1/s]
+m_p = 1.67262192e-24  # proton mass [g]
+m_n = 1.6749286e-24  # neutron mass [g]
 q = 2.53  # mass difference ratio [(m_n - m_p) / m_e]
+H_0 = 22.686e-19  # Hubble constant [1/s]
 Omega_r0 = (  # radiation density parameter today
     8
     * np.pi**3
@@ -65,7 +65,7 @@ def Y_n_eq(T: float) -> float:
     returns:
         the thermal equilibrium value of Y_n
     """
-    return 1 / (1 + np.exp((m_n - m_p) * c * c / (k * T)))
+    return 1 / (1 + np.exp((m_n - m_p) / (k * T)))
 
 
 def Y_p_eq(T: float) -> float:
