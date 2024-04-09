@@ -18,8 +18,8 @@ k = 1.380649  # Boltzmann constant [eV/K]
 hbar = 6.582119569e-16  # reduced Planck constant [eV*s]
 G = 6.67430e-11  # gravitational constant [N*m^2/kg^2]
 T_0 = 2.725  # CMB temperature [K]
-m_p = 1.67262192e-24  # proton mass [g]
-m_n = 1.6749286e-24  # neutron mass [g]
+m_p = 938.27208816e6  # proton mass [eV/c^2]
+m_n = 939.56542052e6  # neutron mass [eV/c^2]
 q = 2.53  # mass difference ratio [(m_n - m_p) / m_e]
 H_0 = 22.686e-19  # Hubble constant [1/s]
 Omega_r0 = (  # radiation density parameter today
@@ -54,8 +54,6 @@ def T_nu(T: float) -> float:
     return (4 / 11) ** (1 / 3) * T
 
 
-# @lru_cache
-@np.vectorize
 def Y_n_eq(T: float) -> float:
     """Thermal equilibrium value of relative number density of neutrons Y_n, equation (16) of the project.
 
