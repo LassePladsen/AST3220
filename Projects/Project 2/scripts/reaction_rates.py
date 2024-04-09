@@ -9,7 +9,7 @@ class ReactionRates:
 
     def init(self, tau: float = 1700) -> None:
         """Initializes the class with a given neutron lifetime.
-
+6
         arguments:
             tau: free neutron decay time [s]
         """
@@ -66,7 +66,7 @@ class ReactionRates:
         returns:
             the reaction rate of p -> n
         """
-        return self._gamma_np(T, -q)
+        return self._gamma_np(T, -self.q)
 
     @lru_cache
     def _T_nu(self, T: float) -> float:
