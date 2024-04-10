@@ -32,9 +32,9 @@ class ReactionRates:
         if q_sign not in [1, -1]:
             raise ValueError("q_sign must be 1 or -1")
 
-        a = 5.93
-        Z = a / T_9
-        Z_nu = a / (self._T_nu(T_9))
+        b = 5.93
+        Z = b / T_9
+        Z_nu = b / (self._T_nu(T_9))
 
         def I1(x):
             """Integrand of the first integral in equation (12) of the project."""

@@ -1,4 +1,5 @@
 import os
+import warnings
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -6,6 +7,9 @@ from scipy.integrate import solve_ivp
 
 from reaction_rates import ReactionRates
 from background import Background
+
+# Ignore overflow runtimewarning
+warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
 class BBN:
@@ -193,13 +197,19 @@ class BBN:
         return self.T, self.Y
 
     def plot_relative_number_densities(
-        self, filename: str, figsize: tuple[int, int] = (7, 5)
+        self,
+        filename: str,
+        figsize: tuple[int, int] = (7, 5),
+        ymin: float = 1e-3,
+        ymax: float = 2.0,
     ) -> None:
         """Plots the relative number densities for each species, as a function of logarithmic temperature ln(T)
 
         arguments:
             filename: the filename to save the plot figure
             figsize: the plot figure size
+            ymin: the minimum y-axis value
+            ymax: the maximum y-axis value
 
         returns:
             None
@@ -231,7 +241,8 @@ class BBN:
         plt.gca().invert_xaxis()  # invert x-axis
         plt.xlabel("T [K]")
         plt.ylabel(r"$Y_i$")
-        plt.ylim(bottom=1e-3, top=2)
+
+        plt.ylim(bottom=ymin, top=ymax)
         plt.legend()
         plt.grid()
         plt.title("Relative number densities of particles species")
@@ -243,10 +254,12 @@ if __name__ == "__main__":
     N_species = 2
     T_i = 1e11  # initial temperature [K]
     T_f = 1e8  # final temperature [K]
-    n_points = 1001
+    n_points = 1001  # number of points for plotting
+    N_eff = 3  # effective number of neutrino species
+    unit = "cgs"  # unit system to use
 
     # Initialize
-    bbn = BBN(N_species, N_eff=15)
+    bbn = BBN(N_species, N_eff=N_eff, unit=unit)
 
     # Solve ode
     bbn.solve_ode_system(T_i, T_f, n_points)
