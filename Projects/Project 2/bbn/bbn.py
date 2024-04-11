@@ -48,7 +48,6 @@ class BBN:
             "Li7",
             "Be7",
         ]
-        # self.mass_numbers = [1, 1, 2, 3, 3, 4, 7, 7]  # the particle atomic mass numbers  # TODO: FJERN?
 
         # Initialize the reaction rates and background
         self.RR = ReactionRates()
@@ -159,6 +158,8 @@ class BBN:
         # Initialize weak equilibrium values
         Y_i[0] = self._Y_n_equil(T_i)
         Y_i[1] = self._Y_p_equil(T_i)
+        
+        # The rest of the species are set to zero initially 
         return Y_i
 
     def solve_ode_system(
