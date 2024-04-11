@@ -3,14 +3,17 @@ from abc import ABC
 import numpy as np
 from astropy import constants as ac
 
+
 class Constants(ABC):
     """Abstract base class for constants"""
-    T_0 = 2.725 # CMB temperature [K]
+
+    T_0 = 2.725  # CMB temperature [K]
     H_0 = H_0 = 22.686e-19  # Hubble constant with h=0.7 [1/s]
 
 
 class SI(Constants):
     """Class to hold constants used in the project given in SI units"""
+
     c = ac.c.value  # speed of light [m/s]
     k = ac.k_B.value  # Boltzmann constant [J/K]
     hbar = ac.hbar.value  # reduced Planck constant [J*s]
@@ -21,6 +24,7 @@ class SI(Constants):
 
 class CGS(Constants):
     """Class to hold constants used in the project given in CGS units"""
+
     c = ac.c.value  # speed of light [m/s]
     k = ac.k_B.value  # Boltzmann constant [J/K]
     hbar = ac.hbar.value  # reduced Planck constant [J*s]
@@ -79,14 +83,3 @@ class Background:
             the Hubble parameter
         """
         return self.const.H_0 * np.sqrt(self.Omega_r0) * self.a(T) ** (-2)
-
-
-"""if __name__ == '__main__':
-    # Debug plot H(T)
-    import matplotlib.pyplot as plt
-    b = Background()
-    T = np.logspace(11, 7)
-    h = b.H(T)
-    print(h[0])
-    plt.loglog(T, h)
-    plt.show()"""
