@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
 # Directory to save figures
-FIGURES_DIR = os.path.abspath(
+FIG_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "figures")
 )
 
@@ -55,8 +55,8 @@ class BBN:
         self.background = Background(**background_kwargs)
 
         # Create this array if it doesn't already exist
-        if not os.path.exists(FIGURES_DIR):
-            os.makedirs(FIGURES_DIR)
+        if not os.path.exists(FIG_DIR):
+            os.makedirs(FIG_DIR)
 
         # Initialize empty variables
         self.Y = None
@@ -162,7 +162,7 @@ class BBN:
         return Y_i
 
     def solve_ode_system(
-        self, T_i: float, T_f: float, n_points: int = 1001, tol: float = 1e-12
+        self, T_i: float, T_f: float, n_points: int = 1000, tol: float = 1e-12
     ) -> tuple[np.ndarray, np.ndarray]:
         """Solves the ode system of the equations of motion for Y_n and Y_p
 
@@ -250,12 +250,14 @@ class BBN:
 
 
 if __name__ == "__main__":
+    ### DIRECT USAGE EXAMPLE ###
+
     # Variables
-    N_species = 2
+    N_species = 2  # number of interacting atom species
+    N_eff = 3  # effective number of neutrino species
     T_i = 1e11  # initial temperature [K]
     T_f = 1e8  # final temperature [K]
-    n_points = 1001  # number of points for plotting
-    N_eff = 3  # effective number of neutrino species
+    n_points = 1000  # number of points for plotting
     unit = "cgs"  # unit system to use
 
     # Initialize
@@ -265,5 +267,5 @@ if __name__ == "__main__":
     bbn.solve_ode_system(T_i, T_f, n_points)
 
     # Plot
-    filename = os.path.join(FIGURES_DIR, "f_relative_number_densities.png")
+    filename = os.path.join(FIG_DIR, "example_problem_f.png")
     bbn.plot_relative_number_densities(filename)
