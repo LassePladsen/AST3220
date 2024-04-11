@@ -9,3 +9,6 @@ from bbn import BBN
 from background import Background
 from reaction_rates import ReactionRates
 from constants import SI, CGS
+
+# Variables imported:
+# bbn/FIG_DIR (directory of stored figures)
