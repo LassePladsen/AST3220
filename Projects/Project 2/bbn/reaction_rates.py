@@ -18,7 +18,7 @@ class ReactionRates:
         self.q = 2.53  # mass difference ratio [(m_n - m_p) / m_e]
 
     @lru_cache
-    def _gamma_np(self, T_9: float, q_sign: int = 1) -> float:
+    def _lambda_np(self, T_9: float, q_sign: int = 1) -> float:
         """Describes the reaction rate of n -> p, equation (12) of the project.
 
         arguments:
@@ -58,7 +58,7 @@ class ReactionRates:
 
         return 1 / self.tau * (quad(I1, 1, np.inf)[0] + quad(I2, 1, np.inf)[0])
 
-    def _gamma_pn(self, T: float) -> float:
+    def _lambda_pn(self, T: float) -> float:
         """Describes the reaction rate of p -> n, equation (13) of the project.
 
         arguments:
@@ -67,7 +67,7 @@ class ReactionRates:
         returns:
             the reaction rate of p -> n
         """
-        return self._gamma_np(T, -1)
+        return self._lambda_np(T, -1)
 
     @lru_cache
     def _T_nu(self, T: float) -> float:
@@ -90,4 +90,4 @@ class ReactionRates:
         returns:
             the reaction rates of n -> p and p -> n
         """
-        return self._gamma_np(T_9), self._gamma_pn(T_9)
+        return self._lambda_np(T_9), self._lambda_pn(T_9)

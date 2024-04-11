@@ -80,21 +80,24 @@ class BBN:
         Y_n = Y[0]
         Y_p = Y[1]
 
-        gamma_np, gamma_pn = self.RR.get_weak_rates(T_9)
+        lambda_np, lambda_pn = self.RR.get_weak_rates(T_9)
 
         # Change for left hand side of the ODE system (n <-> p)
-        LHS_change = Y_p * gamma_pn - Y_n * gamma_np
+        LHS_change = Y_p * lambda_pn - Y_n * lambda_np
 
         # Update neutron and proton ODE's
         dY[0] += LHS_change
         dY[1] -= LHS_change
 
         if self.N_species > 2:  # Include deuterium
-            ...
-            """Y_d = Y[2]  
+            Y_d = Y[2]  
 
             # n+p <-> D + gamma 
-            Y_np = Y_n * Y_p"""
+            Y_np = Y_n * Y_p
+
+            
+
+
 
         if self.N_species > 3:  # include trituim
             ...
