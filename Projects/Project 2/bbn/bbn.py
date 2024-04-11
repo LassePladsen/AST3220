@@ -12,6 +12,11 @@ from background import Background
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
+# Directory to save figures
+FIGURES_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "figures")
+)
+
 class BBN:
     """
     General Big Bang nucleosynthesis class solving the Boltzmann equations for a collection
@@ -49,14 +54,9 @@ class BBN:
         self.RR = ReactionRates()
         self.background = Background(**background_kwargs)
 
-        # Directory to save figures
-        self.FIGURES_DIR = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "..", "figures")
-        )
-
         # Create this array if it doesn't already exist
-        if not os.path.exists(self.FIGURES_DIR):
-            os.makedirs(self.FIGURES_DIR)
+        if not os.path.exists(FIGURES_DIR):
+            os.makedirs(FIGURES_DIR)
 
         # Initialize empty variables
         self.Y = None
@@ -265,5 +265,5 @@ if __name__ == "__main__":
     bbn.solve_ode_system(T_i, T_f, n_points)
 
     # Plot
-    filename = os.path.join(bbn.FIGURES_DIR, "f_relative_number_densities.png")
+    filename = os.path.join(FIGURES_DIR, "f_relative_number_densities.png")
     bbn.plot_relative_number_densities(filename)
