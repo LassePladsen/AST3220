@@ -14,6 +14,9 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 # Directory to save figures
 FIG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "figures"))
+# Create this directory if it doesn't already exist
+if not os.path.exists(FIG_DIR):
+    os.makedirs(FIG_DIR)
 
 
 class BBN:
@@ -54,10 +57,6 @@ class BBN:
         self.RR = ReactionRates()
         self.background = Background(**background_kwargs)
 
-        # Create this array if it doesn't already exist
-        if not os.path.exists(FIG_DIR):
-            os.makedirs(FIG_DIR)
-
         # Initialize empty variables
         self.Y = None
         self.T = None
@@ -81,31 +80,67 @@ class BBN:
         Y_n = Y[0]
         Y_p = Y[1]
 
-        rate_np, rate_pn = self.RR.get_weak_rates(T_9)
+        # (n <-> p) [a.1-3]
+        rate_n_to_p, rate_p_to_n = self.RR.get_weak_rates(T_9)
 
-        # Change for right hand side of the ODE system (n <-> p) [a.1-3]
-        change = Y_p * rate_pn - Y_n * rate_np
+        # Change for left hand side reaction
+        change_lhs = Y_p * rate_p_to_n - Y_n * rate_n_to_p
+        # right hand side reaction change is equal, but opposite sign
+        change_rhs = -change_lhs
 
         # Update neutron and proton ODE's
-        dY[0] += change
-        dY[1] -= change
+        dY[0] += change_lhs
+        dY[1] += change_rhs
 
         if self.N_species > 2:  # Include deuterium
             Y_D = Y[2]
 
             # n+p <-> D + gamma (b.1)
-            rate_D, rate_np = self.RR.get_np_to_D(T_9, self.background.rho_b(T))
+            rate_np_to_D, rate_D_to_np = self.RR.get_np_to_D(
+                T_9, self.background.rho_b(T)
+            )
 
-            # new change for rhs
-            change = Y_D * rate_D - Y_n * Y_p * rate_np
+            # new changes
+            change_lhs = Y_D * rate_D_to_np - Y_n * Y_p * rate_np_to_D
+            change_rhs = -change_lhs
 
             # Update ODE's
-            dY[0] += change
-            dY[1] += change
-            dY[2] -= change
+            dY[0] += change_lhs
+            dY[1] += change_lhs
+            dY[2] += change_rhs
 
         if self.N_species > 3:  # include trituim
-            ...
+            Y_T = Y[3]
+
+            # (n+D <-> T+gamma) (b.3)
+            rate_nD_to_T, rate_T_to_nD = self.RR.get_nD_to_T(
+                T_9, self.background.rho_b(T)
+            )
+
+            # new changes
+            change_lhs = Y_T * rate_T_to_nD - Y_n * Y_D * rate_nD_to_T
+            change_rhs = -change_lhs
+
+            # Update ODE's
+            dY[0] += change_lhs
+            dY[2] += change_lhs
+            dY[3] += change_rhs
+
+            # (D+D <-> p+T) (b.8)
+            rate_DD_to_pT, rate_pT_to_DD = self.RR.get_DD_to_pT(
+                T_9, self.background.rho_b(T)
+            )
+
+            # new changes
+            a = Y_p * Y_T * rate_pT_to_DD
+            b = Y_D * Y_D * rate_DD_to_pT
+            change_lhs = 2 * a - b
+            change_rhs = 0.5 * b - a
+
+            # Update ODE's
+            dY[2] += change_lhs
+            dY[1] += change_rhs
+            dY[3] += change_rhs
 
         if self.N_species > 4:  # include helium-3
             ...
@@ -286,6 +321,7 @@ if __name__ == "__main__":
     T_f = 1e8  # final temperature [K]
     n_points = 1000  # number of points for plotting
     unit = "cgs"  # unit system to use
+    filename = os.path.join(FIG_DIR, "example_problem_f.png")
 
     # Initialize
     bbn = BBN(N_species, N_eff=N_eff, unit=unit)
@@ -294,5 +330,4 @@ if __name__ == "__main__":
     bbn.solve_ode_system(T_i, T_f, n_points)
 
     # Plot
-    filename = os.path.join(FIG_DIR, "example_problem_f.png")
     bbn.plot_mass_fractions(filename)
