@@ -92,7 +92,7 @@ class BBN:
             Y_D = Y[2]
 
             # n+p <-> D + gamma (b.1)
-            rate_D, rate_np = self.RR.get_np_to_D(T_9)
+            rate_D, rate_np = self.RR.get_np_to_D(T_9, self.background.rho_b(T))
 
             # new change for rhs
             change = Y_D * rate_D - Y_n * Y_p * rate_np
