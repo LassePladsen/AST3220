@@ -48,6 +48,8 @@ class BBN:
             "Be7",
         ]
 
+        self.mass_numbers = [1, 1, 2, 3, 3, 4, 7, 7]  # The particle atomic numbers
+
         # Initialize the reaction rates and background
         self.RR = ReactionRates()
         self.background = Background(**background_kwargs)
@@ -203,14 +205,14 @@ class BBN:
 
         return self.T, self.Y
 
-    def plot_relative_number_densities(
+    def plot_mass_fractions(
         self,
         filename: str = None,
         figsize: tuple[int, int] = (7, 5),
         ymin: float = 1e-3,
         ymax: float = 2.0,
     ) -> None:
-        """Plots the relative number densities for each species, as a function of logarithmic temperature ln(T)
+        """Plots the mass fractions A_i*Y_i for each species, as a function of logarithmic temperature ln(T)
 
         arguments:
             filename: the filename to save the plot figure
@@ -229,30 +231,43 @@ class BBN:
 
         fig, ax = plt.subplots(figsize=figsize)
 
-        total = 0  # total sum of relative number densities
+        total = 0  # total sum of mass fraction
         for i, y in enumerate(self.Y):
-            # Plot relative number density of species i
-            ax.loglog(self.T, y, label=self.species_labels[i])
+            # Mass fraction
+            A = y * self.mass_numbers[i]
+
+            # Plot mass fraction of species i
+            ax.loglog(self.T, A, label=self.species_labels[i])
 
             # Add to total sum
-            total += y
+            total += A
 
         # Plot thermal equilibrium value of neutron and proton
-        ax.loglog(self.T, self._Y_n_equil(self.T), color="C0", linestyle=":")
-        ax.loglog(self.T, self._Y_p_equil(self.T), color="C1", linestyle=":")
+        ax.loglog(
+            self.T,
+            self._Y_n_equil(self.T) * self.mass_numbers[0],
+            color="C0",
+            linestyle=":",
+        )
+        ax.loglog(
+            self.T,
+            self._Y_p_equil(self.T) * self.mass_numbers[1],
+            color="C1",
+            linestyle=":",
+        )
 
         # Finally plot the sum of the relative densities, which should always be equal to one
-        ax.loglog(self.T, total, "k:", label="Sum")
+        ax.loglog(self.T, total, "k:", label=r"$\sum_i A_iY_i$")
 
         # Plot settings
         plt.gca().invert_xaxis()  # invert x-axis
         plt.xlabel("T [K]")
-        plt.ylabel(r"$Y_i$")
+        plt.ylabel(r"Mass fraction $A_iY_i$")
 
         plt.ylim(bottom=ymin, top=ymax)
         plt.legend()
         plt.grid()
-        plt.title("Relative number densities of particles species")
+        plt.title("Mass fractions of particles species")
 
         # Save figure if filename is given
         if filename:
@@ -280,4 +295,4 @@ if __name__ == "__main__":
 
     # Plot
     filename = os.path.join(FIG_DIR, "example_problem_f.png")
-    bbn.plot_relative_number_densities(filename)
+    bbn.plot_mass_fractions(filename)

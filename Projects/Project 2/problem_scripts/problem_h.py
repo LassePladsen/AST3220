@@ -1,4 +1,4 @@
-"""Script that solves problem f of the project"""
+"""Script that solves problem h of the project"""
 
 import sys
 import os
@@ -10,7 +10,7 @@ from bbn import BBN, FIG_DIR
 
 if __name__ == "__main__":
     # Variables
-    N_species = 2  # number of interacting atom species
+    N_species = 3  # number of interacting atom species
     T_i = 1e11  # initial temperature [K]
     T_f = 1e8  # final temperature [K]
 
@@ -21,5 +21,5 @@ if __name__ == "__main__":
     bbn.solve_ode_system(T_i, T_f)
 
     # Plot mass fractions
-    filename = os.path.join(FIG_DIR, "f_mass_fractions.png")
+    filename = os.path.join(FIG_DIR, "h_mass_fractions.png")
     bbn.plot_mass_fractions(filename)
