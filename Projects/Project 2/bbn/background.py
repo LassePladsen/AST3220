@@ -4,7 +4,7 @@ from constants import SI, CGS
 
 
 class Background:
-    """Class for the background functions, a(T) and H(T), and variable N_eff and Omega_r0"""
+    """Class for the background functions and variables"""
 
     def __init__(
         self, unit: str = "CGS", N_eff: int = 3, Omega_b0: float = 0.05

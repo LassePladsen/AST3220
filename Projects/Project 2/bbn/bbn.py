@@ -1,3 +1,5 @@
+"""Main Big Bang Nucleosynthesis module"""
+
 import os
 import warnings
 

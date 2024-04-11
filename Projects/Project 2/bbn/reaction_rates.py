@@ -1,3 +1,5 @@
+"""Reaction rates for the early universe."""
+
 from functools import lru_cache
 
 from scipy.integrate import quad
@@ -5,7 +7,7 @@ import numpy as np
 
 
 class ReactionRates:
-    """Reaction rate class"""
+    """Class describing reaction rates between the particle species in the early universe."""
 
     def __init__(self, tau: float = 1700) -> None:
         """Initializes the class with a given neutron lifetime.

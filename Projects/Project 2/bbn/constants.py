@@ -1,3 +1,5 @@
+"""Module for the constants used in the project"""
+
 from abc import ABC
 
 import numpy as np
