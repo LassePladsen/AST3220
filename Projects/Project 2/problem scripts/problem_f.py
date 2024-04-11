@@ -1,0 +1,26 @@
+"""Script that solves problem f of the project"""
+
+import sys
+import os
+
+# Append path to bbn package
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "bbn")))
+
+from bbn import BBN, FIG_DIR
+
+if __name__ == "__main__":
+    # Variables
+    N_species = 2  # number of interacting atom species
+    N_eff = 3  # effective number of neutrino species
+    T_i = 1e11  # initial temperature [K]
+    T_f = 1e8  # final temperature [K]
+
+    # Initialize
+    bbn = BBN(N_species, N_eff=N_eff)
+
+    # Solve ode
+    bbn.solve_ode_system(T_i, T_f)
+
+    # Plot
+    filename = os.path.join(FIG_DIR, "f_relative_number_densities.png")
+    bbn.plot_relative_number_densities(filename)
