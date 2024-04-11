@@ -13,9 +13,8 @@ warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 
 # Directory to save figures
-FIG_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "figures")
-)
+FIG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "figures"))
+
 
 class BBN:
     """
@@ -80,24 +79,28 @@ class BBN:
         Y_n = Y[0]
         Y_p = Y[1]
 
-        lambda_np, lambda_pn = self.RR.get_weak_rates(T_9)
+        rate_np, rate_pn = self.RR.get_weak_rates(T_9)
 
-        # Change for left hand side of the ODE system (n <-> p)
-        LHS_change = Y_p * lambda_pn - Y_n * lambda_np
+        # Change for right hand side of the ODE system (n <-> p) [a.1-3]
+        change = Y_p * rate_pn - Y_n * rate_np
 
         # Update neutron and proton ODE's
-        dY[0] += LHS_change
-        dY[1] -= LHS_change
+        dY[0] += change
+        dY[1] -= change
 
         if self.N_species > 2:  # Include deuterium
-            Y_d = Y[2]  
+            Y_D = Y[2]
 
-            # n+p <-> D + gamma 
-            Y_np = Y_n * Y_p
+            # n+p <-> D + gamma (b.1)
+            rate_D, rate_np = self.RR.get_np_to_D(T_9)
 
-            
+            # new change for rhs
+            change = Y_D * rate_D - Y_n * Y_p * rate_np
 
-
+            # Update ODE's
+            dY[0] += change
+            dY[1] += change
+            dY[2] -= change
 
         if self.N_species > 3:  # include trituim
             ...
@@ -161,8 +164,8 @@ class BBN:
         # Initialize weak equilibrium values
         Y_i[0] = self._Y_n_equil(T_i)
         Y_i[1] = self._Y_p_equil(T_i)
-        
-        # The rest of the species are set to zero initially 
+
+        # The rest of the species are set to zero initially
         return Y_i
 
     def solve_ode_system(
@@ -202,7 +205,7 @@ class BBN:
 
     def plot_relative_number_densities(
         self,
-        filename: str,
+        filename: str = None,
         figsize: tuple[int, int] = (7, 5),
         ymin: float = 1e-3,
         ymax: float = 2.0,
@@ -250,7 +253,12 @@ class BBN:
         plt.legend()
         plt.grid()
         plt.title("Relative number densities of particles species")
-        plt.savefig(filename)
+
+        # Save figure if filename is given
+        if filename:
+            plt.savefig(filename)
+        else:
+            plt.show()
 
 
 if __name__ == "__main__":

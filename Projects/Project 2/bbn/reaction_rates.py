@@ -91,3 +91,21 @@ class ReactionRates:
             the reaction rates of n -> p and p -> n
         """
         return self._lambda_np(T_9), self._lambda_pn(T_9)
+
+    def get_np_to_D(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of n + p -> D + gamma and the reverse
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density [g/cm^3]
+
+        returns:
+            the reaction rate of n + p -> D + gamma, and the reverse
+        """
+
+        rate_np_to_Dgamma = 2.5e4 * rho_b
+        rate_D_to_np = (
+            4.68e9 * rate_np_to_Dgamma / rho_b * T_9 ** (3 / 2) * np.exp(-25.82 / T_9)
+        )
+
+        return rate_D_to_np, rate_np_to_Dgamma

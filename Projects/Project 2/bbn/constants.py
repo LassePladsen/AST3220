@@ -1,5 +1,6 @@
 from abc import ABC
 
+import numpy as np
 from astropy import constants as ac
 
 
@@ -8,6 +9,10 @@ class Constants(ABC):
 
     T_0 = 2.725  # CMB temperature [K]
     H_0 = H_0 = 22.686e-19  # Hubble constant with h=0.7 [1/s]
+
+    def __init__(self) -> None:
+        # Calculate critical density today
+        self.rho_c0 = 3 * self.H_0 * self.H_0 / (8 * np.pi * self.G)
 
 
 class SI(Constants):
