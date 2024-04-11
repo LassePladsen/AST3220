@@ -2,10 +2,10 @@ from functools import lru_cache
 from abc import ABC
 
 import numpy as np
-from astropy import units as au, constants as ac
+from astropy import constants as ac
 
 class Constants(ABC):
-    """Abstract base class"""
+    """Abstract base class for constants"""
     T_0 = 2.725 # CMB temperature [K]
     H_0 = H_0 = 22.686e-19  # Hubble constant with h=0.7 [1/s]
 
