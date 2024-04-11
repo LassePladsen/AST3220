@@ -145,7 +145,23 @@ class BBN:
             dY[3] += change_rhs
 
         if self.N_species > 4:  # include helium-3
-            ...
+            Y_He3 = Y[4]
+
+            # (p + D <-> He3 + gamma) (b.2)
+            rate_pD_to_He3, rate_He3_to_pD = self.RR.get_pD_to_He3(
+                T_9, self.background.rho_b(T)
+            )
+
+            # new changes
+            change_lhs = Y_He3 * rate_He3_to_pD - Y_p * Y_D * rate_pD_to_He3
+            change_rhs = -change_lhs
+
+            # Update ODE's
+            dY[0] += change_lhs
+            dY[2] += change_lhs
+            dY[4] += change_rhs
+
+            ##### TODO: b.4, b.5, b.7, b.9
 
         if self.N_species > 5:  # include helium-4
             ...

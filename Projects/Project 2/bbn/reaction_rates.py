@@ -162,3 +162,28 @@ class ReactionRates:
         rate_pT_to_DD = 1.73 * rate_DD_to_pT * np.exp(-47.80 / T_9)
 
         return rate_DD_to_pT, rate_pT_to_DD
+
+    def get_pD_to_He3(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (p + D <-> He3 + gamma), and the reverse,
+        described in b.2 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (p + D <-> He3 + gamma), and the reverse
+        """
+
+        rate_pD_to_He3 = (
+            2.23e3
+            * rho_b
+            * T_9 ** (-2 / 3)
+            * np.exp(-3.72 * T_9 ** (-1 / 3))
+            * (1 + 0.112 * T_9 ** (1 / 3) + 33.8 * T_9 ** (2 / 3) + 2.65 * T_9)
+        )
+
+        rate_He3_to_pD = 1.63e10 * rate_pD_to_He3 / rho_b * T_9 ** (3 / 2) * np.exp(-63.75 / T_9)
+
+        return rate_pD_to_He3, rate_He3_to_pD
