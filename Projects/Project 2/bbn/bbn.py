@@ -439,6 +439,7 @@ class BBN:
         figsize: tuple[int, int] = (7, 5),
         ymin: float = 1e-3,
         ymax: float = 2.0,
+        plot_equilibrium: bool = True,
     ) -> None:
         """Plots the mass fractions A_i*Y_i for each species, as a function of logarithmic temperature ln(T)
 
@@ -447,6 +448,7 @@ class BBN:
             figsize: the plot figure size
             ymin: the minimum y-axis value
             ymax: the maximum y-axis value
+            plot_equilibrium: whether to plot the thermal equilibrium values of neutron and proton
 
         returns:
             None
@@ -470,19 +472,20 @@ class BBN:
             # Add to total sum
             total += mass_frac
 
-        # Plot thermal equilibrium value of neutron and proton
-        ax.loglog(
-            self.T,
-            self._Y_n_equil(self.T) * self.mass_numbers[0],
-            color="C0",
-            linestyle=":",
-        )
-        ax.loglog(
-            self.T,
-            self._Y_p_equil(self.T) * self.mass_numbers[1],
-            color="C1",
-            linestyle=":",
-        )
+        if plot_equilibrium:
+            # Plot thermal equilibrium value of neutron and proton
+            ax.loglog(
+                self.T,
+                self._Y_n_equil(self.T) * self.mass_numbers[0],
+                color="C0",
+                linestyle=":",
+            )
+            ax.loglog(
+                self.T,
+                self._Y_p_equil(self.T) * self.mass_numbers[1],
+                color="C1",
+                linestyle=":",
+            )
 
         # Finally plot the sum of the relative densities, which should always be equal to one
         ax.loglog(self.T, total, "k:", label=r"$\sum_i A_iY_i$")
