@@ -12,7 +12,8 @@ if __name__ == "__main__":
     # Variables
     N_species = 8  # number of interacting atom species
     T_i = 1e11  # initial temperature [K]
-    T_f = 1e8  # final temperature [K]
+    T_f = 1e7  # final temperature [K]
+    ymin = 1e-11  # minimum value for y-axis
 
     # Initialize
     bbn = BBN(N_species)
@@ -22,4 +23,4 @@ if __name__ == "__main__":
 
     # Plot mass fractions
     filename = os.path.join(FIG_DIR, "i_mass_fractions.png")
-    bbn.plot_mass_fractions(filename)
+    bbn.plot_mass_fractions(filename, ymin=ymin)
