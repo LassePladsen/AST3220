@@ -373,7 +373,11 @@ class ReactionRates:
         """
 
         rate_He3T_to_He4D = (
-            3.88e9 * rho_b * T_9 ** (-2 / 3) * np.exp(-7.72 / T_9) * (1 + 0.0540 * T_9)
+            3.88e9
+            * rho_b
+            * T_9 ** (-2 / 3)
+            * np.exp(-7.72 / T_9 ** (-1 / 3))
+            * (1 + 0.0540 * T_9 ** (1 / 3))
         )
 
         rate_He4D_to_He3T = 1.59 * rate_He3T_to_He4D * np.exp(-166.2 / T_9)
