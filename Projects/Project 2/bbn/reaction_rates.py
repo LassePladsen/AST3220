@@ -233,3 +233,149 @@ class ReactionRates:
         rate_nHe3_to_DD = 1.73 * rate_DD_to_nHe3 * np.exp(-37.94 / T_9)
 
         return rate_DD_to_nHe3, rate_nHe3_to_DD
+
+    def get_pT_to_He4(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (p + T <-> He4 + gamma),
+        described in b.5 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (p + T -> He4 + gamma), and the reverse
+        """
+
+        rate_pT_to_He4 = (
+            2.86e4
+            * rho_b
+            * T_9 ** (-2 / 3)
+            * np.exp(-3.87 / T_9)
+            * (
+                1
+                + 0.108 * T_9 ** (1 / 3)
+                + 0.466 * T_9 ** (2 / 3)
+                + 0.352 * T_9
+                + 0.300 * T_9 ** (4 / 3)
+                + 0.576 * T_9 ** (5 / 3)
+            )
+        )
+
+        rate_He4_to_pT = (
+            2.59e10 * rate_pT_to_He4 / rho_b * T_9 ** (3 / 2) * np.exp(-229.9 / T_9)
+        )
+
+        return rate_pT_to_He4, rate_He4_to_pT
+
+    def get_nHe3_to_He4(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (n + He3 <-> He4 + gamma),
+        described in b.6 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (n + He3 -> He4 + gamma), and the reverse
+        """
+
+        rate_nHe3_to_He4 = 6e3 * rho_b * T_9
+
+        rate_He4_to_nHe3 = (
+            2.6e10 * rate_nHe3_to_He4 / rho_b * T_9 ** (3 / 2) * np.exp(-238.8 / T_9)
+        )
+
+        return rate_nHe3_to_He4, rate_He4_to_nHe3
+
+    def get_DD_to_He4(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (D + D <-> He4 + gamma),
+        described in b.9 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (D + D -> He4 + gamma), and the reverse
+        """
+
+        rate_DD_to_He4 = (
+            2.41
+            * rho_b
+            * T_9 ** (-2 / 3)
+            * np.exp(-4.26 / T_9)
+            * (
+                T_9 ** (2 / 3)
+                + 0.682 * T_9
+                + 0.152 * T_9 ** (4 / 3)
+                + 0.265 * T_9 ** (5 / 3)
+            )
+        )
+
+        rate_He4_to_DD = (
+            4.5e10 * rate_DD_to_He4 / rho_b * T_9 ** (3 / 2) * np.exp(-276.7 / T_9)
+        )
+
+        return rate_DD_to_He4, rate_He4_to_DD
+
+    def get_DHe3_to_He4p(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (D + He3 <-> He4 + p),
+        described in b.10 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (D + He3 -> He4 + p), and the reverse
+        """
+
+        rate_DHe3_to_He4p = 2.6e9 * rho_b * T_9 ** (-2 / 3) * np.exp(-2.99 / T_9)
+
+        rate_He4p_to_DHe3 = 5.5 * rate_DHe3_to_He4p * np.exp(-213 / T_9)
+
+        return rate_DHe3_to_He4p, rate_He4p_to_DHe3
+
+    def get_DT_to_He4n(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (D + T <-> He4 + n),
+        described in b.11 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (D + T -> He4 + n), and the reverse
+        """
+
+        rate_DT_to_He4n = 1.38e9 * rho_b * T_9 ** (-2 / 3) * np.exp(-0.745 / T_9)
+
+        rate_He4n_to_DT = 5.5 * rate_DT_to_He4n * np.exp(-204.1 / T_9)
+
+        return rate_DT_to_He4n, rate_He4n_to_DT
+
+    def get_He3T_to_He4D(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (He3 + T <-> He4 + D),
+        described in b.15 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (He3 + T -> He4 + D), and the reverse
+        """
+
+        rate_He3T_to_He4D = (
+            3.88e9 * rho_b * T_9 ** (-2 / 3) * np.exp(-7.72 / T_9) * (1 + 0.0540 * T_9)
+        )
+
+        rate_He4D_to_He3T = 1.59 * rate_He3T_to_He4D * np.exp(-166.2 / T_9)
+
+        return rate_He3T_to_He4D, rate_He4D_to_He3T
