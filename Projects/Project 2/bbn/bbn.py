@@ -74,9 +74,12 @@ class BBN:
             The right hand sides of the ode's
         """
 
+        # Initialize differential for each species i
         dY = np.zeros_like(Y)
+        # dY[0] = dY_n, dY[1] = dY_p, ...
+
         T = np.exp(lnT)
-        T_9 = T * 1e-9
+        T_9 = T / 1e9
 
         # Neutrons and protons are always included
         Y_n = Y[0]
@@ -96,11 +99,10 @@ class BBN:
 
         if self.N_species > 2:  # Include deuterium
             Y_D = Y[2]
+            rho_b = self.background.rho_b(T)  # calculate baryon density
 
-            # n+p <-> D + gamma (b.1)
-            rate_np_to_D, rate_D_to_np = self.RR.get_np_to_D(
-                T_9, self.background.rho_b(T)
-            )
+            # (n+p <-> D + gamma) (b.1)
+            rate_np_to_D, rate_D_to_np = self.RR.get_np_to_D(T_9, rho_b)
 
             # new changes
             change_lhs = Y_D * rate_D_to_np - Y_n * Y_p * rate_np_to_D
@@ -115,9 +117,7 @@ class BBN:
             Y_T = Y[3]
 
             # (n+D <-> T+gamma) (b.3)
-            rate_nD_to_T, rate_T_to_nD = self.RR.get_nD_to_T(
-                T_9, self.background.rho_b(T)
-            )
+            rate_nD_to_T, rate_T_to_nD = self.RR.get_nD_to_T(T_9, rho_b)
 
             # new changes
             change_lhs = Y_T * rate_T_to_nD - Y_n * Y_D * rate_nD_to_T
@@ -129,9 +129,7 @@ class BBN:
             dY[3] += change_rhs
 
             # (D+D <-> p+T) (b.8)
-            rate_DD_to_pT, rate_pT_to_DD = self.RR.get_DD_to_pT(
-                T_9, self.background.rho_b(T)
-            )
+            rate_DD_to_pT, rate_pT_to_DD = self.RR.get_DD_to_pT(T_9, rho_b)
 
             # new changes
             a = Y_p * Y_T * rate_pT_to_DD
@@ -148,9 +146,7 @@ class BBN:
             Y_He3 = Y[4]
 
             # (p + D <-> He3 + gamma) (b.2)
-            rate_pD_to_He3, rate_He3_to_pD = self.RR.get_pD_to_He3(
-                T_9, self.background.rho_b(T)
-            )
+            rate_pD_to_He3, rate_He3_to_pD = self.RR.get_pD_to_He3(T_9, rho_b)
 
             # new changes
             change_lhs = Y_He3 * rate_He3_to_pD - Y_p * Y_D * rate_pD_to_He3
@@ -163,9 +159,7 @@ class BBN:
             dY[4] += change_rhs
 
             # (n + He3 <-> p + T) (b.4)
-            rate_nHe3_to_pT, rate_pT_to_nHe3 = self.RR.get_nHe3_to_pT(
-                T_9, self.background.rho_b(T)
-            )
+            rate_nHe3_to_pT, rate_pT_to_nHe3 = self.RR.get_nHe3_to_pT(T_9, rho_b)
 
             # new changes
             change_lhs = Y_p * Y_T * rate_pT_to_nHe3 - Y_n * Y_He3 * rate_nHe3_to_pT
@@ -178,9 +172,7 @@ class BBN:
             dY[3] += change_rhs
 
             # (D + D <-> n + He3) (b.7)
-            rate_DD_to_nHe3, rate_nHe3_to_DD = self.RR.get_DD_to_nHe3(
-                T_9, self.background.rho_b(T)
-            )
+            rate_DD_to_nHe3, rate_nHe3_to_DD = self.RR.get_DD_to_nHe3(T_9, rho_b)
 
             # new changes
             a = Y_n * Y_He3 * rate_nHe3_to_DD
@@ -197,9 +189,7 @@ class BBN:
             Y_He4 = Y[5]
 
             # (p + T <-> He4 + gamma) (b.5)
-            rate_pT_to_He4, rate_He4_to_pT = self.RR.get_pT_to_He4(
-                T_9, self.background.rho_b(T)
-            )
+            rate_pT_to_He4, rate_He4_to_pT = self.RR.get_pT_to_He4(T_9, rho_b)
 
             # new changes
             change_lhs = Y_He4 * rate_He4_to_pT - Y_p * Y_T * rate_pT_to_He4
@@ -211,9 +201,7 @@ class BBN:
             dY[5] += change_rhs
 
             # (n + He3 <-> He4 + gamma) (b.6)
-            rate_nHe3_to_He4, rate_He4_to_nHe3 = self.RR.get_nHe3_to_He4(
-                T_9, self.background.rho_b(T)
-            )
+            rate_nHe3_to_He4, rate_He4_to_nHe3 = self.RR.get_nHe3_to_He4(T_9, rho_b)
 
             # new changes
             change_lhs = Y_He4 * rate_He4_to_nHe3 - Y_n * Y_He3 * rate_nHe3_to_He4
@@ -225,9 +213,7 @@ class BBN:
             dY[5] += change_rhs
 
             # (D + D <-> He4 + gamma) (b.9)
-            rate_DD_to_He4, rate_He4_to_DD = self.RR.get_DD_to_He4(
-                T_9, self.background.rho_b(T)
-            )
+            rate_DD_to_He4, rate_He4_to_DD = self.RR.get_DD_to_He4(T_9, rho_b)
 
             # new changes
             a = Y_He4 * rate_He4_to_DD
@@ -240,9 +226,7 @@ class BBN:
             dY[5] += change_lhs
 
             # (D + He3 <-> He4 + p) (b.10)
-            rate_DHe3_to_He4p, rate_He4p_to_DHe3 = self.RR.get_DHe3_to_He4p(
-                T_9, self.background.rho_b(T)
-            )
+            rate_DHe3_to_He4p, rate_He4p_to_DHe3 = self.RR.get_DHe3_to_He4p(T_9, rho_b)
 
             # new changes
             change_lhs = (
@@ -257,9 +241,7 @@ class BBN:
             dY[5] += change_rhs
 
             # (D + T <-> He4 + n) (b.11)
-            rate_DT_to_He4n, rate_He4n_to_DT = self.RR.get_DT_to_He4n(
-                T_9, self.background.rho_b(T)
-            )
+            rate_DT_to_He4n, rate_He4n_to_DT = self.RR.get_DT_to_He4n(T_9, rho_b)
 
             # new changes
             change_lhs = Y_He4 * Y_n * rate_He4n_to_DT - Y_D * Y_T * rate_DT_to_He4n
@@ -272,9 +254,7 @@ class BBN:
             dY[0] += change_rhs
 
             # (He3 + T <-> He4 + D) (b.15)
-            rate_He3T_to_He4D, rate_He4D_to_He3T = self.RR.get_He3T_to_He4D(
-                T_9, self.background.rho_b(T)
-            )
+            rate_He3T_to_He4D, rate_He4D_to_He3T = self.RR.get_He3T_to_He4D(T_9, rho_b)
 
             # new changes
             change_lhs = (
@@ -292,9 +272,7 @@ class BBN:
             Y_Li7 = Y[6]
 
             # (T + He4 <-> Li7 + gamma) (b.17)
-            rate_THe4_to_Li7, rate_Li7_to_THe4 = self.RR.get_THe4_to_Li7(
-                T_9, self.background.rho_b(T)
-            )
+            rate_THe4_to_Li7, rate_Li7_to_THe4 = self.RR.get_THe4_to_Li7(T_9, rho_b)
 
             # new changes
             change_lhs = Y_Li7 * rate_Li7_to_THe4 - Y_T * Y_He4 * rate_THe4_to_Li7
@@ -307,7 +285,7 @@ class BBN:
 
             # (p + Li7 <-> He4 + He4) (b.20)
             rate_pLi7_to_He4He4, rate_He4He4_to_pLi7 = self.RR.get_pLi7_to_He4He4(
-                T_9, self.background.rho_b(T)
+                T_9, rho_b
             )
 
             # new changes
@@ -325,9 +303,7 @@ class BBN:
             Y_Be7 = Y[7]
 
             # (n + Be7 <-> p + Li7) (b.18)
-            rate_nBe7_to_pLi7, rate_pLi7_to_nBe7 = self.RR.get_nBe7_to_pLi7(
-                T_9, self.background.rho_b(T)
-            )
+            rate_nBe7_to_pLi7, rate_pLi7_to_nBe7 = self.RR.get_nBe7_to_pLi7(T_9, rho_b)
 
             # new changes
             change_lhs = (
@@ -343,7 +319,7 @@ class BBN:
 
             # (n + Be7 <-> He4 + He4) (b.21)
             rate_nBe7_to_He4He4, rate_He4He4_to_nBe7 = self.RR.get_nBe7_to_He4He4(
-                T_9, self.background.rho_b(T)
+                T_9, rho_b
             )
 
             # new changes
