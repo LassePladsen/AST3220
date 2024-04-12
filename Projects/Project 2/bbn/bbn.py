@@ -63,11 +63,11 @@ class BBN:
         self.Y = None
         self.T = None
 
-    def _get_ode_system(self, lnT: np.ndarray, Y: np.ndarray) -> list[float]:
+    def _get_ode_system(self, lnT: float, Y: np.ndarray) -> list[float]:
         """The right hand side of the coupled ODE system, for Y_i ODE's.
 
         arguments:
-            lnT: logarithmic temperature array
+            lnT: logarithmic temperature
             Y: array with initial values of Y_i like so [Y_n, Y_p, ...]
 
         returns:
@@ -478,7 +478,21 @@ class BBN:
         plt.xlabel("T [K]")
         plt.ylabel(r"Mass fraction $A_iY_i$")
 
+        # Set y-axis limits
         plt.ylim(bottom=ymin, top=ymax)
+
+        # Add 10^0=1 to y-ticks if it is not already there (to better show the mass fraction sum)
+        ticks = list(plt.yticks()[0])
+        if 1 not in ticks:
+            i = 0
+            while ticks[i] < 1:
+                i += 1
+            ticks.insert(i, 1)
+        plt.yticks(ticks)
+
+        # Set y-axis limits
+        plt.ylim(bottom=ymin, top=ymax)
+
         plt.legend()
         plt.grid()
         plt.title("Mass fractions of particles species")
