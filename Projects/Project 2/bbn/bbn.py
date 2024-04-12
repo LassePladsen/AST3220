@@ -289,10 +289,57 @@ class BBN:
             dY[2] += change_rhs
 
         if self.N_species > 6:  # include lithium-7
-            ...
+            Y_Li7 = Y[6]
+
+            # (T + He4 <-> Li7 + gamma) (b.17)
+            rate_THe4_to_Li7, rate_Li7_to_THe4 = self.RR.get_THe4_to_Li7(
+                T_9, self.background.rho_b(T)
+            )
+
+            # new changes
+            change_lhs = Y_Li7 * rate_Li7_to_THe4 - Y_T * Y_He4 * rate_THe4_to_Li7
+            change_rhs = -change_lhs
+
+            # Update ODE's
+            dY[3] += change_lhs
+            dY[5] += change_lhs
+            dY[6] += change_rhs
+
+            # (p + Li7 <-> He4 + He4) (b.20)
+            rate_pLi7_to_He4He4, rate_He4He4_to_pLi7 = self.RR.get_pLi7_to_He4He4(
+                T_9, self.background.rho_b(T)
+            )
+
+            # new changes
+            a = Y_He4 * Y_He4 * rate_He4He4_to_pLi7
+            b = Y_p * Y_Li7 * rate_pLi7_to_He4He4
+            change_lhs = 0.5 * a - b
+            change_rhs = 2 * b - a
+
+            # Update ODE's
+            dY[1] += change_lhs
+            dY[5] += change_lhs
+            dY[6] += change_rhs
 
         if self.N_species > 7:  # include beryllium-7
-            ...
+            Y_Be7 = Y[7]
+
+            # (n + Be7 <-> p + Li7) (b.18)
+            rate_nBe7_to_pLi7, rate_pLi7_to_nBe7 = self.RR.get_nBe7_to_pLi7(
+                T_9, self.background.rho_b(T)
+            )
+
+            # new changes
+            change_lhs = Y_p * Y_Li7 * rate_pLi7_to_nBe7 - Y_n * Y_Be7 * rate_nBe7_to_pLi7
+            change_rhs = -change_lhs
+
+            # Update ODE's
+            dY[0] += change_lhs
+            dY[6] += change_lhs
+            dY[1] += change_rhs
+            dY[7] += change_rhs
+
+            # TODO: b.20
 
         return -dY / self.background.H(T)
 

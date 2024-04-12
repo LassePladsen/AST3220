@@ -379,3 +379,73 @@ class ReactionRates:
         rate_He4D_to_He3T = 1.59 * rate_He3T_to_He4D * np.exp(-166.2 / T_9)
 
         return rate_He3T_to_He4D, rate_He4D_to_He3T
+
+    def get_THe4_to_Li7(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (T + He4 <-> Li7 + gamma),
+        described in b.17 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (T + He4 -> Li7 + gamma), and the reverse
+        """
+
+        rate_THe4_to_Li7 = (
+            5.28e5
+            * rho_b
+            * T_9 ** (-2 / 3)
+            * np.exp(-8.08 / T_9)
+            * (1 + 0.0516 * T_9 ** (1 / 3))
+        )
+
+        rate_Li7_to_THe4 = (
+            1.12e10 * rate_THe4_to_Li7 / rho_b * T_9 ** (3 / 2) * np.exp(-28.63 / T_9)
+        )
+
+        return rate_THe4_to_Li7, rate_Li7_to_THe4
+
+    def get_pLi7_to_He4He4(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (p + Li7 <-> He4 + He4),
+        described in b.20 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (p + Li7 -> He4 + He4), and the reverse
+        """
+
+        rate_pLi7_to_He4He4 = (
+            1.42e9
+            * rho_b
+            * T_9 ** (-2 / 3)
+            * np.exp(-8.47 / T_9)(1 + 0.0493 * T_9 ** (1 / 3))
+        )
+
+        rate_He4He4_to_pLi7 = 4.64 * rate_pLi7_to_He4He4 * np.exp(-201.3 / T_9)
+
+        return rate_pLi7_to_He4He4, rate_He4He4_to_pLi7
+
+    def get_nBe7_to_pLi7(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (n + Be7 <-> p + Li7),
+        described in b.18 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (n + Be7 -> p + Li7), and the reverse
+        """
+
+        rate_nBe7_to_pLi7 = 6.74e9 * rho_b
+
+        rate_pLi7_to_nBe7 = rate_nBe7_to_pLi7 * np.exp(-19.07 / T_9)
+
+        return rate_nBe7_to_pLi7, rate_pLi7_to_nBe7
