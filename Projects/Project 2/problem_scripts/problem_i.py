@@ -10,7 +10,7 @@ from bbn import BBN, FIG_DIR
 
 if __name__ == "__main__":
     # Variables
-    N_species = 4  # number of interacting atom species
+    N_species = 8  # number of interacting atom species
     T_i = 1e11  # initial temperature [K]
     T_f = 1e8  # final temperature [K]
 

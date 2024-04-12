@@ -330,18 +330,34 @@ class BBN:
             )
 
             # new changes
-            change_lhs = Y_p * Y_Li7 * rate_pLi7_to_nBe7 - Y_n * Y_Be7 * rate_nBe7_to_pLi7
+            change_lhs = (
+                Y_p * Y_Li7 * rate_pLi7_to_nBe7 - Y_n * Y_Be7 * rate_nBe7_to_pLi7
+            )
             change_rhs = -change_lhs
 
             # Update ODE's
             dY[0] += change_lhs
-            dY[6] += change_lhs
+            dY[7] += change_lhs
             dY[1] += change_rhs
-            dY[7] += change_rhs
+            dY[6] += change_rhs
 
-            # TODO: b.20
+            # (n + Be7 <-> He4 + He4) (b.21)
+            rate_nBe7_to_He4He4, rate_He4He4_to_nBe7 = self.RR.get_nBe7_to_He4He4(
+                T_9, self.background.rho_b(T)
+            )
 
-        return -dY / self.background.H(T)
+            # new changes
+            a = Y_He4 * Y_He4 * rate_He4He4_to_nBe7
+            b = Y_n * Y_Be7 * rate_nBe7_to_He4He4
+            change_lhs = 0.5 * a - b
+            change_rhs = 2 * b - a
+
+            # Update ODE's
+            dY[0] += change_lhs
+            dY[7] += change_lhs
+            dY[5] += change_rhs
+
+        return -dY / self.background.H(T)  # Multiply every term by -1/H
 
     def _Y_n_equil(self, T: float) -> float:
         """Thermal equilibrium value of relative number density of neutrons Y_n, equation (16) of the project.
