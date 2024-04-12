@@ -159,7 +159,7 @@ class ReactionRates:
             * (1 + 0.0979 * T_9 ** (1 / 3) + 0.642 * T_9 ** (2 / 3) + 0.440 * T_9)
         )
 
-        rate_pT_to_DD = 1.73 * rate_DD_to_pT * np.exp(-47.80 / T_9)
+        rate_pT_to_DD = 1.73 * rate_DD_to_pT * np.exp(-46.80 / T_9)
 
         return rate_DD_to_pT, rate_pT_to_DD
 
