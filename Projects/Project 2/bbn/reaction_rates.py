@@ -248,7 +248,7 @@ class ReactionRates:
         """
 
         rate_pT_to_He4 = (
-            2.86e4
+            2.87e4
             * rho_b
             * T_9 ** (-2 / 3)
             * np.exp(-3.87 / T_9)
