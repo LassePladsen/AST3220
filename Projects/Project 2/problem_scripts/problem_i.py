@@ -23,4 +23,4 @@ if __name__ == "__main__":
 
     # Plot mass fractions
     filename = os.path.join(FIG_DIR, "i_mass_fractions.png")
-    bbn.plot_mass_fractions(filename, ymin=ymin)
+    bbn.plot_mass_fractions(filename, ymin=ymin, plot_equilibrium=False)
