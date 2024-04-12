@@ -296,11 +296,25 @@ class BBN:
 
             # Update ODE's
             dY[1] += change_lhs
-            dY[5] += change_lhs
-            dY[6] += change_rhs
+            dY[6] += change_lhs
+            dY[5] += change_rhs
 
         if self.N_species > 7:  # include beryllium-7
             Y_Be7 = Y[7]
+
+            # (He3 + He4 <-> Be7 + gamma) (b.16)
+            rate_He3He4_to_Be7, rate_Be7_to_He3He4 = self.RR.get_He3He4_to_Be7(
+                T_9, rho_b
+            )
+
+            # new changes
+            change_lhs = Y_Be7 * rate_Be7_to_He3He4 - Y_He3 * Y_He4 * rate_He3He4_to_Be7
+            change_rhs = -change_lhs
+
+            # Update ODE's
+            dY[4] += change_lhs
+            dY[5] += change_lhs
+            dY[7] += change_rhs
 
             # (n + Be7 <-> p + Li7) (b.18)
             rate_nBe7_to_pLi7, rate_pLi7_to_nBe7 = self.RR.get_nBe7_to_pLi7(T_9, rho_b)

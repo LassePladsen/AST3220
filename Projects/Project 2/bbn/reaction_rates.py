@@ -469,3 +469,37 @@ class ReactionRates:
         rate_He4He4_to_nBe7 = 4.64 * rate_nBe7_to_He4He4 * np.exp(-220.4 / T_9)
 
         return rate_nBe7_to_He4He4, rate_He4He4_to_nBe7
+
+    def get_He3He4_to_Be7(self, T_9: float, rho_b: float) -> tuple[float, float]:
+        """Describes the reaction rate of (He3 + He4 <-> Be7 + gamma),
+        described in b.16 of table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            rho_b: baryon density
+
+        returns:
+            the reaction rate of (He3 + He4 -> Be7 + gamma), and the reverse
+        """
+
+        rate_He3He4_to_Be7 = (
+            4.8e6
+            * rho_b
+            * T_9 ** (-2 / 3)
+            * np.exp(-12.8 * T_9 ** (-1 / 3))
+            * (
+                1
+                + 0.0326 * T_9 ** (1 / 3)
+                - 0.219 * T_9 ** (2 / 3)
+                + 0.0499 * T_9
+                + 0.0258 * T_9 ** (4 / 3)
+                + 0.0150 * T_9 ** (5 / 3)
+            )
+        )
+
+        rate_Be7_to_He3He4 = (
+            1.12e10 * rate_He3He4_to_Be7 / rho_b * T_9 ** (3 / 2) * np.exp(-18.42 / T_9)
+        )
+
+        return rate_He3He4_to_Be7, rate_Be7_to_He3He4
