@@ -334,7 +334,7 @@ class ReactionRates:
             the reaction rate of (D + He3 -> He4 + p), and the reverse
         """
 
-        rate_DHe3_to_He4p = 2.6e9 * rho_b * T_9 ** (-2 / 3) * np.exp(-2.99 / T_9)
+        rate_DHe3_to_He4p = 2.6e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-2.99 / T_9)
 
         rate_He4p_to_DHe3 = 5.5 * rate_DHe3_to_He4p * np.exp(-213 / T_9)
 
