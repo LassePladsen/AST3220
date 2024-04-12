@@ -462,13 +462,13 @@ class BBN:
         total = 0  # total sum of mass fraction
         for i, y in enumerate(self.Y):
             # Mass fraction
-            A = y * self.mass_numbers[i]
+            mass_frac = y * self.mass_numbers[i]
 
             # Plot mass fraction of species i
-            ax.loglog(self.T, A, label=self.species_labels[i])
+            ax.loglog(self.T, mass_frac, label=self.species_labels[i])
 
             # Add to total sum
-            total += A
+            total += mass_frac
 
         # Plot thermal equilibrium value of neutron and proton
         ax.loglog(
@@ -497,11 +497,12 @@ class BBN:
 
         # Add 10^0=1 to y-ticks if it is not already there (to better show the mass fraction sum)
         ticks = list(plt.yticks()[0])
-        if 1 not in ticks:
+        new_tick = 1
+        if new_tick not in ticks:
             i = 0
-            while ticks[i] < 1:
+            while ticks[i] < new_tick:
                 i += 1
-            ticks.insert(i, 1)
+            ticks.insert(i, new_tick)
         plt.yticks(ticks)
 
         # Set y-axis limits
