@@ -22,10 +22,10 @@ class SI(Constants):
 
     c = ac.c.value  # speed of light
     k = ac.k_B.value  # Boltzmann constant
-    hbar = ac.hbar.value  # reduced Planck constant 
-    G = ac.G.value  # gravitational constant 
-    m_p = ac.m_p.value  # proton mass 
-    m_n = ac.m_n.value  # neutron mass 
+    hbar = ac.hbar.value  # reduced Planck constant
+    G = ac.G.value  # gravitational constant
+    m_p = ac.m_p.value  # proton mass
+    m_n = ac.m_n.value  # neutron mass
 
 
 class CGS(Constants):
@@ -37,4 +37,3 @@ class CGS(Constants):
     G = ac.G.cgs.value  # gravitational constant
     m_p = ac.m_p.cgs.value  # proton mass
     m_n = ac.m_n.cgs.value  # neutron mass
-
