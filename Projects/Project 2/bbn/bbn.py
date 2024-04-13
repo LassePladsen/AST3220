@@ -409,7 +409,7 @@ class BBN:
             n_points: number of points in the solution array
 
         returns:
-            the logarithmic temperature array lnT, and the solution array Y
+            the temperature array T, and the solution array Y
         """
 
         # Initial conditions
