@@ -523,7 +523,7 @@ class BBN:
 
 
 if __name__ == "__main__":
-    ### DIRECT USAGE EXAMPLE ###
+    ### DIRECT USAGE EXAMPLE (problem f)###
 
     # Variables
     N_species = 2  # number of interacting atom species
