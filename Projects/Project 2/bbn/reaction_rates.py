@@ -38,7 +38,6 @@ def lambda_np(T_9: float, q_sign: int = 1, tau: float = 1700) -> float:
         the reaction rate of n -> p
     """
 
-    print("lambda_np() WAS CALLED")
     if q_sign not in [1, -1]:
         raise ValueError("q_sign must be 1 or -1")
 
