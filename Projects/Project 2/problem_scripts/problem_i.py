@@ -1,4 +1,4 @@
-"""Script that solves problem h of the project"""
+"""Script that solves problem u of the project"""
 
 import sys
 import os
