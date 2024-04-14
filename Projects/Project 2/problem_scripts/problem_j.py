@@ -56,12 +56,13 @@ if __name__ == "__main__":
     # Time the execution time
     start = time.time()
 
+    Y_model = []
     for Omega_b0 in Omega_b0_vals:
         # Initialize
         bbn = BBN(N_species, Omega_b0=Omega_b0)
 
         # Solve ode
-        T, Y = bbn.solve_ode_system(T_i, T_f)
+        T, Y = bbn.solve_ode_system(T_i, T_f, n_points=n_points)
 
         # T and Be7 decays to respectively He3 and Li7
         Y[4] += Y[3]
@@ -75,15 +76,25 @@ if __name__ == "__main__":
         Y = np.asarray([Y_p, Y_D, Y_He4, Y_Li7])
 
         # convert to logarithmic scale
-        lnT = np.log(T)
-        lnY = np.log(Y)
+        # lnT = np.log(T)
+        # lnY = np.log(Y)
 
         # Interpolate in logspace
-        interp = interp1d(lnT, lnY, kind="cubic")
-        
+        # interp = interp1d(lnT, lnY, kind="cubic")
 
-        plt.plot()
-        plt.xscale("log")
+        Y_model.append(Y)
+    
+    # Interpolate in logspace
+    Y_model = np.array(Y_model)
+    interp = interp1d(np.log(Omega_b0_vals), np.log(Y_model), kind="cubic")
+
+    # Plot
+
+
+    plt.plot(Omega_b0, interp(Omega_b0), label="Interpolated")
+    plt.xscale("log")
+    plt.yscale("log")
+    plt.show()
 
 
 
