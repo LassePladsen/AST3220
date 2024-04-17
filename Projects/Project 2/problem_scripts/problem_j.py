@@ -64,23 +64,29 @@ if __name__ == "__main__":
         # Solve ode
         T, Y = bbn.solve_ode_system(T_i, T_f, n_points=n_points)
 
+        print(Y.shape)
+        # Extract values for final temperature
+        Y = Y[-1]
+        print(Y.shape)
+        quit()
+
         # T and Be7 decays to respectively He3 and Li7
         Y[4] += Y[3]
         Y[6] += Y[7]
 
-        # We only need p, D, He4, and Li7 from here on
+        # Set lower bound for mass fractions 
+
+
+        # We only need p, D, He4, and Li7 from here on, to save computational time
         Y_p = Y[1]
         Y_D = Y[2]
         Y_He4 = Y[5]
         Y_Li7 = Y[6]
         Y = np.asarray([Y_p, Y_D, Y_He4, Y_Li7])
 
-        # convert to logarithmic scale
-        # lnT = np.log(T)
-        # lnY = np.log(Y)
 
-        # Interpolate in logspace
-        # interp = interp1d(lnT, lnY, kind="cubic")
+    # Interpolate in logspace
+    # interp = interp1d(lnT, lnY, kind="cubic")
 
         Y_model.append(Y)
     

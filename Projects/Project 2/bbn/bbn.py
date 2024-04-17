@@ -155,7 +155,6 @@ class BBN:
             # Update ODE's
             dY[0] += change_lhs
             dY[2] += change_lhs
-
             dY[4] += change_rhs
 
             # (n + He3 <-> p + T) (b.4)
@@ -444,7 +443,7 @@ class BBN:
         """Plots the mass fractions A_i*Y_i for each species, as a function of logarithmic temperature ln(T)
 
         arguments:
-            filename: the filename to save the plot figure
+            filename: the filename to save the plot figure, if none the figure is shown
             figsize: the plot figure size
             ymin: the minimum y-axis value
             ymax: the maximum y-axis value
