@@ -85,8 +85,8 @@ if __name__ == "__main__":
         Y = np.asarray([Y_p, Y_D, Y_He4, Y_Li7])
 
 
-    # Interpolate in logspace
-    # interp = interp1d(lnT, lnY, kind="cubic")
+    # Interpolate in logspace lnT(lnOmegaB0)
+    # interp = interp1d(...)
 
         Y_model.append(Y)
     
