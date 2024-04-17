@@ -10,7 +10,7 @@ class Constants(ABC):
     """Abstract base class for constants"""
 
     T_0 = 2.725  # CMB temperature [K]
-    H_0 = H_0 = 22.686e-19  # Hubble constant with h=0.7 [1/s]
+    H_0 = H_0 = 22.685e-19  # Hubble constant with h=0.7 [1/s]
 
     def __init__(self) -> None:
         # Calculate critical density today
