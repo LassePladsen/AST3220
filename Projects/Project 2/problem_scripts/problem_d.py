@@ -1,3 +1,5 @@
+"""Script that solves problem d of the project"""
+
 import os
 import sys
 
