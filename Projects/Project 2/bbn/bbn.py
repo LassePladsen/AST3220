@@ -222,7 +222,7 @@ class BBN:
 
             # Update ODE's
             dY[2] += change_lhs
-            dY[5] += change_lhs
+            dY[5] += change_rhs
 
             # (D + He3 <-> He4 + p) (b.10)
             rate_DHe3_to_He4p, rate_He4p_to_DHe3 = self.RR.get_DHe3_to_He4p(T_9, rho_b)
@@ -236,8 +236,8 @@ class BBN:
             # Update ODE's
             dY[2] += change_lhs
             dY[4] += change_lhs
-            dY[1] += change_rhs
             dY[5] += change_rhs
+            dY[1] += change_rhs
 
             # (D + T <-> He4 + n) (b.11)
             rate_DT_to_He4n, rate_He4n_to_DT = self.RR.get_DT_to_He4n(T_9, rho_b)
