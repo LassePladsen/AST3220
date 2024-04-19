@@ -20,6 +20,18 @@ FIG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "figures
 if not os.path.exists(FIG_DIR):
     os.makedirs(FIG_DIR)
 
+# Color name array for consistent colors when plotting
+COLORS = [
+    "C0",
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+]  #
+
 
 class BBN:
     """
@@ -42,6 +54,7 @@ class BBN:
 
         # Constants
         self.N_species = N_species
+
         self.species_labels = [  # species names
             "n",
             "p",
@@ -52,7 +65,6 @@ class BBN:
             "Li7",
             "Be7",
         ]
-
         self.mass_numbers = [1, 1, 2, 3, 3, 4, 7, 7]  # The particle atomic numbers
 
         # Initialize the reaction rates and background
@@ -473,13 +485,13 @@ class BBN:
             ax.loglog(
                 self.T,
                 self._Y_n_equil(self.T) * self.mass_numbers[0],
-                color="C0",
+                color=COLORS[0],
                 linestyle=":",
             )
             ax.loglog(
                 self.T,
                 self._Y_p_equil(self.T) * self.mass_numbers[1],
-                color="C1",
+                color=COLORS[1],
                 linestyle=":",
             )
 
