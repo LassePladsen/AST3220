@@ -7,7 +7,7 @@ import numpy as np
 
 
 # These three functions are extracted from the class to avoid calculating the integral
-# every time a new class instance is created
+# every time a new class instance is created, like in the later problems
 
 
 @lru_cache
@@ -24,7 +24,7 @@ def T_nu(T: float) -> float:
 
 
 @lru_cache
-def lambda_np(T_9: float, q_sign: int = 1, tau: float = 1700) -> float:
+def lambda_n_top(T_9: float, q_sign: int = 1) -> float:
     """Describes the reaction rate of n -> p, equation (12) of the project,
     described in a.3 table 2 of the project reference material:
     https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
@@ -32,10 +32,9 @@ def lambda_np(T_9: float, q_sign: int = 1, tau: float = 1700) -> float:
     arguments:
         T_9: temperature [10^9 K]
         q: Sign to use for the mass difference ratio value, 1 or -1
-        tau: free neutron decay time [s]
 
     returns:
-        the reaction rate of n -> p
+        the reaction rate of n -> p [1/s]
     """
 
     if q_sign not in [1, -1]:
@@ -47,30 +46,34 @@ def lambda_np(T_9: float, q_sign: int = 1, tau: float = 1700) -> float:
 
     q = 2.53  # mass difference ratio [(m_n - m_p) / m_e]
 
+    tau = 1700  # free neutron decay time [s]
+
     def I1(x):
         """Integrand of the first integral in equation (12) of the project."""
+        a = x + q_sign * q
         return (
-            (x + q_sign * q)
-            * (x + q_sign * q)
+            a
+            * a
             * np.sqrt(x * x - 1)
             * x
-            / ((1 + np.exp(x * Z)) * (1 + np.exp(Z_nu * -(x + q_sign * q))))
+            / ((1 + np.exp(x * Z)) * (1 + np.exp(-Z_nu * a)))
         )
 
     def I2(x):
         """Integrand of the second integral in equation (12) of the project."""
+        a = x - q_sign * q
         return (
-            (x - q_sign * q)
-            * (x - q_sign * q)
+            a
+            * a
             * np.sqrt(x * x - 1)
             * x
-            / ((1 + np.exp(-x * Z)) * (1 + np.exp(Z_nu * (x - q_sign * q))))
+            / ((1 + np.exp(-x * Z)) * (1 + np.exp(Z_nu * a)))
         )
 
     return 1 / tau * (quad(I1, 1, np.inf)[0] + quad(I2, 1, np.inf)[0])
 
 
-def lambda_pn(T_9: float) -> float:
+def lambda_p_to_n(T_9: float) -> float:
     """Describes the reaction rate of p -> n, equation (13) of the project,
     described in a.3 table 2 of the project reference material:
     https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
@@ -79,9 +82,9 @@ def lambda_pn(T_9: float) -> float:
         T_9: temperature [10^9 K]
 
     returns:
-        the reaction rate of p -> n
+        the reaction rate of p -> n [1/s]
     """
-    return lambda_np(T_9, -1)
+    return lambda_n_top(T_9, -1)
 
 
 class ReactionRates:
@@ -94,9 +97,9 @@ class ReactionRates:
             T_9: temperature [10^9 K]
 
         returns:
-            the reaction rates of n -> p and p -> n
+            the reaction rates of n -> p and p -> n  [1/s]
         """
-        return lambda_np(T_9), lambda_pn(T_9)
+        return lambda_n_top(T_9), lambda_p_to_n(T_9)
 
     def get_np_to_D(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of n + p -> D + gamma and the reverse,
@@ -108,7 +111,7 @@ class ReactionRates:
             rho_b: baryon density [g/cm^3]
 
         returns:
-            the reaction rate of n + p -> D + gamma, and the reverse
+            the reaction rate of n + p -> D + gamma, and the reverse  [1/s]
         """
 
         rate_np_to_Dgamma = 2.5e4 * rho_b  # b.1
@@ -128,7 +131,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of n + p -> D + gamma, and the reverse
+            the reaction rate of n + p -> D + gamma, and the reverse  [1/s]
         """
 
         rate_nD_to_Tgamma = rho_b * (75.5 + 1250 * T_9)
@@ -148,7 +151,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of D + D -> p + T, and the reverse
+            the reaction rate of D + D -> p + T, and the reverse [1/s]
         """
 
         rate_DD_to_pT = (
@@ -173,7 +176,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (p + D -> He3 + gamma), and the reverse
+            the reaction rate of (p + D -> He3 + gamma), and the reverse [1/s]
         """
 
         rate_pD_to_He3 = (
@@ -200,7 +203,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (n + He3 -> p + T), and the reverse
+            the reaction rate of (n + He3 -> p + T), and the reverse [1/s]
         """
 
         rate_nHe3_to_pT = 7.06e8 * rho_b
@@ -219,7 +222,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (D + D -> n + He3), and the reverse
+            the reaction rate of (D + D -> n + He3), and the reverse [1/s]
         """
 
         rate_DD_to_nHe3 = (
@@ -244,7 +247,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (p + T -> He4 + gamma), and the reverse
+            the reaction rate of (p + T -> He4 + gamma), and the reverse [1/s]
         """
 
         rate_pT_to_He4 = (
@@ -278,7 +281,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (n + He3 -> He4 + gamma), and the reverse
+            the reaction rate of (n + He3 -> He4 + gamma), and the reverse [1/s]
         """
 
         rate_nHe3_to_He4 = 6e3 * rho_b * T_9
@@ -299,7 +302,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (D + D -> He4 + gamma), and the reverse
+            the reaction rate of (D + D -> He4 + gamma), and the reverse [1/s]
         """
 
         rate_DD_to_He4 = (
@@ -331,7 +334,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (D + He3 -> He4 + p), and the reverse
+            the reaction rate of (D + He3 -> He4 + p), and the reverse [1/s]
         """
 
         rate_DHe3_to_He4p = 2.6e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-2.99 / T_9)
@@ -350,7 +353,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (D + T -> He4 + n), and the reverse
+            the reaction rate of (D + T -> He4 + n), and the reverse [1/s]
         """
 
         rate_DT_to_He4n = 1.38e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-0.745 / T_9)
@@ -369,7 +372,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (He3 + T -> He4 + D), and the reverse
+            the reaction rate of (He3 + T -> He4 + D), and the reverse [1/s]
         """
 
         rate_He3T_to_He4D = (
@@ -394,7 +397,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (T + He4 -> Li7 + gamma), and the reverse
+            the reaction rate of (T + He4 -> Li7 + gamma), and the reverse [1/s]
         """
 
         rate_THe4_to_Li7 = (
@@ -421,7 +424,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (p + Li7 -> He4 + He4), and the reverse
+            the reaction rate of (p + Li7 -> He4 + He4), and the reverse [1/s]
         """
 
         rate_pLi7_to_He4He4 = (
@@ -446,7 +449,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (n + Be7 -> p + Li7), and the reverse
+            the reaction rate of (n + Be7 -> p + Li7), and the reverse [1/s]
         """
 
         rate_nBe7_to_pLi7 = 6.74e9 * rho_b
@@ -465,7 +468,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (n + Be7 -> He4 + He4), and the reverse
+            the reaction rate of (n + Be7 -> He4 + He4), and the reverse [1/s]
         """
 
         rate_nBe7_to_He4He4 = 1.2e7 * rho_b * T_9
@@ -484,7 +487,7 @@ class ReactionRates:
             rho_b: baryon density
 
         returns:
-            the reaction rate of (He3 + He4 -> Be7 + gamma), and the reverse
+            the reaction rate of (He3 + He4 -> Be7 + gamma), and the reverse [1/s]
         """
 
         rate_He3He4_to_Be7 = (
@@ -507,3 +510,26 @@ class ReactionRates:
         )
 
         return rate_He3He4_to_Be7, rate_Be7_to_He3He4
+
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+
+    fig, axs = plt.subplots(2, sharex=True)
+    T9 = np.logspace(11, 7, 200) / 1e9
+    n = np.zeros_like(T9)
+    p = np.zeros_like(T9)
+    for i, Ti in enumerate(T9):
+        n[i] = lambda_n_top(Ti)
+        p[i] = lambda_p_to_n(Ti)
+    T = T9 * 1e9
+    axs[0].loglog(T, n)
+    axs[0].set_title("n -> p")
+    axs[0].grid(True)
+    axs[1].loglog(T, p)
+    axs[1].set_title("p -> n")
+    axs[1].grid(True)
+    fig.supxlabel("T [K]")
+    fig.supylabel("Reaction rate")
+    plt.gca().invert_xaxis()
+    plt.show()
