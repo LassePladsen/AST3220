@@ -492,9 +492,9 @@ class BBN:
         plt.ylabel(r"Mass fraction $A_iY_i$")
 
         # Set y-axis limits
-        # plt.ylim(bottom=ymin, top=ymax)
+        plt.ylim(bottom=ymin, top=ymax)
 
-        """# Add 10^0=1 to y-ticks if it is not already there (to better show the mass fraction sum)
+        # Add 10^0=1 to y-ticks if it is not already there (to better show the mass fraction sum)
         ticks = list(plt.yticks()[0])
         new_tick = 1
         if new_tick not in ticks:
@@ -504,8 +504,8 @@ class BBN:
             ticks.insert(i, new_tick)
         plt.yticks(ticks)
 
-        # Set y-axis limits
-        plt.ylim(bottom=ymin, top=ymax)"""
+        # Set the new configured y-axis limits
+        plt.ylim(bottom=ymin, top=ymax)
 
         plt.legend()
         plt.grid(True)
