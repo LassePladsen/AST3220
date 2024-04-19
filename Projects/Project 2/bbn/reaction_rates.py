@@ -36,7 +36,6 @@ class ReactionRates:
         returns:
             the reaction rate of n -> p [1/s]
         """
-        print("CALLED!")
 
         if q_sign not in [1, -1]:
             raise ValueError("q_sign must be 1 or -1")
