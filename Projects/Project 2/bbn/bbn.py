@@ -6,13 +6,14 @@ import warnings
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
+from scipy.interpolate import interp1d
 
 from reaction_rates import ReactionRates
 from background import Background
+from stats import xi_squared, bayesian_probability
 
 # Ignore overflow runtimewarning
 warnings.filterwarnings("ignore", category=RuntimeWarning)
-
 
 # Directory to save figures
 FIG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "figures"))
@@ -526,6 +527,242 @@ class BBN:
         plt.title("Mass fractions of particles species")
 
         # Save figure if filename is given
+        if filename:
+            plt.savefig(filename)
+        else:
+            plt.show()
+
+    @staticmethod
+    def _interpolate_Y_of_Omegab0(
+        T_i: float,
+        T_f: float,
+        Omega_b0_vals: np.ndarray,
+        Y_min: float = 1e-20,
+    ) -> tuple[callable, callable, callable, callable]:
+        """Interpolates the mass fractions Y_i as a function of Omega_b0 to give a smooth
+        function graph. Interpolates in logspace (base 10)
+
+        arguments:
+            T_i: initial temperature [K]
+            T_f: final temperature [K]
+            Omega_b0_vals: array of Omega_b0 values to interpolate
+            Y_min: lower bound value for mass fractions, everything below this value is set to Y_min
+
+        returns:
+            Tuple containing the logspace interpolated mass fractions functions logY_i(logOmega_b0)
+            for i = D, He3, He4, and Li7
+        """
+        Y_model = np.zeros((5, len(Omega_b0_vals)))
+        for i, Omega_b0 in enumerate(Omega_b0_vals):
+            # Initialize instance
+            bbn = BBN(N_species=8, Omega_b0=Omega_b0)
+
+            # Solve ode for this Omega_b0
+            _, Y = bbn.solve_BBN(T_i, T_f)
+
+            # Extract mass fraction values for final temperature
+            Y = Y[:, -1]
+
+            # T and Be7 decays to respectively He3 and Li7
+            Y[4] += Y[3]
+            Y[6] += Y[7]
+
+            # Set lower bound for mass fractions
+            Y[Y < Y_min] = Y_min
+
+            # Extract mass fractions
+            Y_p = Y[1]
+            Y_D = Y[2]
+            Y_He3 = Y[4]
+            Y_He4 = Y[5]
+            Y_Li7 = Y[6]
+            Y = np.asarray([Y_p, Y_D, Y_He3, Y_He4, Y_Li7])
+
+            # Append processed mass fractions
+            Y_model[:, i] = Y
+
+        # Interpolate each function in logspace
+        kind = "cubic"
+        Y_p, Y_D, Y_He3, Y_He4, Y_Li7 = Y_model
+
+        Y_p_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_p), kind=kind)
+        Y_D_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_D), kind=kind)
+        Y_He3_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_He3), kind=kind)
+        Y_He4_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_He4), kind=kind)
+        Y_Li7_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_Li7), kind=kind)
+
+        return Y_p_interp, Y_D_interp, Y_He3_interp, Y_He4_interp, Y_Li7_interp
+
+    @staticmethod
+    def plot_relic_abundances(
+        T_i: float,
+        T_f: float,
+        Omega_b0_vals: np.ndarray,
+        Y_min: float = 1e-20,
+        n_plot: int = 300,
+        filename: str = None,
+        figsize: tuple[int, int] = (7, 5),
+    ) -> None:
+        """Plots the relative abundances of elements Y_i/Y_p in the BBM, as a function
+        of the baryon density parameter Omega_b0, by interpolating. Also finds the most likely
+        Omega_b0 value by using Bayesian probability.
+
+        arguments:
+            T_i: initial temperature [K]
+            T_f: final temperature [K]
+            Omega_b0_vals: array of Omega_b0 values used to calculate before interpolation
+            Y_min: lower bound value for mass fractions, everything below is set to this
+            n_plot: number of points to use for plotting, after the interpolation
+            filename: the filename to save the plot figure, if none the figure is shown
+            figsize: the plot figure size
+        """
+
+        # Observed values for relic abundances Y_i/Y_p
+        D_ab = 2.57e-5
+        D_ab_err = 0.03e-5
+        Li7_ab = 1.6e-10
+        Li7_ab_err = 0.3e-10
+
+        # Observed value for mass fraction 4Y_He4
+        He4_mass_frac_obs = 0.254
+        He4_mass_frac_err = 0.003
+
+        # Solve ODE for the values nad interpolate
+        (
+            Y_p_interp_func,
+            Y_D_interp_func,
+            Y_He3_interp_func,
+            Y_He4_interp_func,
+            Y_Li7_interp_func,
+        ) = BBN._interpolate_Y_of_Omegab0(
+            T_i, T_f, Omega_b0_vals, N_species=8, Y_min=Y_min
+        )
+
+        # Array to interpolate graph with
+        Omega_b0_arr = np.logspace(
+            np.log10(Omega_b0_vals[0]), np.log10(Omega_b0_vals[-1]), n_plot
+        )
+        log_Omega_b0_arr = np.log10(Omega_b0_arr)
+
+        # Interpolate with these values
+        Y_p_interp = 10 ** (Y_p_interp_func(log_Omega_b0_arr))
+        Y_D_interp = 10 ** (Y_D_interp_func(log_Omega_b0_arr))
+        Y_He3_interp = 10 ** (Y_He3_interp_func(log_Omega_b0_arr))
+        Y_He4_interp = 10 ** (Y_He4_interp_func(log_Omega_b0_arr))
+        Y_Li7_interp = 10 ** (Y_Li7_interp_func(log_Omega_b0_arr))
+
+        He4_mass_frac_interp = 4 * Y_He4_interp
+
+        # Plotting
+        fig, axs = plt.subplots(
+            3,
+            1,
+            figsize=figsize,
+            sharex=True,
+            height_ratios=[1, 3, 1],
+        )
+        # Plot 4Y_He4
+        axs[0].plot(
+            Omega_b0_arr,
+            He4_mass_frac_interp,
+            label="4Y_He4",
+            color=COLORS[5],
+        )
+
+        # Plot errorbar area for observed value of 4Y_He4
+        opacity = 0.3
+        axs[0].fill_between(
+            Omega_b0_arr,
+            He4_mass_frac_obs - He4_mass_frac_err,
+            He4_mass_frac_obs + He4_mass_frac_err,
+            alpha=opacity,
+            color=COLORS[5],
+        )
+
+        y_min = 0.2  # minimum value for y-axis in the top 4Y_He4 relic abundance plot
+        y_max = 0.3  # max value -||-
+        axs[0].set_ylim(bottom=y_min, top=y_max)
+        axs[0].set_ylabel(r"$4Y_{He4}$")
+        axs[0].tick_params(
+            axis="both", which="both", direction="in", top=True, right=True
+        )
+        axs[0].legend()
+        axs[0].set_xscale("log")
+        axs[0].grid(True)
+
+        # Plot Y_i/Y_p for D, He3, and Li7
+        axs[1].loglog(Omega_b0_arr, Y_D_interp / Y_p_interp, label="D", color=COLORS[2])
+        axs[1].loglog(
+            Omega_b0_arr,
+            Y_He3_interp / Y_p_interp,
+            label="He3",
+            color=COLORS[4],
+        )
+        axs[1].loglog(
+            Omega_b0_arr,
+            Y_Li7_interp / Y_p_interp,
+            label="Li7",
+            color=COLORS[-2],
+        )
+
+        # Plot errorbar areas for observed values of Y_i/Y_p for D and Li7 (no error for He3)
+        axs[1].fill_between(
+            Omega_b0_arr,
+            D_ab - D_ab_err,
+            D_ab + D_ab_err,
+            alpha=opacity,
+            color=COLORS[2],
+        )
+        axs[1].fill_between(
+            Omega_b0_arr,
+            Li7_ab - Li7_ab_err,
+            Li7_ab + Li7_ab_err,
+            alpha=opacity,
+            color=COLORS[-2],
+        )
+
+        y_min = 0.5e-10  # minimum value for y-axis in the middle Y_i/Y_p relic abundance plot
+        # y_max = 1e-3  # max value -||-
+        axs[1].set_ylim(bottom=y_min)
+        axs[1].set_ylabel(r"$Y_i/Y_p$")
+        axs[1].tick_params(
+            axis="both", which="both", direction="in", top=True, right=True
+        )
+        axs[1].legend()
+        axs[1].grid(True)
+
+        # Calculate likelihood as a function of Omega_b0, by using interpolated solutions
+        likelihood = [
+            bayesian_probability(
+                np.asarray(
+                    [
+                        Y_D_interp[i],
+                        Y_Li7_interp[i],
+                        He4_mass_frac_interp[i],
+                    ]
+                ),
+                np.asarray([D_ab, Li7_ab, He4_mass_frac_obs]),
+                np.asarray([D_ab_err, Li7_ab_err, He4_mass_frac_err]),
+            )
+            for i in range(n_plot)
+        ]
+
+        # Plot Bayesian likelihood
+        axs[2].plot(Omega_b0_arr, likelihood)
+        axs[2].set_xscale("log")
+        axs[2].tick_params(
+            axis="both", which="both", direction="in", top=True, right=True
+        )
+        axs[2].legend()
+        axs[2].grid(True)
+        axs[2].set_ylabel("Bayesian\nlikelihood")
+
+        # Plot config
+        fig.suptitle("Relic abundance analysis")
+        fig.supxlabel(r"$\Omega_{b0}$")
+        # plt.ylabel(r"$Y_i/Y_p$")
+        # plt.tight_layout()
+        # plt.subplots_adjust(hspace=0.1)
         if filename:
             plt.savefig(filename)
         else:
