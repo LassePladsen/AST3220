@@ -15,7 +15,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 
-from bbn import BBN, FIG_DIR
+from bbn import BBN, FIG_DIR, COLORS
 
 
 def xi_squared(predicted: np.ndarray, observed: np.ndarray, error: np.ndarray) -> float:
@@ -30,6 +30,28 @@ def xi_squared(predicted: np.ndarray, observed: np.ndarray, error: np.ndarray) -
         the chi-squared value
     """
     return np.sum(((predicted - observed) / error) ** 2)
+
+
+def bayesian_probability(
+    predicted: np.ndarray, observed: np.ndarray, error: np.ndarray
+) -> float:
+    """Calculates the Bayesian probability for an array with predicted values,
+    compared to array with observed values and array with the observed errors.
+    Equation (28) of the project.
+
+    arguments:
+        predicted: the predicted values
+        observed: the observed values
+        error: the error in the observed values
+
+    returns:
+        the Bayesian probability
+    """
+    return (
+        1
+        / (np.sqrt(2 * error ** (2 * len(predicted))))
+        * np.exp(-xi_squared(predicted, observed, error))
+    )
 
 
 def interpolate_Y_func_of_Omegab0(
@@ -53,7 +75,7 @@ def interpolate_Y_func_of_Omegab0(
         bbn = BBN(N_species, Omega_b0=Omega_b0)
 
         # Solve ode
-        _, Y = bbn.solve_ode_system(T_i, T_f)
+        _, Y = bbn.solve_BBN(T_i, T_f)
 
         # Extract mass fraction values for final temperature
         Y = Y[:, -1]
@@ -91,24 +113,27 @@ if __name__ == "__main__":
     # Variables
     T_i = 1e11  # initial temperature [K]
     T_f = 1e7  # final temperature [K]
-    y_min = 1e-11  # minimum value for y-axis
+    y_min = (
+        0.5e-10  # minimum value for y-axis in the middle Y_i/Y_p relic abundance plot
+    )
     Y_min = 1e-20  # lower bound value for mass fractions Y_i
     Omega_b0_min = 1e-2  # minimum value for Omega_b0
     Omega_b0_max = 1  # maximum value for Omega_b0
-    n = 10  # number of points for Omega_b0 before interpolation
+    n = 4  # number of points for Omega_b0 before interpolation
     n_plot = 1000  # number of points for Omega_b0 after interpolation
     Omega_b0_vals = np.logspace(
         np.log10(Omega_b0_min), np.log10(Omega_b0_max), n
     )  # baryon density parameter today
     filename = os.path.join(FIG_DIR, "j_relic_abundances.png")  # plot filename
+    figsize = (6, 5)  # figure size
 
     # Observed values for relic abundances Y_i/Y_p
-    D_ab_err = 2.57e-5
+    D_ab = 2.57e-5
     D_ab_err = 0.03e-5
     Li7_ab = 1.6e-10
     Li7_ab_err = 0.3e-10
 
-    # Observed value for He4 mass fraction 4Y_He4
+    # Observed value for mass fraction 4Y_He4
     mass_frac_He4 = 0.254
     mass_frac_He4_err = 0.003
 
@@ -118,18 +143,107 @@ if __name__ == "__main__":
     )
 
     # Array to interpolate graph
-    Omega_b0_arr = np.logspace(np.log10(Omega_b0_vals[0]), np.log10(Omega_b0_vals[-1]), n_plot)
+    Omega_b0_arr = np.logspace(
+        np.log10(Omega_b0_vals[0]), np.log10(Omega_b0_vals[-1]), n_plot
+    )
     log_Omega_b0_arr = np.log10(Omega_b0_arr)
 
+    # Plotting
+    fig, axs = plt.subplots(
+        3,
+        1,
+        figsize=figsize,
+        sharex=True,
+        height_ratios=[1, 3, 1],
+    )
+    # Plot 4Y_He4
+    axs[0].plot(
+        Omega_b0_arr,
+        4 * 10 ** (Y_He4_interp(log_Omega_b0_arr)),
+        label="4Y_He4",
+        color=COLORS[5],
+    )
+
+    # Plot errorbar area for observed value of 4Y_He4
+    opacity = 0.3
+    axs[0].fill_between(
+        Omega_b0_arr,
+        mass_frac_He4 - mass_frac_He4_err,
+        mass_frac_He4 + mass_frac_He4_err,
+        alpha=opacity,
+        color=COLORS[5],
+    )
+
+    axs[0].set_ylabel(r"$4Y_{He4}$")
+    axs[0].tick_params(axis="both", which="both", direction="in", top=True, right=True)
+    axs[0].legend()
+    axs[0].set_xscale("log")
+    axs[0].grid(True)
+
     # Plot Y_i/Y_p for D, He3, and Li7
-    plt.loglog(Omega_b0_arr, 10**(Y_D_interp(log_Omega_b0_arr)), label="D")
-    plt.loglog(Omega_b0_arr, 10**(Y_He4_interp(log_Omega_b0_arr)), label="He3")
-    plt.loglog(Omega_b0_arr, 10**(Y_Li7_interp(log_Omega_b0_arr)), label="Li7")
+    axs[1].loglog(
+        Omega_b0_arr, 10 ** (Y_D_interp(log_Omega_b0_arr)), label="D", color=COLORS[2]
+    )
+    axs[1].loglog(
+        Omega_b0_arr,
+        10 ** (Y_He4_interp(log_Omega_b0_arr)),
+        label="He3",
+        color=COLORS[4],
+    )
+    axs[1].loglog(
+        Omega_b0_arr,
+        10 ** (Y_Li7_interp(log_Omega_b0_arr)),
+        label="Li7",
+        color=COLORS[-2],
+    )
+
+    # Plot errorbar areas for observed values of Y_i/Y_p for D and Li7 (no error for He3)
+    axs[1].fill_between(
+        Omega_b0_arr,
+        D_ab - D_ab_err,
+        D_ab + D_ab_err,
+        alpha=opacity,
+        color=COLORS[2],
+    )
+    axs[1].fill_between(
+        Omega_b0_arr,
+        Li7_ab - Li7_ab_err,
+        Li7_ab + Li7_ab_err,
+        alpha=opacity,
+        color=COLORS[-2],
+    )
+
+    axs[1].set_ylim(bottom=y_min)
+    axs[1].set_ylabel(r"$Y_i/Y_p$")
+    axs[1].tick_params(axis="both", which="both", direction="in", top=True, right=True)
+    axs[1].legend()
+    axs[1].grid(True)
+
+    # Calculate Bayesian likelihood
+    model = np.asarray(
+        [
+            10 ** (Y_D_interp(log_Omega_b0_arr)),
+            10 ** (Y_He4_interp(log_Omega_b0_arr)),
+            10 ** (Y_Li7_interp(log_Omega_b0_arr)),
+        ]
+    )
+    observed = np.asarray([D_ab, mass_frac_He4, Li7_ab])
+    error = np.asarray([D_ab_err, mass_frac_He4_err, Li7_ab_err])
+
+    likelihood = bayesian_probability(model, observed, error)
+
+    # Plot Bayesian likelihood
+    axs[2].plot(Omega_b0_arr, likelihood)
+    axs[2].set_xscale("log")
+    axs[2].tick_params(axis="both", which="both", direction="in", top=True, right=True)
+    axs[2].legend()
+    axs[2].grid(True)
+    axs[2].set_ylabel("Bayesian\nlikelihood")
 
     # Plot config
-    plt.legend()
-    plt.xlabel(r"$\Omega_{b0}$")
-    plt.ylabel("r$Y_i$")
+    fig.suptitle("Relic abundance analysis")
+    fig.supxlabel(r"$\Omega_{b0}$")
     # plt.ylabel(r"$Y_i/Y_p$")
-    plt.grid()
+    # plt.tight_layout()
+    # plt.subplots_adjust(hspace=0.1)
     plt.savefig(filename)
