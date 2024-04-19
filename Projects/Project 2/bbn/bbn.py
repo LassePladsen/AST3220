@@ -414,7 +414,7 @@ class BBN:
         # Solve the ODE system
         sol = solve_ivp(
             self._get_ode_system,
-            [np.log(T_i), np.log(T_f)],
+            [np.log(T_i), np.log(T_f)],  # the equations are defined over ln(T)
             y0=self.get_initial_conditions(T_i),
             method="Radau",
             rtol=tol,
