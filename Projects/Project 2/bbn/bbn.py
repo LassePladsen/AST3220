@@ -346,6 +346,8 @@ class BBN:
             dY[7] += change_lhs
             dY[5] += change_rhs
 
+        print(-dY / self.background.H(T))
+        quit()
         return -dY / self.background.H(T)  # Multiply every term by -1/H
 
     def _Y_n_equil(self, T: float) -> float:
@@ -397,10 +399,10 @@ class BBN:
         # The rest of the species are set to zero initially
         return Y_i
 
-    def solve_ode_system(
+    def solve_BBN(
         self, T_i: float, T_f: float, n_points: int = 1000, tol: float = 1e-12
     ) -> tuple[np.ndarray, np.ndarray]:
-        """Solves the ode system of the equations of motion for Y_n and Y_p
+        """Solves the BBN ode system of the equations of motion for Y_i
 
         arguments:
             T_i: initial temperature [K]
@@ -411,14 +413,11 @@ class BBN:
             the temperature array T, and the solution array Y
         """
 
-        # Initial conditions
-        Y = self.get_initial_conditions(T_i)
-
         # Solve the ODE system
         sol = solve_ivp(
             self._get_ode_system,
             [np.log(T_i), np.log(T_f)],
-            Y,
+            y0=self.get_initial_conditions(T_i),
             method="Radau",
             rtol=tol,
             atol=tol,
@@ -495,9 +494,9 @@ class BBN:
         plt.ylabel(r"Mass fraction $A_iY_i$")
 
         # Set y-axis limits
-        plt.ylim(bottom=ymin, top=ymax)
+        # plt.ylim(bottom=ymin, top=ymax)
 
-        # Add 10^0=1 to y-ticks if it is not already there (to better show the mass fraction sum)
+        """# Add 10^0=1 to y-ticks if it is not already there (to better show the mass fraction sum)
         ticks = list(plt.yticks()[0])
         new_tick = 1
         if new_tick not in ticks:
@@ -508,10 +507,12 @@ class BBN:
         plt.yticks(ticks)
 
         # Set y-axis limits
-        plt.ylim(bottom=ymin, top=ymax)
+        plt.ylim(bottom=ymin, top=ymax)"""
 
         plt.legend()
-        plt.grid()
+        plt.grid(True)
+        # Grid ticks inside, and on all sides
+        ax.tick_params(axis="both", which="both", direction="in", top=True, right=True)
         plt.title("Mass fractions of particles species")
 
         # Save figure if filename is given
@@ -537,7 +538,7 @@ if __name__ == "__main__":
     bbn = BBN(N_species, N_eff=N_eff, unit=unit)
 
     # Solve ode
-    bbn.solve_ode_system(T_i, T_f, n_points)
+    bbn.solve_BBN(T_i, T_f, n_points)
 
     # Plot
     bbn.plot_mass_fractions(filename)

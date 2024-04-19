@@ -18,7 +18,7 @@ if __name__ == "__main__":
     bbn = BBN(N_species)
 
     # Solve ode
-    bbn.solve_ode_system(T_i, T_f)
+    bbn.solve_BBN(T_i, T_f)
 
     # Plot mass fractions
     filename = os.path.join(FIG_DIR, "h_mass_fractions.png")
