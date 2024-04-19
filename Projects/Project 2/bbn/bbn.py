@@ -603,7 +603,7 @@ class BBN:
         filename: str = None,
         figsize: tuple[int, int] = (7, 5),
     ) -> None:
-        """Plots the relative abundances of elements Y_i/Y_p in the BBM, as a function
+        """Plots the relic abundances of elements Y_i/Y_p in the BBN process, as a function
         of the baryon density parameter Omega_b0, by interpolating. Also finds the most likely
         Omega_b0 value by using Bayesian probability.
 
@@ -634,9 +634,7 @@ class BBN:
             Y_He3_interp_func,
             Y_He4_interp_func,
             Y_Li7_interp_func,
-        ) = BBN._interpolate_Y_of_Omegab0(
-            T_i, T_f, Omega_b0_vals, N_species=8, Y_min=Y_min
-        )
+        ) = BBN._interpolate_Y_of_Omegab0(T_i, T_f, Omega_b0_vals, Y_min=Y_min)
 
         # Array to interpolate graph with
         Omega_b0_arr = np.logspace(
