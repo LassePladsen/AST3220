@@ -6,89 +6,86 @@ from scipy.integrate import quad
 import numpy as np
 
 
-# These three functions are extracted from the class to avoid calculating the integral
-# every time a new class instance is created, like in the later problems
-
-
-@lru_cache
-def T_nu(T: float) -> float:
-    """Neutrino temperature conversion
-
-    arguments:
-        T: temperature [K]
-
-    returns:
-        the neutrino temperature
-    """
-    return (4 / 11) ** (1 / 3) * T
-
-
-@lru_cache
-def lambda_n_top(T_9: float, q_sign: int = 1) -> float:
-    """Describes the reaction rate of n -> p, equation (12) of the project,
-    described in a.3 table 2 of the project reference material:
-    https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
-
-    arguments:
-        T_9: temperature [10^9 K]
-        q: Sign to use for the mass difference ratio value, 1 or -1
-
-    returns:
-        the reaction rate of n -> p [1/s]
-    """
-
-    if q_sign not in [1, -1]:
-        raise ValueError("q_sign must be 1 or -1")
-
-    b = 5.93
-    Z = b / T_9
-    Z_nu = b / (T_nu(T_9))
-
-    q = 2.53  # mass difference ratio [(m_n - m_p) / m_e]
-
-    tau = 1700  # free neutron decay time [s]
-
-    def I1(x):
-        """Integrand of the first integral in equation (12) of the project."""
-        a = x + q_sign * q
-        return (
-            a
-            * a
-            * np.sqrt(x * x - 1)
-            * x
-            / ((1 + np.exp(x * Z)) * (1 + np.exp(-Z_nu * a)))
-        )
-
-    def I2(x):
-        """Integrand of the second integral in equation (12) of the project."""
-        a = x - q_sign * q
-        return (
-            a
-            * a
-            * np.sqrt(x * x - 1)
-            * x
-            / ((1 + np.exp(-x * Z)) * (1 + np.exp(Z_nu * a)))
-        )
-
-    return 1 / tau * (quad(I1, 1, np.inf)[0] + quad(I2, 1, np.inf)[0])
-
-
-def lambda_p_to_n(T_9: float) -> float:
-    """Describes the reaction rate of p -> n, equation (13) of the project,
-    described in a.3 table 2 of the project reference material:
-    https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
-
-    arguments:
-        T_9: temperature [10^9 K]
-
-    returns:
-        the reaction rate of p -> n [1/s]
-    """
-    return lambda_n_top(T_9, -1)
-
-
 class ReactionRates:
     """Class describing reaction rates between the particle species in the early universe."""
+
+    @staticmethod
+    @lru_cache
+    def T_nu(T: float) -> float:
+        """Neutrino temperature conversion
+
+        arguments:
+            T: temperature [K]
+
+        returns:
+            the neutrino temperature
+        """
+        return (4 / 11) ** (1 / 3) * T
+
+    @staticmethod
+    @lru_cache
+    def lambda_n_to_p(T_9: float, q_sign: int = 1) -> float:
+        """Describes the reaction rate of n -> p, equation (12) of the project,
+        described in a.3 table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+            q: Sign to use for the mass difference ratio value, 1 or -1
+
+        returns:
+            the reaction rate of n -> p [1/s]
+        """
+        print("CALLED!")
+
+        if q_sign not in [1, -1]:
+            raise ValueError("q_sign must be 1 or -1")
+
+        b = 5.93
+        Z = b / T_9
+        Z_nu = b / (ReactionRates.T_nu(T_9))
+
+        q = 2.53  # mass difference ratio [(m_n - m_p) / m_e]
+
+        tau = 1700  # free neutron decay time [s]
+
+        def I1(x):
+            """Integrand of the first integral in equation (12) of the project."""
+            a = x + q_sign * q
+            return (
+                a
+                * a
+                * np.sqrt(x * x - 1)
+                * x
+                / ((1 + np.exp(x * Z)) * (1 + np.exp(-Z_nu * a)))
+            )
+
+        def I2(x):
+            """Integrand of the second integral in equation (12) of the project."""
+            a = x - q_sign * q
+            return (
+                a
+                * a
+                * np.sqrt(x * x - 1)
+                * x
+                / ((1 + np.exp(-x * Z)) * (1 + np.exp(Z_nu * a)))
+            )
+
+        return 1 / tau * (quad(I1, 1, np.inf)[0] + quad(I2, 1, np.inf)[0])
+
+    @staticmethod
+    def lambda_p_to_n(T_9: float) -> float:
+        """Describes the reaction rate of p -> n, equation (13) of the project,
+        described in a.3 table 2 of the project reference material:
+        https://www.uio.no/studier/emner/matnat/astro/AST3220/v24/undervisningsmateriale/wagoner-fowler-hoyle.pdf
+
+        arguments:
+            T_9: temperature [10^9 K]
+
+        returns:
+            the reaction rate of p -> n [1/s]
+        """
+        return ReactionRates.lambda_n_to_p(T_9, -1)
 
     def get_weak_rates(self, T_9: float) -> tuple[float, float]:
         """Get the weak interaction rates for n -> p and p -> n.
@@ -99,7 +96,7 @@ class ReactionRates:
         returns:
             the reaction rates of n -> p and p -> n  [1/s]
         """
-        return lambda_n_top(T_9), lambda_p_to_n(T_9)
+        return ReactionRates.lambda_n_to_p(T_9), ReactionRates.lambda_p_to_n(T_9)
 
     def get_np_to_D(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of n + p -> D + gamma and the reverse,
@@ -513,6 +510,7 @@ class ReactionRates:
 
 
 if __name__ == "__main__":
+    # DEBUG PLOT REACTION RATES AS FUNC OF T
     import matplotlib.pyplot as plt
 
     fig, axs = plt.subplots(2, sharex=True)
@@ -520,8 +518,8 @@ if __name__ == "__main__":
     n = np.zeros_like(T9)
     p = np.zeros_like(T9)
     for i, Ti in enumerate(T9):
-        n[i] = lambda_n_top(Ti)
-        p[i] = lambda_p_to_n(Ti)
+        n[i] = ReactionRates.lambda_n_to_p(Ti)
+        p[i] = ReactionRates.lambda_p_to_n(Ti)
     T = T9 * 1e9
     axs[0].loglog(T, n)
     axs[0].set_title("n -> p")
