@@ -346,8 +346,6 @@ class BBN:
             dY[7] += change_lhs
             dY[5] += change_rhs
 
-        print(-dY / self.background.H(T))
-        quit()
         return -dY / self.background.H(T)  # Multiply every term by -1/H
 
     def _Y_n_equil(self, T: float) -> float:
