@@ -27,4 +27,4 @@ if __name__ == "__main__":
     Omega_b0_vals = np.logspace(np.log10(Omega_b0_min), np.log10(Omega_b0_max), n)
 
     # Plot relic abundances
-    BBN.plot_relic_abundances(T_i, T_f, Omega_b0_vals, filename=filename)
+    BBN.plot_relic_abundances_Omegab0(T_i, T_f, Omega_b0_vals, filename=filename)
