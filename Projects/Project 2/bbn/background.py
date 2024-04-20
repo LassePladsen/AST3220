@@ -7,7 +7,7 @@ class Background:
     """Class for the background functions and variables"""
 
     def __init__(
-        self, unit: str = "CGS", N_eff: int = 3, Omega_b0: float = 0.05
+        self, unit: str = "CGS", N_eff: float = 3.0, Omega_b0: float = 0.05
     ) -> None:
         """Initializes the class with the given parameters.
 
