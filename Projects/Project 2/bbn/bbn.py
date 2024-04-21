@@ -36,12 +36,12 @@ COLORS = [
 # Observed values for relic abundances Y_i/Y_p
 D_ABUNDANCE = 2.57e-5  # Y_D/Y_p
 D_ABUNDANCE_ERR = 0.03e-5  # error in Y_D/Y_p
-Li7_ABUNDANCE = 1.6e-10
-Li7_ABUNDANCE_ERR = 0.3e-10
+LI7_ABUNDANCE = 1.6e-10
+LI7_ABUNDANCE_ERR = 0.3e-10
 
 # Observed value for mass fraction 4Y_He4
-He4_MASS_FRAC = 0.254  # 4Y_He4
-He4_MASS_FRAC_ERR = 0.003  # error in 4Y_He4
+HE4_MASS_FRAC = 0.254  # 4Y_He4
+HE4_MASS_FRAC_ERR = 0.003  # error in 4Y_He4
 
 
 class BBN:
@@ -671,8 +671,8 @@ class BBN:
         opacity = 0.3
         axs[0].fill_between(
             Omega_b0_arr,
-            He4_MASS_FRAC - He4_MASS_FRAC_ERR,
-            He4_MASS_FRAC + He4_MASS_FRAC_ERR,
+            HE4_MASS_FRAC - HE4_MASS_FRAC_ERR,
+            HE4_MASS_FRAC + HE4_MASS_FRAC_ERR,
             alpha=opacity,
             color=COLORS[5],
         )
@@ -713,8 +713,8 @@ class BBN:
         )
         axs[1].fill_between(
             Omega_b0_arr,
-            Li7_ABUNDANCE - Li7_ABUNDANCE_ERR,
-            Li7_ABUNDANCE + Li7_ABUNDANCE_ERR,
+            LI7_ABUNDANCE - LI7_ABUNDANCE_ERR,
+            LI7_ABUNDANCE + LI7_ABUNDANCE_ERR,
             alpha=opacity,
             color=COLORS[-2],
         )
@@ -738,9 +738,9 @@ class BBN:
                         He4_mass_frac_interp[i],
                     ]
                 ),
-                np.asarray([D_ABUNDANCE, Li7_ABUNDANCE, He4_MASS_FRAC]),
+                np.asarray([D_ABUNDANCE, LI7_ABUNDANCE, HE4_MASS_FRAC]),
                 np.asarray(
-                    [D_ABUNDANCE_ERR, Li7_ABUNDANCE_ERR, He4_MASS_FRAC_ERR]
+                    [D_ABUNDANCE_ERR, LI7_ABUNDANCE_ERR, HE4_MASS_FRAC_ERR]
                 ),
             )
             for i in range(n_plot)
@@ -888,8 +888,8 @@ class BBN:
         opacity = 0.3
         axs[0].fill_between(
             N_eff_arr,
-            He4_MASS_FRAC - He4_MASS_FRAC_ERR,
-            He4_MASS_FRAC + He4_MASS_FRAC_ERR,
+            HE4_MASS_FRAC - HE4_MASS_FRAC_ERR,
+            HE4_MASS_FRAC + HE4_MASS_FRAC_ERR,
             alpha=opacity,
             color=COLORS[5],
         )
@@ -943,8 +943,8 @@ class BBN:
         # Plot errorbar areas for observed values of Y_i/Y_p for Li7
         axs[2].fill_between(
             N_eff_arr,
-            Li7_ABUNDANCE - Li7_ABUNDANCE_ERR,
-            Li7_ABUNDANCE + Li7_ABUNDANCE_ERR,
+            LI7_ABUNDANCE - LI7_ABUNDANCE_ERR,
+            LI7_ABUNDANCE + LI7_ABUNDANCE_ERR,
             alpha=opacity,
             color=COLORS[-2],
         )
@@ -969,9 +969,9 @@ class BBN:
                         He4_mass_frac_interp[i],
                     ]
                 ),
-                np.asarray([D_ABUNDANCE, Li7_ABUNDANCE, He4_MASS_FRAC]),
+                np.asarray([D_ABUNDANCE, LI7_ABUNDANCE, HE4_MASS_FRAC]),
                 np.asarray(
-                    [D_ABUNDANCE_ERR, Li7_ABUNDANCE_ERR, He4_MASS_FRAC_ERR]
+                    [D_ABUNDANCE_ERR, LI7_ABUNDANCE_ERR, HE4_MASS_FRAC_ERR]
                 ),
             )
             for i in range(n_plot)
