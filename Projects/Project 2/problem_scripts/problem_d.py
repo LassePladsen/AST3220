@@ -1,12 +1,12 @@
 """Script that solves problem d of the project"""
 
-import os
 import sys
+from pathlib import Path
 
 import numpy as np
 
 # Append path to bbn package
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.append(str(Path(__file__).parents[1]))
 
 from bbn import constants
 

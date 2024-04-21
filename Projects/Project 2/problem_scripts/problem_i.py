@@ -1,12 +1,12 @@
 """Script that solves problem u of the project"""
 
 import sys
-import os
+from pathlib import Path
 
 # Append path to bbn package
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "bbn")))
+sys.path.append(str(Path(__file__).parents[1]))
 
-from bbn import BBN, FIG_DIR
+from bbn.bbn import BBN, FIG_DIR
 
 if __name__ == "__main__":
     # Variables
@@ -22,5 +22,5 @@ if __name__ == "__main__":
     bbn.solve_BBN(T_i, T_f)
 
     # Plot mass fractions
-    filename = os.path.join(FIG_DIR, "i_mass_fractions.png")
+    filename = FIG_DIR / "i_mass_fractions.png"
     bbn.plot_mass_fractions(filename, ymin=ymin, plot_equilibrium=False)

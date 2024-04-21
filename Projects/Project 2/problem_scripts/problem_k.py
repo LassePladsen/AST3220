@@ -6,14 +6,14 @@ Also finds the most likely N_eff value.
 """
 
 import sys
-import os
+from pathlib import Path
 
 # Append path to bbn package
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "bbn")))
+sys.path.append(str(Path(__file__).parents[1]))
 
 import numpy as np
 
-from bbn import BBN, FIG_DIR
+from bbn.bbn import BBN, FIG_DIR
 
 if __name__ == "__main__":
     # Variables
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     n = 5  # number of points for Omega_b0 before interpolation TODO: RAISE
     N_eff_min = 1  # minimum value for Omega_b0
     N_eff_max = 5  # maximum value for Omega_b0
-    filename = os.path.join(FIG_DIR, "k_relic_abundances.png")
+    filename = FIG_DIR / "k_relic_abundances.png"
 
     N_eff_vals = np.linspace(N_eff_min, N_eff_max, n)
 

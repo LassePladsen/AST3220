@@ -1,12 +1,12 @@
 """Script that solves problem f of the project"""
 
 import sys
-import os
+from pathlib import Path
 
 # Append path to bbn package
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "bbn")))
+sys.path.append(str(Path(__file__).parents[1]))
 
-from bbn import BBN, FIG_DIR
+from bbn.bbn import BBN, FIG_DIR
 
 if __name__ == "__main__":
     # Variables
@@ -15,11 +15,11 @@ if __name__ == "__main__":
     T_f = 1e8  # final temperature [K]
 
     # Initialize
-    bbn = BBN(N_species)
+    BBN = BBN(N_species)
 
     # Solve ode
-    bbn.solve_BBN(T_i, T_f)
+    BBN.solve_BBN(T_i, T_f)
 
     # Plot mass fractions
-    filename = os.path.join(FIG_DIR, "f_mass_fractions.png")
-    bbn.plot_mass_fractions(filename)
+    filename = FIG_DIR / "f_mass_fractions.png"
+    BBN.plot_mass_fractions(filename)

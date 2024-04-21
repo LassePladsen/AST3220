@@ -1,6 +1,6 @@
 """Main Big Bang Nucleosynthesis module"""
 
-import os
+from pathlib import Path
 import warnings
 
 import numpy as np
@@ -8,18 +8,19 @@ import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 from scipy.interpolate import interp1d
 
-from reaction_rates import ReactionRates
-from background import Background
-from stats import xi_squared, bayesian_probability
+from .reaction_rates import ReactionRates
+from .background import Background
+from .stats import xi_squared, bayesian_probability
 
 # Ignore overflow runtimewarning
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 # Directory to save figures
-FIG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "figures"))
+FIG_DIR = Path(__file__).parents[1] / "figures"
+
 # Create this directory if it doesn't already exist
-if not os.path.exists(FIG_DIR):
-    os.makedirs(FIG_DIR)
+if not FIG_DIR.exists():
+    FIG_DIR.mkdir()
 
 # Color name array for consistent colors when plotting
 COLORS = [
@@ -739,9 +740,7 @@ class BBN:
                     ]
                 ),
                 np.asarray([D_ABUNDANCE, LI7_ABUNDANCE, HE4_MASS_FRAC]),
-                np.asarray(
-                    [D_ABUNDANCE_ERR, LI7_ABUNDANCE_ERR, HE4_MASS_FRAC_ERR]
-                ),
+                np.asarray([D_ABUNDANCE_ERR, LI7_ABUNDANCE_ERR, HE4_MASS_FRAC_ERR]),
             )
             for i in range(n_plot)
         ]
@@ -970,9 +969,7 @@ class BBN:
                     ]
                 ),
                 np.asarray([D_ABUNDANCE, LI7_ABUNDANCE, HE4_MASS_FRAC]),
-                np.asarray(
-                    [D_ABUNDANCE_ERR, LI7_ABUNDANCE_ERR, HE4_MASS_FRAC_ERR]
-                ),
+                np.asarray([D_ABUNDANCE_ERR, LI7_ABUNDANCE_ERR, HE4_MASS_FRAC_ERR]),
             )
             for i in range(n_plot)
         ]
@@ -993,25 +990,3 @@ class BBN:
             plt.savefig(filename)
         else:
             plt.show()
-
-
-if __name__ == "__main__":
-    ### DIRECT USAGE EXAMPLE (problem f)###
-
-    # Variables
-    N_species = 2  # number of interacting atom species
-    N_eff = 3  # effective number of neutrino species
-    T_i = 1e11  # initial temperature [K]
-    T_f = 1e8  # final temperature [K]
-    n_points = 1000  # number of points for plotting
-    unit = "cgs"  # unit system to use
-    filename = os.path.join(FIG_DIR, "example_problem_f.png")
-
-    # Initialize
-    bbn = BBN(N_species, N_eff=N_eff, unit=unit)
-
-    # Solve ode
-    bbn.solve_BBN(T_i, T_f, n_points)
-
-    # Plot
-    bbn.plot_mass_fractions(filename)
