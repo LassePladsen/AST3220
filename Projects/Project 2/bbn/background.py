@@ -1,6 +1,6 @@
 import numpy as np
 
-from constants import SI, CGS
+from .constants import SI, CGS
 
 
 class Background:
