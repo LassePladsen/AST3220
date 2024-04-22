@@ -1,6 +1,5 @@
 """Main Big Bang Nucleosynthesis module"""
 
-from pathlib import Path
 import warnings
 
 import numpy as np
@@ -15,41 +14,48 @@ from .stats import xi_squared, bayesian_probability
 # Ignore overflow runtimewarning
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
-# Directory to save figures
-FIG_DIR = Path(__file__).parents[1] / "figures"
-
-# Create this directory if it doesn't already exist
-if not FIG_DIR.exists():
-    FIG_DIR.mkdir()
-
-# Color name array for consistent colors when plotting
-COLORS = [
-    "C0",
-    "C1",
-    "C2",
-    "C3",
-    "C4",
-    "C5",
-    "C6",
-    "C7",
-]
-
-# Observed values for relic abundances Y_i/Y_p
-D_ABUNDANCE = 2.57e-5  # Y_D/Y_p
-D_ABUNDANCE_ERR = 0.03e-5  # error in Y_D/Y_p
-LI7_ABUNDANCE = 1.6e-10
-LI7_ABUNDANCE_ERR = 0.3e-10
-
-# Observed value for mass fraction 4Y_He4
-HE4_MASS_FRAC = 0.254  # 4Y_He4
-HE4_MASS_FRAC_ERR = 0.003  # error in 4Y_He4
-
 
 class BBN:
     """
     General Big Bang nucleosynthesis class solving the Boltzmann equations for a collection
     of particle species in the early universe .
     """
+
+    # Class constants
+    SPECIES_LABELS = (  # species names
+        "n",
+        "p",
+        "D",
+        "T",
+        "He3",
+        "He4",
+        "Li7",
+        "Be7",
+    )
+
+    # Color name array for consistent colors when plotting
+    COLORS = (
+        "C0",
+        "C1",
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+    )
+
+    MASS_NUMBERS = (1, 1, 2, 3, 3, 4, 7, 7)  # The particle atomic numbers
+
+    # Observed values for relic abundances Y_i/Y_p
+    D_ABUNDANCE = 2.57e-5  # Y_D/Y_p
+    D_ABUNDANCE_ERR = 0.03e-5  # error in Y_D/Y_p
+    LI7_ABUNDANCE = 1.6e-10
+    LI7_ABUNDANCE_ERR = 0.3e-10
+
+    # Observed value for mass fraction 4Y_He4
+    HE4_MASS_FRAC = 0.254  # 4Y_He4
+    HE4_MASS_FRAC_ERR = 0.003  # error in 4Y_He4
 
     def __init__(self, N_species: int = 2, **background_kwargs) -> None:
         """
@@ -64,20 +70,8 @@ class BBN:
                 "The number of interacting particle species must be between 2 and 8."
             )
 
-        # Constants
+        # Initialize the number of species
         self.N_species = N_species
-
-        self.species_labels = [  # species names
-            "n",
-            "p",
-            "D",
-            "T",
-            "He3",
-            "He4",
-            "Li7",
-            "Be7",
-        ]
-        self.mass_numbers = [1, 1, 2, 3, 3, 4, 7, 7]  # The particle atomic numbers
 
         # Initialize the reaction rates and background
         self.RR = ReactionRates()
@@ -484,10 +478,10 @@ class BBN:
         total = 0  # total sum of mass fraction
         for i, y in enumerate(self.Y):
             # Mass fraction
-            mass_frac = y * self.mass_numbers[i]
+            mass_frac = y * self.MASS_NUMBERS[i]
 
             # Plot mass fraction of species i
-            ax.loglog(self.T, mass_frac, label=self.species_labels[i])
+            ax.loglog(self.T, mass_frac, label=self.SPECIES_LABELS[i])
 
             # Add to total sum
             total += mass_frac
@@ -496,14 +490,14 @@ class BBN:
             # Plot thermal equilibrium value of neutron and proton
             ax.loglog(
                 self.T,
-                self._Y_n_equil(self.T) * self.mass_numbers[0],
-                color=COLORS[0],
+                self._Y_n_equil(self.T) * self.MASS_NUMBERS[0],
+                color=BBN.COLORS[0],
                 linestyle=":",
             )
             ax.loglog(
                 self.T,
-                self._Y_p_equil(self.T) * self.mass_numbers[1],
-                color=COLORS[1],
+                self._Y_p_equil(self.T) * self.MASS_NUMBERS[1],
+                color=BBN.COLORS[1],
                 linestyle=":",
             )
 
@@ -665,17 +659,17 @@ class BBN:
             Omega_b0_arr,
             He4_mass_frac_interp,
             label="4Y_He4",
-            color=COLORS[5],
+            color=BBN.COLORS[5],
         )
 
         # Plot errorbar area for observed value of 4Y_He4
         opacity = 0.3
         axs[0].fill_between(
             Omega_b0_arr,
-            HE4_MASS_FRAC - HE4_MASS_FRAC_ERR,
-            HE4_MASS_FRAC + HE4_MASS_FRAC_ERR,
+            BBN.HE4_MASS_FRAC - BBN.HE4_MASS_FRAC_ERR,
+            BBN.HE4_MASS_FRAC + BBN.HE4_MASS_FRAC_ERR,
             alpha=opacity,
-            color=COLORS[5],
+            color=BBN.COLORS[5],
         )
 
         y_min = 0.2  # minimum value for y-axis in the top 4Y_He4 relic abundance plot
@@ -690,34 +684,36 @@ class BBN:
         axs[0].grid(True)
 
         # Plot Y_i/Y_p for D, He3, and Li7
-        axs[1].loglog(Omega_b0_arr, Y_D_interp / Y_p_interp, label="D", color=COLORS[2])
+        axs[1].loglog(
+            Omega_b0_arr, Y_D_interp / Y_p_interp, label="D", color=BBN.COLORS[2]
+        )
         axs[1].loglog(
             Omega_b0_arr,
             Y_He3_interp / Y_p_interp,
             label="He3",
-            color=COLORS[4],
+            color=BBN.COLORS[4],
         )
         axs[1].loglog(
             Omega_b0_arr,
             Y_Li7_interp / Y_p_interp,
             label="Li7",
-            color=COLORS[-2],
+            color=BBN.COLORS[-2],
         )
 
         # Plot errorbar areas for observed values of Y_i/Y_p for D and Li7 (no error for He3)
         axs[1].fill_between(
             Omega_b0_arr,
-            D_ABUNDANCE - D_ABUNDANCE_ERR,
-            D_ABUNDANCE + D_ABUNDANCE_ERR,
+            BBN.D_ABUNDANCE - BBN.D_ABUNDANCE_ERR,
+            BBN.D_ABUNDANCE + BBN.D_ABUNDANCE_ERR,
             alpha=opacity,
-            color=COLORS[2],
+            color=BBN.COLORS[2],
         )
         axs[1].fill_between(
             Omega_b0_arr,
-            LI7_ABUNDANCE - LI7_ABUNDANCE_ERR,
-            LI7_ABUNDANCE + LI7_ABUNDANCE_ERR,
+            BBN.LI7_ABUNDANCE - BBN.LI7_ABUNDANCE_ERR,
+            BBN.LI7_ABUNDANCE + BBN.LI7_ABUNDANCE_ERR,
             alpha=opacity,
-            color=COLORS[-2],
+            color=BBN.COLORS[-2],
         )
 
         y_min = 0.5e-10  # minimum value for y-axis in the middle Y_i/Y_p relic abundance plot
@@ -739,8 +735,10 @@ class BBN:
                         He4_mass_frac_interp[i],
                     ]
                 ),
-                np.asarray([D_ABUNDANCE, LI7_ABUNDANCE, HE4_MASS_FRAC]),
-                np.asarray([D_ABUNDANCE_ERR, LI7_ABUNDANCE_ERR, HE4_MASS_FRAC_ERR]),
+                np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC]),
+                np.asarray(
+                    [BBN.D_ABUNDANCE_ERR, BBN.LI7_ABUNDANCE_ERR, BBN.HE4_MASS_FRAC_ERR]
+                ),
             )
             for i in range(n_plot)
         ]
@@ -880,17 +878,17 @@ class BBN:
             N_eff_arr,
             He4_mass_frac_interp,
             label="4Y_He4",
-            color=COLORS[5],
+            color=BBN.COLORS[5],
         )
 
         # Plot errorbar area for observed value of 4Y_He4
         opacity = 0.3
         axs[0].fill_between(
             N_eff_arr,
-            HE4_MASS_FRAC - HE4_MASS_FRAC_ERR,
-            HE4_MASS_FRAC + HE4_MASS_FRAC_ERR,
+            BBN.HE4_MASS_FRAC - BBN.HE4_MASS_FRAC_ERR,
+            BBN.HE4_MASS_FRAC + BBN.HE4_MASS_FRAC_ERR,
             alpha=opacity,
-            color=COLORS[5],
+            color=BBN.COLORS[5],
         )
 
         y_min = 0.2  # minimum value for y-axis in the top 4Y_He4 relic abundance plot
@@ -904,21 +902,21 @@ class BBN:
         axs[0].grid(True)
 
         # Plot Y_i/Y_p for D, He3
-        axs[1].plot(N_eff_arr, Y_D_interp / Y_p_interp, label="D", color=COLORS[2])
+        axs[1].plot(N_eff_arr, Y_D_interp / Y_p_interp, label="D", color=BBN.COLORS[2])
         axs[1].plot(
             N_eff_arr,
             Y_He3_interp / Y_p_interp,
             label="He3",
-            color=COLORS[4],
+            color=BBN.COLORS[4],
         )
 
         # Plot errorbar areas for observed values of Y_i/Y_p for D (no  error for He3)
         axs[1].fill_between(
             N_eff_arr,
-            D_ABUNDANCE - D_ABUNDANCE_ERR,
-            D_ABUNDANCE + D_ABUNDANCE_ERR,
+            BBN.D_ABUNDANCE - BBN.D_ABUNDANCE_ERR,
+            BBN.D_ABUNDANCE + BBN.D_ABUNDANCE_ERR,
             alpha=opacity,
-            color=COLORS[2],
+            color=BBN.COLORS[2],
         )
 
         y_min = 1e-5
@@ -936,16 +934,16 @@ class BBN:
             N_eff_arr,
             Y_Li7_interp / Y_p_interp,
             label="Li7",
-            color=COLORS[-2],
+            color=BBN.COLORS[-2],
         )
 
         # Plot errorbar areas for observed values of Y_i/Y_p for Li7
         axs[2].fill_between(
             N_eff_arr,
-            LI7_ABUNDANCE - LI7_ABUNDANCE_ERR,
-            LI7_ABUNDANCE + LI7_ABUNDANCE_ERR,
+            BBN.LI7_ABUNDANCE - BBN.LI7_ABUNDANCE_ERR,
+            BBN.LI7_ABUNDANCE + BBN.LI7_ABUNDANCE_ERR,
             alpha=opacity,
-            color=COLORS[-2],
+            color=BBN.COLORS[-2],
         )
 
         y_min = 1e-10
@@ -968,8 +966,8 @@ class BBN:
                         He4_mass_frac_interp[i],
                     ]
                 ),
-                np.asarray([D_ABUNDANCE, LI7_ABUNDANCE, HE4_MASS_FRAC]),
-                np.asarray([D_ABUNDANCE_ERR, LI7_ABUNDANCE_ERR, HE4_MASS_FRAC_ERR]),
+                np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC]),
+                np.asarray([BBN.D_ABUNDANCE_ERR, BBN.LI7_ABUNDANCE_ERR, BBN.HE4_MASS_FRAC_ERR]),
             )
             for i in range(n_plot)
         ]
