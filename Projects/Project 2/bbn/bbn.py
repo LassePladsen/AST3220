@@ -551,7 +551,7 @@ class BBN:
         Y_min: float = 1e-20,
     ) -> tuple[callable, callable, callable, callable]:
         """Static method. Interpolates the mass fractions Y_i as a function of Omega_b0 to give a smooth
-        function graph. Interpolates in logspace (base 10)
+        function graph. Interpolates in logspace (base e)
 
         arguments:
             T_i: initial temperature [K]
@@ -596,11 +596,11 @@ class BBN:
         kind = "cubic"
         Y_p, Y_D, Y_He3, Y_He4, Y_Li7 = Y_model
 
-        Y_p_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_p), kind=kind)
-        Y_D_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_D), kind=kind)
-        Y_He3_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_He3), kind=kind)
-        Y_He4_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_He4), kind=kind)
-        Y_Li7_interp = interp1d(np.log10(Omega_b0_vals), np.log10(Y_Li7), kind=kind)
+        Y_p_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_p), kind=kind)
+        Y_D_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_D), kind=kind)
+        Y_He3_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_He3), kind=kind)
+        Y_He4_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_He4), kind=kind)
+        Y_Li7_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_Li7), kind=kind)
 
         return Y_p_interp, Y_D_interp, Y_He3_interp, Y_He4_interp, Y_Li7_interp
 
@@ -639,16 +639,16 @@ class BBN:
 
         # Array to interpolate graph with
         Omega_b0_arr = np.logspace(
-            np.log10(Omega_b0_vals[0]), np.log10(Omega_b0_vals[-1]), n_plot
+            np.log(Omega_b0_vals[0]), np.log(Omega_b0_vals[-1]), n_plot
         )
-        log_Omega_b0_arr = np.log10(Omega_b0_arr)
+        log_Omega_b0_arr = np.log(Omega_b0_arr)
 
         # Interpolate with these values
-        Y_p_interp = 10 ** (Y_p_interp_func(log_Omega_b0_arr))
-        Y_D_interp = 10 ** (Y_D_interp_func(log_Omega_b0_arr))
-        Y_He3_interp = 10 ** (Y_He3_interp_func(log_Omega_b0_arr))
-        Y_He4_interp = 10 ** (Y_He4_interp_func(log_Omega_b0_arr))
-        Y_Li7_interp = 10 ** (Y_Li7_interp_func(log_Omega_b0_arr))
+        Y_p_interp = np.exp(Y_p_interp_func(log_Omega_b0_arr))
+        Y_D_interp = np.exp(Y_D_interp_func(log_Omega_b0_arr))
+        Y_He3_interp = np.exp(Y_He3_interp_func(log_Omega_b0_arr))
+        Y_He4_interp = np.exp(Y_He4_interp_func(log_Omega_b0_arr))
+        Y_Li7_interp = np.exp(Y_Li7_interp_func(log_Omega_b0_arr))
 
         He4_mass_frac_interp = 4 * Y_He4_interp
 
