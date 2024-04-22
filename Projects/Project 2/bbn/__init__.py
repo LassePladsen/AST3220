@@ -10,6 +10,13 @@ reaction_rates.ReactionRates
 constants.SI
 constants.CGS
 
-Variables:
+Constants:
 FIG_DIR (directory of stored figures)
+COLORS (colors for plotting)
+D_ABUNDANCE (observed deuterium abundance)
+D_ABUNDANCE_ERR (observed deuterium abundance error)
+LI7_ABUNDANCE (observed Li7 abundance)
+LI7_ABUNDANCE_ERR (observed Li7 abundance error)
+HE4_MASS_FRAC (observed mass fraction of He4)
+HE4_MASS_FRAC_ERR (observed mass fraction of He4)
 """
