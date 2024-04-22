@@ -11,14 +11,5 @@ constants.SI
 constants.CGS
 
 Constants:
-FIG_DIR (directory of stored figures)
+bbn.FIG_DIR (directory of stored figures)
 """
-
-from pathlib import Path
-
-# Directory to save figures
-FIG_DIR = Path(__file__).parents[1] / "figures"
-
-# Create this directory if it doesn't already exist
-if not FIG_DIR.exists():
-    FIG_DIR.mkdir()

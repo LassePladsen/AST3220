@@ -1,6 +1,7 @@
 """Main Big Bang Nucleosynthesis module"""
 
 import warnings
+from pathlib import Path
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,6 +15,8 @@ from .stats import xi_squared, bayesian_probability
 # Ignore overflow runtimewarning
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
+# Directory to save figures
+FIG_DIR = Path(__file__).parents[1] / "figures"
 
 class BBN:
     """
@@ -533,6 +536,9 @@ class BBN:
 
         # Save figure if filename is given
         if filename:
+            # Create fig dir directory if it doesn't already exist
+            if not FIG_DIR.exists():
+                FIG_DIR.mkdir()
             plt.savefig(filename)
         else:
             plt.show()
@@ -757,6 +763,9 @@ class BBN:
         fig.suptitle("Relic abundance analysis")
         fig.supxlabel(r"$\Omega_{b0}$")
         if filename:
+            # Create fig dir directory if it doesn't already exist
+            if not FIG_DIR.exists():
+                FIG_DIR.mkdir()
             plt.savefig(filename)
         else:
             plt.show()
@@ -985,6 +994,9 @@ class BBN:
         fig.suptitle("Relic abundance analysis")
         fig.supxlabel(r"$N_eff$")
         if filename:
+            # Create fig dir directory if it doesn't already exist
+            if not FIG_DIR.exists():
+                FIG_DIR.mkdir()
             plt.savefig(filename)
         else:
             plt.show()
