@@ -639,7 +639,7 @@ class BBN:
 
         # Array to interpolate graph with
         Omega_b0_arr = np.logspace(
-            np.log(Omega_b0_vals[0]), np.log(Omega_b0_vals[-1]), n_plot
+            np.log10(Omega_b0_vals[0]), np.log10(Omega_b0_vals[-1]), n_plot
         )
         log_Omega_b0_arr = np.log(Omega_b0_arr)
 
