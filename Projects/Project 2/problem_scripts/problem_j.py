@@ -13,8 +13,7 @@ import numpy as np
 # Append path to bbn package
 sys.path.append(str(Path(__file__).parents[1]))
 
-from bbn import FIG_DIR
-from bbn.bbn import BBN
+from bbn.bbn import BBN, FIG_DIR
 
 if __name__ == "__main__":
     # Variables
