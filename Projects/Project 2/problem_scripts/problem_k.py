@@ -19,12 +19,8 @@ if __name__ == "__main__":
     # Variables
     T_i = 1e11  # initial temperature [K]
     T_f = 1e7  # final temperature [K]
-    n = 5  # number of points for Omega_b0 before interpolation TODO: RAISE
-    N_eff_min = 1  # minimum value for Omega_b0
-    N_eff_max = 5  # maximum value for Omega_b0
+    N_eff_vals = np.linspace(1, 5, 5)  # N_eff values to test
     filename = FIG_DIR / "k_relic_abundances.png"
-
-    N_eff_vals = np.linspace(N_eff_min, N_eff_max, n)
 
     # Plot relic abundances
     BBN.plot_relic_abundances_Neff(T_i, T_f, N_eff_vals, filename=filename)
