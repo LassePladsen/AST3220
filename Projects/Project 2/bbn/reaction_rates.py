@@ -506,27 +506,3 @@ class ReactionRates:
         )
 
         return rate_He3He4_to_Be7, rate_Be7_to_He3He4
-
-
-if __name__ == "__main__":
-    # DEBUG PLOT REACTION RATES AS FUNC OF T
-    import matplotlib.pyplot as plt
-
-    fig, axs = plt.subplots(2, sharex=True)
-    T = np.logspace(11, 7, 200)
-    T9 = T / 1e9
-    n = np.zeros_like(T9)
-    p = np.zeros_like(T9)
-    for i, Ti in enumerate(T9):
-        n[i] = ReactionRates.lambda_n_to_p(Ti)
-        p[i] = ReactionRates.lambda_p_to_n(Ti)
-    axs[0].loglog(T, n)
-    axs[0].set_title("n -> p")
-    axs[0].grid(True)
-    axs[1].loglog(T, p)
-    axs[1].set_title("p -> n")
-    axs[1].grid(True)
-    fig.supxlabel("T [K]")
-    fig.supylabel("Reaction rate [1/s]")
-    plt.gca().invert_xaxis()
-    plt.show()
