@@ -250,7 +250,7 @@ class ReactionRates:
             2.87e4
             * rho_b
             * T_9 ** (-2 / 3)
-            * np.exp(-3.87 / T_9)
+            * np.exp(-3.87 / T_9 ** (-1 / 3))
             * (
                 1
                 + 0.108 * T_9 ** (1 / 3)
@@ -334,7 +334,6 @@ class ReactionRates:
         """
 
         rate_DHe3_to_He4p = 2.6e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-2.99 / T_9)
-
         rate_He4p_to_DHe3 = 5.5 * rate_DHe3_to_He4p * np.exp(-213 / T_9)
 
         return rate_DHe3_to_He4p, rate_He4p_to_DHe3
@@ -353,7 +352,6 @@ class ReactionRates:
         """
 
         rate_DT_to_He4n = 1.38e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-0.745 / T_9)
-
         rate_He4n_to_DT = 5.5 * rate_DT_to_He4n * np.exp(-204.1 / T_9)
 
         return rate_DT_to_He4n, rate_He4n_to_DT

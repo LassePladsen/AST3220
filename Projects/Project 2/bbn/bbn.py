@@ -174,7 +174,7 @@ class BBN:
             change_rhs = -change_lhs
 
             # Update ODE's
-            dY[0] += change_lhs
+            dY[1] += change_lhs
             dY[2] += change_lhs
             dY[4] += change_rhs
 
@@ -369,7 +369,7 @@ class BBN:
 
         return -dY / self.background.H(T)  # Multiply every term by -1/H
 
-    def _Y_n_equil(self, T: float) -> float:
+    def _get_n_equil(self, T: float) -> float:
         """Thermal equilibrium value of relative number density of neutrons Y_n, equation (16) of the project.
 
         arguments:
@@ -388,7 +388,7 @@ class BBN:
             )
         )
 
-    def _Y_p_equil(self, T: float) -> float:
+    def _get_p_equil(self, T: float) -> float:
         """Thermal equilibrium value of relative number density of protons Y_p, equation (17) of the project.
 
         arguments:
@@ -397,7 +397,7 @@ class BBN:
         returns:
             the thermal equilibrium value of Y_n
         """
-        return 1 - self._Y_n_equil(T)
+        return 1 - self._get_n_equil(T)
 
     def get_initial_conditions(self, T_i: float) -> np.ndarray:
         """Returns the initial conditions for the ODE system.
@@ -412,8 +412,8 @@ class BBN:
         Y_i = np.zeros(self.N_species)  # init all species to zero
 
         # Initialize weak equilibrium values
-        Y_i[0] = self._Y_n_equil(T_i)
-        Y_i[1] = self._Y_p_equil(T_i)
+        Y_i[0] = self._get_n_equil(T_i)
+        Y_i[1] = self._get_p_equil(T_i)
 
         # The rest of the species are set to zero initially
         return Y_i
@@ -493,13 +493,13 @@ class BBN:
             # Plot thermal equilibrium value of neutron and proton
             ax.loglog(
                 self.T,
-                self._Y_n_equil(self.T) * self.MASS_NUMBERS[0],
+                self._get_n_equil(self.T) * self.MASS_NUMBERS[0],
                 color=BBN.COLORS[0],
                 linestyle=":",
             )
             ax.loglog(
                 self.T,
-                self._Y_p_equil(self.T) * self.MASS_NUMBERS[1],
+                self._get_p_equil(self.T) * self.MASS_NUMBERS[1],
                 color=BBN.COLORS[1],
                 linestyle=":",
             )
