@@ -10,7 +10,7 @@ from scipy.interpolate import interp1d
 
 from .reaction_rates import ReactionRates
 from .background import Background
-from .stats import xi_squared, bayesian_probability
+from .stats import chi_squared, bayesian_probability
 
 # Ignore overflow runtimewarning
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -624,7 +624,7 @@ class BBN:
         Y_min: float = 1e-20,
         n_plot: int = 300,
         filename: str = None,
-        figsize: tuple[int, int] = (7, 5),
+        figsize: tuple[int, int] = (7, 6),
     ) -> None:
         """Static method. Plots the relic abundances of elements Y_i/Y_p in the BBN process, as a function
         of the baryon density parameter Omega_b0, by interpolating. Also finds the most likely
@@ -744,7 +744,7 @@ class BBN:
         axs[1].grid(True)
 
         # Calculate likelihood as a function of Omega_b0, by using interpolated solutions
-        likelihood = [
+        likelihood, chi_sqr = np.asarray([
             bayesian_probability(
                 np.asarray(
                     [
@@ -759,7 +759,7 @@ class BBN:
                 ),
             )
             for i in range(n_plot)
-        ]
+        ]).T
 
         # Plot Bayesian likelihood
         axs[2].plot(Omega_b0_arr, likelihood, color="black")
@@ -767,9 +767,25 @@ class BBN:
         axs[2].tick_params(
             axis="both", which="both", direction="in", top=True, right=True
         )
-        axs[2].legend()
         axs[2].grid(True)
         axs[2].set_ylabel("Bayesian\nlikelihood")
+
+        # Find the most likely Omega_b0 value by the min chi_squared value
+        indx = np.argmin(chi_sqr)
+        most_likely_chi_squared = np.min(chi_sqr)
+        most_likely_Omega_b0 = Omega_b0_arr[indx]
+
+        # Plot this as a stripled line on all three subplots
+        for ax in axs:
+            ax.axvline(
+                most_likely_Omega_b0,
+                color="black",
+                linestyle="--",
+                label=rf"$\chi^2$ = {most_likely_chi_squared:.3f}"
+                + "\n"
+                + rf"$\Omega_{{b0}}$ = {most_likely_Omega_b0:.5f}",
+            )
+        axs[2].legend()
 
         # Plot config
         fig.suptitle("Relic abundance analysis")
