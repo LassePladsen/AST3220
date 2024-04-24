@@ -109,16 +109,13 @@ class ReactionRates:
         returns:
             the reaction rate of n + p -> D + gamma, and the reverse  [1/s]
         """
-        rate_np = 2.5e4 * rho_b
-        rate_D = 4.68e9 * rate_np * rho_b ** (-1) * T_9**(3/2) * np.exp(-25.82 / T_9)
-        return rate_np, rate_D
 
-        """rate_np_to_Dgamma = 2.5e4 * rho_b  # b.1
+        rate_np_to_Dgamma = 2.5e4 * rho_b  # b.1
         rate_D_to_np = (
             4.68e9 * rate_np_to_Dgamma / rho_b * T_9 ** (3 / 2) * np.exp(-25.82 / T_9)
         )
 
-        return rate_np_to_Dgamma, rate_D_to_np"""
+        return rate_np_to_Dgamma, rate_D_to_np
 
     def get_nD_to_T(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of n + D -> T + gamma, and the reverse,
@@ -132,16 +129,13 @@ class ReactionRates:
         returns:
             the reaction rate of n + p -> D + gamma, and the reverse  [1/s]
         """
-        rate_nD = rho_b * (75.5 + 1250 * T_9)
-        rate_T = 1.63e10 * rate_nD * rho_b ** (-1) * T_9 ** (3 / 2) * np.exp(-72.62 / T_9)
-        return rate_nD, rate_T
 
-        """rate_nD_to_Tgamma = rho_b * (75.5 + 1250 * T_9)
+        rate_nD_to_Tgamma = rho_b * (75.5 + 1250 * T_9)
         rate_T_to_nD = (
             1.63e10 * rate_nD_to_Tgamma / rho_b * T_9 ** (3 / 2) * np.exp(-72.62 / T_9)
         )
 
-        return rate_nD_to_Tgamma, rate_T_to_nD"""
+        return rate_nD_to_Tgamma, rate_T_to_nD
 
     def get_DD_to_pT(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of D + D -> p + T, and the reverse,
@@ -155,17 +149,8 @@ class ReactionRates:
         returns:
             the reaction rate of D + D -> p + T, and the reverse [1/s]
         """
-        rate_DD = (
-        3.9e8
-        * rho_b
-        * T_9 ** (-2 / 3)
-        * np.exp(-4.26 * T_9 ** (-1 / 3))
-        * (1 + 0.0979 * T_9 ** (1 / 3) + 0.642 * T_9 ** (2 / 3) + 0.440 * T_9)
-        )
-        rate_pT = 1.73 * rate_DD * np.exp(-46.80 / T_9)
-        return rate_DD, rate_pT
 
-        """rate_DD_to_pT = (
+        rate_DD_to_pT = (
             3.9e8
             * rho_b
             * T_9 ** (-2 / 3)
@@ -175,7 +160,7 @@ class ReactionRates:
 
         rate_pT_to_DD = 1.73 * rate_DD_to_pT * np.exp(-46.80 / T_9)
 
-        return rate_DD_to_pT, rate_pT_to_DD"""
+        return rate_DD_to_pT, rate_pT_to_DD
 
     def get_pD_to_He3(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of (p + D <-> He3 + gamma)
@@ -190,29 +175,19 @@ class ReactionRates:
             the reaction rate of (p + D -> He3 + gamma), and the reverse [1/s]
         """
 
-        rate_pD = (
+        rate_pD_to_He3 = (
             2.23e3
             * rho_b
             * T_9 ** (-2 / 3)
             * np.exp(-3.72 * T_9 ** (-1 / 3))
             * (1 + 0.112 * T_9 ** (1 / 3) + 3.38 * T_9 ** (2 / 3) + 2.65 * T_9)
         )
-        rate_He3 = 1.63e10 * rate_pD * rho_b ** (-1) * T_9 ** (3 / 2) * np.exp(-63.75 / T_9)
-        return rate_pD, rate_He3
-
-        """rate_pD_to_He3 = (
-            2.23e3
-            * rho_b
-            * T_9 ** (-2 / 3)
-            * np.exp(-3.72 * T_9 ** (-1 / 3))
-            * (1 + 0.112 * T_9 ** (1 / 3) + 33.8 * T_9 ** (2 / 3) + 2.65 * T_9)
-        )
 
         rate_He3_to_pD = (
             1.63e10 * rate_pD_to_He3 / rho_b * T_9 ** (3 / 2) * np.exp(-63.75 / T_9)
         )
 
-        return rate_pD_to_He3, rate_He3_to_pD"""
+        return rate_pD_to_He3, rate_He3_to_pD
 
     def get_nHe3_to_pT(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of (n + He3 <-> p + T)
@@ -226,16 +201,13 @@ class ReactionRates:
         returns:
             the reaction rate of (n + He3 -> p + T), and the reverse [1/s]
         """
-        rate_nHe3 = 7.06e8 * rho_b
-        rate_pT = rate_nHe3 * np.exp(-8.864 / T_9)
-        return rate_nHe3, rate_pT
 
-        """rate_nHe3_to_pT = 7.06e8 * rho_b
+        rate_nHe3_to_pT = 7.06e8 * rho_b
 
         rate_pT_to_nHe3 = rate_nHe3_to_pT * np.exp(-8.864 / T_9)
 
-        return rate_nHe3_to_pT, rate_pT_to_nHe3"""
-
+        return rate_nHe3_to_pT, rate_pT_to_nHe3
+    
     def get_DD_to_nHe3(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of (D + D <-> n + He3),
         described in b.7 of table 2 of the project reference material:
@@ -249,17 +221,7 @@ class ReactionRates:
             the reaction rate of (D + D -> n + He3), and the reverse [1/s]
         """
 
-        rate_DD = (
-        3.9e8
-        * rho_b
-        * T_9 ** (-2 / 3)
-        * np.exp(-4.26 * T_9 ** (-1 / 3))
-        * (1 + 0.0979 * T_9 ** (1 / 3) + 0.642 * T_9 ** (2 / 3) + 0.440 * T_9)
-        )
-        rate_nHe3 = 1.73 * rate_DD * np.exp(-37.94 / T_9)
-        return rate_DD, rate_nHe3
-
-        """rate_DD_to_nHe3 = (
+        rate_DD_to_nHe3 = (
             3.9e8
             * rho_b
             * T_9 ** (-2 / 3)
@@ -269,7 +231,7 @@ class ReactionRates:
 
         rate_nHe3_to_DD = 1.73 * rate_DD_to_nHe3 * np.exp(-37.94 / T_9)
 
-        return rate_DD_to_nHe3, rate_nHe3_to_DD"""
+        return rate_DD_to_nHe3, rate_nHe3_to_DD
 
     def get_pT_to_He4(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of (p + T <-> He4 + gamma),
@@ -284,28 +246,11 @@ class ReactionRates:
             the reaction rate of (p + T -> He4 + gamma), and the reverse [1/s]
         """
 
-        rate_pT = (
-        2.87e4
-        * rho_b
-        * T_9 ** (-2 / 3)
-        * np.exp(-3.87 * T_9 ** (-1 / 3))
-        * (
-            1
-            + 0.108 * T_9 ** (1 / 3)
-            + 0.466 * T_9 ** (2 / 3)
-            + 0.352 * T_9
-            + 0.300 * T_9 ** (4 / 3)
-            + 0.576 * T_9 ** (5 / 3)
-        )
-        )
-        rate_He4 = 2.59e10 * rate_pT * rho_b ** (-1) * T_9 ** (3 / 2) * np.exp(-229.9 / T_9)
-        return rate_pT, rate_He4
-
-        """rate_pT_to_He4 = (
+        rate_pT_to_He4 = (
             2.87e4
             * rho_b
             * T_9 ** (-2 / 3)
-            * np.exp(-3.87 / T_9 ** (-1 / 3))
+            * np.exp(-3.87 * T_9 ** (-1 / 3))
             * (
                 1
                 + 0.108 * T_9 ** (1 / 3)
@@ -320,7 +265,7 @@ class ReactionRates:
             2.59e10 * rate_pT_to_He4 / rho_b * T_9 ** (3 / 2) * np.exp(-229.9 / T_9)
         )
 
-        return rate_pT_to_He4, rate_He4_to_pT"""
+        return rate_pT_to_He4, rate_He4_to_pT
 
     def get_nHe3_to_He4(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of (n + He3 <-> He4 + gamma),
@@ -353,22 +298,8 @@ class ReactionRates:
         returns:
             the reaction rate of (D + D -> He4 + gamma), and the reverse [1/s]
         """
-        rate_DD = (
-            24.1
-            * rho_b
-            * T_9 ** (-2 / 3)
-            * np.exp(-4.26 * T_9 ** (-1 / 3))
-            * (
-                T_9 ** (2 / 3)
-                + 0.685 * T_9
-                + 0.152 * T_9 ** (4 / 3)
-                + 0.265 * T_9 ** (5 / 3)
-            )
-        )
-        rate_He4 = 4.5e10 * rate_DD * rho_b ** (-1) * T_9 ** (3 / 2) * np.exp(-276.7 / T_9)
-        return rate_DD, rate_He4
 
-        """rate_DD_to_He4 = (
+        rate_DD_to_He4 = (
             24.1
             * rho_b
             * T_9 ** (-2 / 3)
@@ -385,7 +316,7 @@ class ReactionRates:
             4.5e10 * rate_DD_to_He4 / rho_b * T_9 ** (3 / 2) * np.exp(-276.7 / T_9)
         )
 
-        return rate_DD_to_He4, rate_He4_to_DD"""
+        return rate_DD_to_He4, rate_He4_to_DD
 
     def get_DHe3_to_He4p(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of (D + He3 <-> He4 + p),
@@ -399,14 +330,11 @@ class ReactionRates:
         returns:
             the reaction rate of (D + He3 -> He4 + p), and the reverse [1/s]
         """
-        rate_DHe3 = 2.6e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-2.99 / T_9)
-        rate_pHe4 = 5.50 * rate_DHe3 * np.exp(-213.0 / T_9)
-        return rate_DHe3, rate_pHe4
 
-        """rate_DHe3_to_He4p = 2.6e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-2.99 / T_9)
+        rate_DHe3_to_He4p = 2.6e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-2.99 / T_9)
         rate_He4p_to_DHe3 = 5.5 * rate_DHe3_to_He4p * np.exp(-213 / T_9)
 
-        return rate_DHe3_to_He4p, rate_He4p_to_DHe3"""
+        return rate_DHe3_to_He4p, rate_He4p_to_DHe3
 
     def get_DT_to_He4n(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of (D + T <-> He4 + n),
@@ -421,14 +349,12 @@ class ReactionRates:
             the reaction rate of (D + T -> He4 + n), and the reverse [1/s]
         """
 
-        """rate_DT_to_He4n = 1.38e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-0.745 / T_9)
+        rate_DT_to_He4n = 1.38e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-0.745 / T_9)
         rate_He4n_to_DT = 5.5 * rate_DT_to_He4n * np.exp(-204.1 / T_9)
 
-        return rate_DT_to_He4n, rate_He4n_to_DT"""
+        return rate_DT_to_He4n, rate_He4n_to_DT
 
-        rate_DT = 1.38e9 * rho_b * T_9 ** (-3 / 2) * np.exp(-0.745 / T_9)
-        rate_nHe4 = 5.50 * rate_DT * np.exp(-204.1 / T_9)
-        return rate_DT, rate_nHe4
+
 
     def get_He3T_to_He4D(self, T_9: float, rho_b: float) -> tuple[float, float]:
         """Describes the reaction rate of (He3 + T <-> He4 + D),
