@@ -2,7 +2,10 @@
 
 import numpy as np
 
-def xi_squared(predicted: np.ndarray, observed: np.ndarray, error: np.ndarray) -> float:
+
+def chi_squared(
+    predicted: np.ndarray, observed: np.ndarray, error: np.ndarray
+) -> float:
     """Calculates the chi-squared value between the predicted and observed values.
 
     arguments:
@@ -29,10 +32,7 @@ def bayesian_probability(
         error: the error in the observed values
 
     returns:
-        the Bayesian probability
+        the Bayesian probability, and the xi squared values
     """
-    return (
-        1
-        / (np.sqrt(2 * np.prod(error * error)))
-        * np.exp(-xi_squared(predicted, observed, error))
-    )
+    xi_sqr = chi_squared(predicted, observed, error)
+    return (1 / (np.sqrt(2 * np.prod(error * error))) * np.exp(-xi_sqr)), xi_sqr
