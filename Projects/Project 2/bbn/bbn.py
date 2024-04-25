@@ -1040,7 +1040,7 @@ class BBN:
                 linestyle="dotted",
                 label=rf"$\chi^2$ = {most_likely_chi_squared:.3f}"
                 + "\n"
-                + rf"$N_eff$ = {most_likely_N_eff:.5f}",
+                + r"$N_{eff}$" + f" = {most_likely_N_eff:.5f}",
             )
 
         axs[3].legend()
@@ -1049,7 +1049,7 @@ class BBN:
 
         # Plot config
         fig.suptitle("Relic abundance analysis")
-        fig.supxlabel(r"$N_eff$")
+        fig.supxlabel(r"$N_{eff}$")
         if filename:
             # Create fig dir directory if it doesn't already exist
             if not FIG_DIR.exists():
