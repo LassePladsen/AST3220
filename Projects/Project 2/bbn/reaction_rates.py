@@ -282,7 +282,7 @@ class ReactionRates:
 
         rate_nHe3 = 6e3 * rho_b * T_9
         rate_He4 = (
-            2.6e10 * rate_nHe3 * rho_b ** (-1) * T_9 ** (3 / 2) * np.exp(-238.8 / T_9)
+            2.6e10 * rate_nHe3 / rho_b  * T_9 ** (3 / 2) * np.exp(-238.8 / T_9)
         )
         return rate_nHe3, rate_He4
 
@@ -303,7 +303,7 @@ class ReactionRates:
             24.1
             * rho_b
             * T_9 ** (-2 / 3)
-            * np.exp(-4.26 / T_9 ** (-1 / 3))
+            * np.exp(-4.26 * T_9 ** (-1 / 3))
             * (
                 T_9 ** (2 / 3)
                 + 0.685 * T_9
