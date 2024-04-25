@@ -572,8 +572,8 @@ class BBN:
             Y_min: lower bound value for mass fractions, everything below this value is set to Y_min
 
         returns:
-            Tuple containing the logspace interpolated mass fractions functions logY_i(logOmega_b0)
-            for i = p, D, He3, He4, and Li7
+            Tuple containing the logspace interpolated mass fractions functions log(Y_i/Y_p)(logOmega_b0)
+            for i = D, He3, Li7, and log(4Y_He4)(logOmega_b0)
         """
         Y_model = np.zeros((5, len(Omega_b0_vals)))
         for i, Omega_b0 in enumerate(Omega_b0_vals):
@@ -608,13 +608,12 @@ class BBN:
         kind = "cubic"
         Y_p, Y_D, Y_He3, Y_He4, Y_Li7 = Y_model
 
-        Y_p_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_p), kind=kind)
-        Y_D_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_D), kind=kind)
-        Y_He3_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_He3), kind=kind)
+        Y_Dp_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_D/Y_p), kind=kind)
+        Y_He3p_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_He3/Y_p), kind=kind)
+        Y_Li7p_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_Li7/Y_p), kind=kind)
         Y_He4_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_He4), kind=kind)
-        Y_Li7_interp = interp1d(np.log(Omega_b0_vals), np.log(Y_Li7), kind=kind)
 
-        return Y_p_interp, Y_D_interp, Y_He3_interp, Y_He4_interp, Y_Li7_interp
+        return Y_Dp_interp, Y_He3p_interp, Y_Li7p_interp, Y_He4_interp
 
     @staticmethod
     def plot_relic_abundances_Omegab0(
@@ -622,7 +621,7 @@ class BBN:
         T_f: float,
         Omega_b0_vals: np.ndarray,
         Y_min: float = 1e-20,
-        n_plot: int = 300,
+        n_plot: int = 5000,
         filename: str = None,
         figsize: tuple[int, int] = (7, 6),
     ) -> None:
@@ -642,25 +641,23 @@ class BBN:
 
         # Solve ODE for the values and interpolate
         (
-            Y_p_interp_func,
-            Y_D_interp_func,
-            Y_He3_interp_func,
+            Y_Dp_interp_func,
+            Y_He3p_interp_func,
+            Y_Li7p_interp_func,
             Y_He4_interp_func,
-            Y_Li7_interp_func,
         ) = BBN.interpolate_Y_of_Omegab0(T_i, T_f, Omega_b0_vals, Y_min=Y_min)
 
         # Array to interpolate graph with
-        Omega_b0_arr = np.logspace(
-            np.log10(Omega_b0_vals[0]), np.log10(Omega_b0_vals[-1]), n_plot
+        Omega_b0_arr = np.geomspace(
+            Omega_b0_vals[0], Omega_b0_vals[-1], n_plot
         )
-        log_Omega_b0_arr = np.log(Omega_b0_arr)
+        ln_Omega_b0_arr = np.log(Omega_b0_arr)
 
         # Interpolate with these values
-        Y_p_interp = np.exp(Y_p_interp_func(log_Omega_b0_arr))
-        Y_D_interp = np.exp(Y_D_interp_func(log_Omega_b0_arr))
-        Y_He3_interp = np.exp(Y_He3_interp_func(log_Omega_b0_arr))
-        Y_He4_interp = np.exp(Y_He4_interp_func(log_Omega_b0_arr))
-        Y_Li7_interp = np.exp(Y_Li7_interp_func(log_Omega_b0_arr))
+        Y_Dp_interp = np.exp(Y_Dp_interp_func(ln_Omega_b0_arr))
+        Y_He3p_interp = np.exp(Y_He3p_interp_func(ln_Omega_b0_arr))
+        Y_Li7p_interp = np.exp(Y_Li7p_interp_func(ln_Omega_b0_arr))
+        Y_He4_interp = np.exp(Y_He4_interp_func(ln_Omega_b0_arr))
 
         He4_mass_frac_interp = 4 * Y_He4_interp
 
@@ -703,17 +700,17 @@ class BBN:
 
         # Plot Y_i/Y_p for D, He3, and Li7
         axs[1].loglog(
-            Omega_b0_arr, Y_D_interp / Y_p_interp, label="D", color=BBN.COLORS[2]
+            Omega_b0_arr, Y_Dp_interp, label="D", color=BBN.COLORS[2]
         )
         axs[1].loglog(
             Omega_b0_arr,
-            Y_He3_interp / Y_p_interp,
+            Y_He3p_interp,
             label="He3",
             color=BBN.COLORS[4],
         )
         axs[1].loglog(
             Omega_b0_arr,
-            Y_Li7_interp / Y_p_interp,
+            Y_Li7p_interp,
             label="Li7",
             color=BBN.COLORS[-2],
         )
@@ -744,24 +741,26 @@ class BBN:
         axs[1].grid(True)
 
         # Calculate likelihood as a function of Omega_b0, by using interpolated solutions
+        observed = np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC])
+        error = np.asarray(
+            [
+                BBN.D_ABUNDANCE_ERR,
+                BBN.LI7_ABUNDANCE_ERR,
+                BBN.HE4_MASS_FRAC_ERR,
+            ]
+        )
         likelihood, chi_sqr = np.asarray(
             [
                 bayesian_probability(
                     np.asarray(
                         [
-                            Y_D_interp[i],
-                            Y_Li7_interp[i],
+                            Y_Dp_interp[i],
+                            Y_Li7p_interp[i],
                             He4_mass_frac_interp[i],
                         ]
                     ),
-                    np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC]),
-                    np.asarray(
-                        [
-                            BBN.D_ABUNDANCE_ERR,
-                            BBN.LI7_ABUNDANCE_ERR,
-                            BBN.HE4_MASS_FRAC_ERR,
-                        ]
-                    ),
+                    observed,
+                    error,
                 )
                 for i in range(n_plot)
             ]
@@ -821,8 +820,8 @@ class BBN:
             Y_min: lower bound value for mass fractions, everything below this value is set to Y_min
 
         returns:
-            Tuple containing the interpolated mass fractions functions Y_i(N_eff)
-            for i = p, D, He3, He4, and Li7
+            Tuple containing the interpolated mass fractions functions Y_i/Y_p(N_eff)
+            for i = D, He3, and Li7, and 4Y_He4(N_eff)
         """
         Y_model = np.zeros((5, len(N_eff_vals)))
         for i, N_eff in enumerate(N_eff_vals):
@@ -857,13 +856,12 @@ class BBN:
         kind = "cubic"
         Y_p, Y_D, Y_He3, Y_He4, Y_Li7 = Y_model
 
-        Y_p_interp = interp1d(N_eff_vals, Y_p, kind=kind)
-        Y_D_interp = interp1d(N_eff_vals, Y_D, kind=kind)
-        Y_He3_interp = interp1d(N_eff_vals, Y_He3, kind=kind)
+        Y_Dp_interp = interp1d(N_eff_vals, Y_D/Y_p, kind=kind)
+        Y_He3p_interp = interp1d(N_eff_vals, Y_He3/Y_p, kind=kind)
+        Y_Li7p_interp = interp1d(N_eff_vals, Y_Li7/Y_p, kind=kind)
         Y_He4_interp = interp1d(N_eff_vals, Y_He4, kind=kind)
-        Y_Li7_interp = interp1d(N_eff_vals, Y_Li7, kind=kind)
 
-        return Y_p_interp, Y_D_interp, Y_He3_interp, Y_He4_interp, Y_Li7_interp
+        return Y_Dp_interp, Y_He3p_interp, Y_Li7p_interp, Y_He4_interp
 
     @staticmethod
     def plot_relic_abundances_Neff(
@@ -871,7 +869,7 @@ class BBN:
         T_f: float,
         N_eff_vals: np.ndarray,
         Y_min: float = 1e-20,
-        n_plot: int = 300,
+        n_plot: int = 5000,
         filename: str = None,
         figsize: tuple[int, int] = (7, 6),
     ) -> None:
@@ -890,22 +888,20 @@ class BBN:
         """
         # Solve ODE for the values and interpolate
         (
-            Y_p_interp_func,
-            Y_D_interp_func,
-            Y_He3_interp_func,
+            Y_Dp_interp_func,
+            Y_He3p_interp_func,
+            Y_Li7p_interp_func,
             Y_He4_interp_func,
-            Y_Li7_interp_func,
         ) = BBN.interpolate_Y_of_Neff(T_i, T_f, N_eff_vals, Y_min=Y_min)
 
         # Array to interpolate graph with
         N_eff_arr = np.linspace(N_eff_vals[0], N_eff_vals[-1], n_plot)
 
         # Interpolate with these values
-        Y_p_interp = Y_p_interp_func(N_eff_arr)
-        Y_D_interp = Y_D_interp_func(N_eff_arr)
-        Y_He3_interp = Y_He3_interp_func(N_eff_arr)
+        Y_Dp_interp = Y_Dp_interp_func(N_eff_arr)
+        Y_He3p_interp = Y_He3p_interp_func(N_eff_arr)
+        Y_Li7p_interp = Y_Li7p_interp_func(N_eff_arr)
         Y_He4_interp = Y_He4_interp_func(N_eff_arr)
-        Y_Li7_interp = Y_Li7_interp_func(N_eff_arr)
 
         He4_mass_frac_interp = 4 * Y_He4_interp
 
@@ -945,10 +941,10 @@ class BBN:
         axs[0].grid(True)
 
         # Plot Y_i/Y_p for D, He3
-        axs[1].plot(N_eff_arr, Y_D_interp / Y_p_interp, label="D", color=BBN.COLORS[2])
+        axs[1].plot(N_eff_arr, Y_Dp_interp, label="D", color=BBN.COLORS[2])
         axs[1].plot(
             N_eff_arr,
-            Y_He3_interp / Y_p_interp,
+            Y_He3p_interp,
             label="He3",
             color=BBN.COLORS[4],
         )
@@ -975,7 +971,7 @@ class BBN:
         # Plot Y_i/Y_p for Li7
         axs[2].plot(
             N_eff_arr,
-            Y_Li7_interp / Y_p_interp,
+            Y_Li7p_interp,
             label="Li7",
             color=BBN.COLORS[-2],
         )
@@ -1000,24 +996,26 @@ class BBN:
         axs[2].grid(True)
 
         # Calculate likelihood as a function of N_eff, by using interpolated solutions
+        observed = np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC])
+        error = np.asarray(
+            [
+                BBN.D_ABUNDANCE_ERR,
+                BBN.LI7_ABUNDANCE_ERR,
+                BBN.HE4_MASS_FRAC_ERR,
+            ]
+        )
         likelihood, chi_sqr = np.asarray(
             [
                 bayesian_probability(
                     np.asarray(
                         [
-                            Y_D_interp[i],
-                            Y_Li7_interp[i],
+                            Y_Dp_interp[i],
+                            Y_Li7p_interp[i],
                             He4_mass_frac_interp[i],
                         ]
                     ),
-                    np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC]),
-                    np.asarray(
-                        [
-                            BBN.D_ABUNDANCE_ERR,
-                            BBN.LI7_ABUNDANCE_ERR,
-                            BBN.HE4_MASS_FRAC_ERR,
-                        ]
-                    ),
+                    observed,
+                    error,
                 )
                 for i in range(n_plot)
             ]
