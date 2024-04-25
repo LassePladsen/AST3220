@@ -994,7 +994,7 @@ class BBN:
         axs[2].grid(True)
 
         # Calculate likelihood as a function of N_eff, by using interpolated solutions
-        likelihood = [
+        likelihood, chi_sqr = np.asarray([
             bayesian_probability(
                 np.asarray(
                     [
@@ -1009,13 +1009,31 @@ class BBN:
                 ),
             )
             for i in range(n_plot)
-        ]
+        ]).T
 
         # Plot Bayesian likelihood
         axs[3].plot(N_eff_arr, likelihood, color="black")
         axs[3].tick_params(
             axis="both", which="both", direction="in", top=True, right=True
         )
+
+        # Find the most likely N_eff value by the min chi_squared value
+        indx = np.argmin(chi_sqr)
+        most_likely_chi_squared = np.min(chi_sqr)
+        most_likely_N_eff = N_eff_arr[indx]
+
+        # Plot this as a stripled line on all three subplots
+        for ax in axs:
+            ax.axvline(
+                most_likely_N_eff,
+                color="black",
+                linestyle="--",
+                label=rf"$\chi^2$ = {most_likely_chi_squared:.3f}"
+                + "\n"
+                + rf"$N_eff$ = {most_likely_N_eff:.5f}",
+            )
+        axs[2].legend()
+
         axs[3].legend()
         axs[3].grid(True)
         axs[3].set_ylabel("Bayesian\nlikelihood")
