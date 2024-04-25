@@ -19,7 +19,7 @@ if __name__ == "__main__":
     # Variables
     T_i = 1e11  # initial temperature [K]
     T_f = 1e7  # final temperature [K]
-    N_eff_vals = np.linspace(1, 5, 10)  # N_eff values to test
+    N_eff_vals = np.linspace(1, 5, 20)  # N_eff values to test
     filename = FIG_DIR / "k_relic_abundances.png"
 
     # Plot relic abundances
