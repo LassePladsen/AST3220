@@ -10,7 +10,7 @@ from scipy.interpolate import interp1d
 
 from .reaction_rates import ReactionRates
 from .background import Background
-from .stats import chi_squared, bayesian_probability
+from .stats import bayesian_probability
 
 # Ignore overflow runtimewarning
 warnings.filterwarnings("ignore", category=RuntimeWarning)
@@ -573,7 +573,7 @@ class BBN:
 
         returns:
             Tuple containing the logspace interpolated mass fractions functions logY_i(logOmega_b0)
-            for i = D, He3, He4, and Li7
+            for i = p, D, He3, He4, and Li7
         """
         Y_model = np.zeros((5, len(Omega_b0_vals)))
         for i, Omega_b0 in enumerate(Omega_b0_vals):
@@ -744,22 +744,28 @@ class BBN:
         axs[1].grid(True)
 
         # Calculate likelihood as a function of Omega_b0, by using interpolated solutions
-        likelihood, chi_sqr = np.asarray([
-            bayesian_probability(
-                np.asarray(
-                    [
-                        Y_D_interp[i],
-                        Y_Li7_interp[i],
-                        He4_mass_frac_interp[i],
-                    ]
-                ),
-                np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC]),
-                np.asarray(
-                    [BBN.D_ABUNDANCE_ERR, BBN.LI7_ABUNDANCE_ERR, BBN.HE4_MASS_FRAC_ERR]
-                ),
-            )
-            for i in range(n_plot)
-        ]).T
+        likelihood, chi_sqr = np.asarray(
+            [
+                bayesian_probability(
+                    np.asarray(
+                        [
+                            Y_D_interp[i],
+                            Y_Li7_interp[i],
+                            He4_mass_frac_interp[i],
+                        ]
+                    ),
+                    np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC]),
+                    np.asarray(
+                        [
+                            BBN.D_ABUNDANCE_ERR,
+                            BBN.LI7_ABUNDANCE_ERR,
+                            BBN.HE4_MASS_FRAC_ERR,
+                        ]
+                    ),
+                )
+                for i in range(n_plot)
+            ]
+        ).T
 
         # Plot Bayesian likelihood
         axs[2].plot(Omega_b0_arr, likelihood, color="black")
@@ -816,7 +822,7 @@ class BBN:
 
         returns:
             Tuple containing the interpolated mass fractions functions Y_i(N_eff)
-            for i = D, He3, He4, and Li7
+            for i = p, D, He3, He4, and Li7
         """
         Y_model = np.zeros((5, len(N_eff_vals)))
         for i, N_eff in enumerate(N_eff_vals):
@@ -994,22 +1000,28 @@ class BBN:
         axs[2].grid(True)
 
         # Calculate likelihood as a function of N_eff, by using interpolated solutions
-        likelihood, chi_sqr = np.asarray([
-            bayesian_probability(
-                np.asarray(
-                    [
-                        Y_D_interp[i],
-                        Y_Li7_interp[i],
-                        He4_mass_frac_interp[i],
-                    ]
-                ),
-                np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC]),
-                np.asarray(
-                    [BBN.D_ABUNDANCE_ERR, BBN.LI7_ABUNDANCE_ERR, BBN.HE4_MASS_FRAC_ERR]
-                ),
-            )
-            for i in range(n_plot)
-        ]).T
+        likelihood, chi_sqr = np.asarray(
+            [
+                bayesian_probability(
+                    np.asarray(
+                        [
+                            Y_D_interp[i],
+                            Y_Li7_interp[i],
+                            He4_mass_frac_interp[i],
+                        ]
+                    ),
+                    np.asarray([BBN.D_ABUNDANCE, BBN.LI7_ABUNDANCE, BBN.HE4_MASS_FRAC]),
+                    np.asarray(
+                        [
+                            BBN.D_ABUNDANCE_ERR,
+                            BBN.LI7_ABUNDANCE_ERR,
+                            BBN.HE4_MASS_FRAC_ERR,
+                        ]
+                    ),
+                )
+                for i in range(n_plot)
+            ]
+        ).T
 
         # Plot Bayesian likelihood
         axs[3].plot(N_eff_arr, likelihood, color="black")
