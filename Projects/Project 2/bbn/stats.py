@@ -32,7 +32,7 @@ def bayesian_probability(
         error: the error in the observed values
 
     returns:
-        the Bayesian probability, and the xi squared values
+        the Bayesian probability, and the chi squared values
     """
-    xi_sqr = chi_squared(predicted, observed, error)
-    return (1 / (np.sqrt(2 * np.prod(error * error))) * np.exp(-xi_sqr)), xi_sqr
+    chi_sqr = chi_squared(predicted, observed, error)
+    return (1 / (np.sqrt(2 * np.prod(error * error))) * np.exp(-chi_sqr)), chi_sqr
