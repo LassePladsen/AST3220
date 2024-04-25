@@ -19,7 +19,7 @@ if __name__ == "__main__":
     # Variables
     T_i = 1e11  # initial temperature [K]
     T_f = 1e7  # final temperature [K]
-    Omega_b0_vals = np.logspace(-2, 0, 20)  # Omega_b0 values to test
+    Omega_b0_vals = np.logspace(-2, 0, 10)  # Omega_b0 values to test
     filename = FIG_DIR / "j_relic_abundances.png"
 
     # Plot relic abundances
