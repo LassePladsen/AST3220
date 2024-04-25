@@ -775,12 +775,12 @@ class BBN:
         most_likely_chi_squared = np.min(chi_sqr)
         most_likely_Omega_b0 = Omega_b0_arr[indx]
 
-        # Plot this as a stripled line on all three subplots
+        # Plot this as a dotted line on all three subplots
         for ax in axs:
             ax.axvline(
                 most_likely_Omega_b0,
                 color="black",
-                linestyle="--",
+                linestyle="dotted",
                 label=rf"$\chi^2$ = {most_likely_chi_squared:.3f}"
                 + "\n"
                 + rf"$\Omega_{{b0}}$ = {most_likely_Omega_b0:.5f}",
@@ -1022,17 +1022,16 @@ class BBN:
         most_likely_chi_squared = np.min(chi_sqr)
         most_likely_N_eff = N_eff_arr[indx]
 
-        # Plot this as a stripled line on all three subplots
+        # Plot this as a dotted line on all three subplots
         for ax in axs:
             ax.axvline(
                 most_likely_N_eff,
                 color="black",
-                linestyle="--",
+                linestyle="dotted",
                 label=rf"$\chi^2$ = {most_likely_chi_squared:.3f}"
                 + "\n"
                 + rf"$N_eff$ = {most_likely_N_eff:.5f}",
             )
-        axs[2].legend()
 
         axs[3].legend()
         axs[3].grid(True)
