@@ -734,7 +734,7 @@ class BBN:
             color=BBN.COLORS[-2],
         )
 
-        y_min = 0.5e-10  # minimum value for y-axis in the middle Y_i/Y_p relic abundance plot
+        y_min = 0.2e-10  # minimum value for y-axis in the middle Y_i/Y_p relic abundance plot
         axs[1].set_ylim(bottom=y_min)
         axs[1].set_ylabel(r"$Y_i/Y_p$")
         axs[1].tick_params(
