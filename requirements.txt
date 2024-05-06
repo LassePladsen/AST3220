@@ -2,3 +2,10 @@ matplotlib
 numpy
 scipy
 astropy
+pandas
+emcee
+matplotlib
+cycler
+corner
+ipython
+ipykernel
