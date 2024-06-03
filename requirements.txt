@@ -9,3 +9,4 @@ cycler
 corner
 ipython
 ipykernel
+tqdm
